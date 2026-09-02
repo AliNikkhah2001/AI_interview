@@ -598,7 +598,8 @@ def build_js():
     js = r'''const state={topics:[],questions:[],core:[],designs:[],refs:[],pool:[],index:0,seen:new Set(JSON.parse(localStorage.getItem("atlas-seen")||"[]"))};
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-Promise.all(["data/topics.json","data/questions.json","data/core_questions.json","data/designs.json","data/references.json"].map(u=>fetch(u).then(r=>r.json()))).then(([t,q,c,d,r])=>{Object.assign(state,{topics:t,questions:q,core:c,designs:d,refs:r});renderAll();applyQuestionFilters()});
+const questionFiles=["data/questions_1.json","data/questions_2.json","data/questions_3.json","data/questions_4.json"];
+Promise.all(["data/topics.json","data/core_questions.json","data/designs.json","data/references.json",...questionFiles].map(u=>fetch(u).then(r=>r.json()))).then(([t,c,d,r,...shards])=>{Object.assign(state,{topics:t,questions:shards.flat(),core:c,designs:d,refs:r});renderAll();applyQuestionFilters()});
 function showView(id){$$('.view').forEach(v=>v.classList.toggle('active',v.id===id));$$('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id));history.replaceState(null,'','#'+id);scrollTo({top:$('.command').offsetHeight,behavior:'smooth'})}
 $$('nav button').forEach(b=>b.onclick=()=>showView(b.dataset.view));
 function renderAll(){renderMap();renderTopics();renderCore();renderDesigns();renderSources()}
@@ -651,7 +652,25 @@ def build_latex():
     for r in REFERENCES:
         lines.append(r"\item \href{" + r["url"] + "}{" + latex_escape(r["title"]) + "} (" + latex_escape(r["kind"]) + ")")
     lines += [r"\end{enumerate}",r"\end{document}"]
-    (ROOT / "handbook" / "ai_engineering_interview_handbook.tex").write_text("\n".join(lines), encoding="utf-8")
+    begin = lines.index(r"\begin{document}")
+    preamble = lines[:begin + 1]
+    body_lines = lines[begin + 1:-1]
+    part_dir = ROOT / "handbook" / "parts"
+    part_dir.mkdir(parents=True, exist_ok=True)
+    for old in part_dir.glob("part_*.tex"):
+        old.unlink()
+    chunks, chunk, size = [], [], 0
+    for line in body_lines:
+        line_size = len(line.encode("utf-8")) + 1
+        if chunk and size + line_size > 340_000:
+            chunks.append(chunk); chunk = []; size = 0
+        chunk.append(line); size += line_size
+    if chunk:
+        chunks.append(chunk)
+    for i, part in enumerate(chunks, 1):
+        (part_dir / f"part_{i:02d}.tex").write_text("\n".join(part) + "\n", encoding="utf-8")
+    main = preamble + [rf"\input{{handbook/parts/part_{i:02d}.tex}}" for i in range(1, len(chunks) + 1)] + [r"\end{document}"]
+    (ROOT / "handbook" / "ai_engineering_interview_handbook.tex").write_text("\n".join(main) + "\n", encoding="utf-8")
 
 
 def build_workflow_and_misc():
@@ -692,11 +711,19 @@ def main():
     for d in [ROOT / "data", ROOT / "handbook", ROOT / ".github" / "workflows"]:
         d.mkdir(parents=True, exist_ok=True)
     write_json(ROOT / "data" / "topics.json", TOPICS)
-    write_json(ROOT / "data" / "questions.json", QUESTIONS)
+    question_files = []
+    shard_size = 480
+    for i, start in enumerate(range(0, len(QUESTIONS), shard_size), 1):
+        name = f"questions_{i}.json"
+        write_json(ROOT / "data" / name, QUESTIONS[start:start + shard_size])
+        question_files.append(name)
+    combined = ROOT / "data" / "questions.json"
+    if combined.exists():
+        combined.unlink()
     write_json(ROOT / "data" / "core_questions.json", CORE_QUESTIONS)
     write_json(ROOT / "data" / "designs.json", DESIGNS)
     write_json(ROOT / "data" / "references.json", REFERENCES)
-    write_json(ROOT / "data" / "manifest.json", {"topics":len(TOPICS),"generated_questions":len(QUESTIONS),"core_questions":50,"design_challenges":len(DESIGNS),"sources":len(REFERENCES),"research_snapshot":"2026-09-02"})
+    write_json(ROOT / "data" / "manifest.json", {"topics":len(TOPICS),"generated_questions":len(QUESTIONS),"question_files":question_files,"core_questions":50,"design_challenges":len(DESIGNS),"sources":len(REFERENCES),"research_snapshot":"2026-09-02"})
     build_markdown(); build_sources_md(); build_site(); build_css(); build_js(); build_latex(); build_workflow_and_misc()
     print(json.dumps({"topics":len(TOPICS),"questions":len(QUESTIONS),"core":len(CORE_QUESTIONS),"designs":len(DESIGNS),"sources":len(REFERENCES)}, indent=2))
 

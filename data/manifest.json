@@ -1,6 +1,12 @@
 {
   "topics": 192,
   "generated_questions": 1920,
+  "question_files": [
+    "questions_1.json",
+    "questions_2.json",
+    "questions_3.json",
+    "questions_4.json"
+  ],
   "core_questions": 50,
   "design_challenges": 12,
   "sources": 42,

@@ -1,7 +1,8 @@
 const state={topics:[],questions:[],core:[],designs:[],refs:[],pool:[],index:0,seen:new Set(JSON.parse(localStorage.getItem("atlas-seen")||"[]"))};
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-Promise.all(["data/topics.json","data/questions.json","data/core_questions.json","data/designs.json","data/references.json"].map(u=>fetch(u).then(r=>r.json()))).then(([t,q,c,d,r])=>{Object.assign(state,{topics:t,questions:q,core:c,designs:d,refs:r});renderAll();applyQuestionFilters()});
+const questionFiles=["data/questions_1.json","data/questions_2.json","data/questions_3.json","data/questions_4.json"];
+Promise.all(["data/topics.json","data/core_questions.json","data/designs.json","data/references.json",...questionFiles].map(u=>fetch(u).then(r=>r.json()))).then(([t,c,d,r,...shards])=>{Object.assign(state,{topics:t,questions:shards.flat(),core:c,designs:d,refs:r});renderAll();applyQuestionFilters()});
 function showView(id){$$('.view').forEach(v=>v.classList.toggle('active',v.id===id));$$('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id));history.replaceState(null,'','#'+id);scrollTo({top:$('.command').offsetHeight,behavior:'smooth'})}
 $$('nav button').forEach(b=>b.onclick=()=>showView(b.dataset.view));
 function renderAll(){renderMap();renderTopics();renderCore();renderDesigns();renderSources()}
