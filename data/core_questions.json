@@ -1,0 +1,642 @@
+[
+  {
+    "id": "CORE-01",
+    "difficulty": "medium",
+    "category": "Retrieval and Search Theory",
+    "prompt": "Why should BM25 remain in a modern RAG baseline?",
+    "answer": "BM25 is inexpensive, interpretable, and strong on rare terms, identifiers, and exact wording. Dense retrieval covers paraphrases but can miss those cases. Compare lexical, dense, and hybrid retrieval on the same judged set, then use slice metrics rather than assuming one method dominates.",
+    "origin": "research-derived",
+    "references": [
+      "rag",
+      "dpr",
+      "beir"
+    ]
+  },
+  {
+    "id": "CORE-02",
+    "difficulty": "hard",
+    "category": "Retrieval and Search Theory",
+    "prompt": "Derive the role of term-frequency saturation and document-length normalization in BM25.",
+    "answer": "BM25 increases score with term frequency but uses a saturating fraction so repeated terms have diminishing returns. Its length normalization compares document length with the collection average, preventing long documents from winning just because they contain more words. Explain how k1 controls saturation and b controls normalization, then discuss tuning by corpus.",
+    "origin": "generated synthesis",
+    "references": [
+      "rag",
+      "dpr",
+      "beir"
+    ]
+  },
+  {
+    "id": "CORE-03",
+    "difficulty": "medium",
+    "category": "Vector Databases and Search Engines",
+    "prompt": "When would you choose pgvector over a dedicated vector database?",
+    "answer": "Choose pgvector when relational joins, transactions, operational simplicity, and moderate scale dominate. A dedicated service becomes attractive for independently scaled vector workloads, specialized distributed indexing, or managed operations. Validate both with filtered recall, latency, update rate, backup, and total cost.",
+    "origin": "research-derived",
+    "references": [
+      "pgvector",
+      "pinecone",
+      "qdrant"
+    ]
+  },
+  {
+    "id": "CORE-04",
+    "difficulty": "hard",
+    "category": "Vector Databases and Search Engines",
+    "prompt": "Compare HNSW with IVF-PQ for a billion-vector workload.",
+    "answer": "HNSW usually provides strong latency-recall but consumes substantial RAM and has costly construction. IVF-PQ compresses vectors and searches selected clusters, reducing memory at the cost of training and quantization error. Benchmark representative filters and updates; do not make the choice from unfiltered synthetic vectors.",
+    "origin": "generated synthesis",
+    "references": [
+      "pgvector",
+      "pinecone",
+      "qdrant"
+    ]
+  },
+  {
+    "id": "CORE-05",
+    "difficulty": "medium",
+    "category": "RAG Architecture and Evaluation",
+    "prompt": "How do you select a chunk size?",
+    "answer": "Use document structure and question evidence span, not one universal token count. Measure retrieval recall, context precision, answer quality, and cost across headings, tables, code, and prose. Parent-child retrieval can decouple precise retrieval chunks from larger generation context.",
+    "origin": "research-derived",
+    "references": [
+      "rag",
+      "beir",
+      "ragas"
+    ]
+  },
+  {
+    "id": "CORE-06",
+    "difficulty": "hard",
+    "category": "RAG Architecture and Evaluation",
+    "prompt": "Design an evaluation suite that localizes RAG failures.",
+    "answer": "Separate ingestion correctness, retriever recall and ranking, context packing, faithfulness, answer correctness, citation entailment, latency, and cost. Build golden and synthetic cases with important slices, calibrate automated judges against humans, and retain per-stage traces so a final-answer regression can be attributed.",
+    "origin": "generated synthesis",
+    "references": [
+      "rag",
+      "beir",
+      "ragas"
+    ]
+  },
+  {
+    "id": "CORE-07",
+    "difficulty": "hard",
+    "category": "RAG Architecture and Evaluation",
+    "prompt": "What is the difference between faithfulness and factual correctness?",
+    "answer": "Faithfulness asks whether claims follow from supplied context; factual correctness asks whether they are true in the world or against a reference. An answer can be faithful to incorrect context, or factually correct but unsupported by retrieved evidence. Production evaluation often needs both plus citation quality.",
+    "origin": "research-derived",
+    "references": [
+      "rag",
+      "beir",
+      "ragas"
+    ]
+  },
+  {
+    "id": "CORE-08",
+    "difficulty": "medium",
+    "category": "Knowledge Graphs and GraphRAG",
+    "prompt": "When is GraphRAG justified over vector RAG?",
+    "answer": "GraphRAG is justified for relationship-heavy, multi-hop, entity-centric, or whole-corpus thematic questions where graph structure adds retrieval value. It costs more to construct, resolve, update, and evaluate. Start with a question taxonomy and prove lift on graph-shaped slices.",
+    "origin": "generated synthesis",
+    "references": [
+      "graphrag",
+      "kag",
+      "neo4j"
+    ]
+  },
+  {
+    "id": "CORE-09",
+    "difficulty": "hard",
+    "category": "Knowledge Graphs and GraphRAG",
+    "prompt": "Compare GraphRAG local search, global search, and KAG.",
+    "answer": "Local search expands around query entities for detailed multi-hop context. Global search aggregates community summaries for corpus-level themes. KAG adds schema-aware representation, chunk-graph mutual indexing, and logical-form-guided reasoning for professional domains; it demands stronger domain modeling.",
+    "origin": "research-derived",
+    "references": [
+      "graphrag",
+      "kag",
+      "neo4j"
+    ]
+  },
+  {
+    "id": "CORE-10",
+    "difficulty": "hard",
+    "category": "Knowledge Graphs and GraphRAG",
+    "prompt": "How do you prevent hallucinated graph edges from becoming authoritative?",
+    "answer": "Attach every entity and edge to source spans, extraction model versions, confidence, and temporal validity. Apply schema constraints, deterministic validators, duplicate resolution, sampled human review, and downstream contradiction checks. Queries should be able to require verified provenance.",
+    "origin": "generated synthesis",
+    "references": [
+      "graphrag",
+      "kag",
+      "neo4j"
+    ]
+  },
+  {
+    "id": "CORE-11",
+    "difficulty": "medium",
+    "category": "Agents, MCP, and Control",
+    "prompt": "What makes an agent different from a deterministic workflow?",
+    "answer": "A workflow has predefined transitions; an agent chooses actions dynamically from observations and tools. Many production systems combine both: deterministic boundaries and approvals around agentic decision points. Use the least autonomy needed for the task.",
+    "origin": "research-derived",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "CORE-12",
+    "difficulty": "hard",
+    "category": "Agents, MCP, and Control",
+    "prompt": "Design safe retries for an agent that can send payments.",
+    "answer": "Generate a durable business idempotency key before the side effect, validate authorization and amount at execution, persist the result, and make retries return that result. Separate planning from execution, require approval for policy-defined thresholds, and reconcile ambiguous timeouts with the payment provider before retrying.",
+    "origin": "generated synthesis",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "CORE-13",
+    "difficulty": "medium",
+    "category": "Agents, MCP, and Control",
+    "prompt": "Explain MCP's trust boundary.",
+    "answer": "MCP standardizes capability discovery and invocation; it does not make a server, tool result, or prompt trusted. The host must authenticate servers, scope credentials, authorize every action, surface consent, validate inputs and outputs, and isolate untrusted content from instructions.",
+    "origin": "research-derived",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "CORE-14",
+    "difficulty": "hard",
+    "category": "Agents, MCP, and Control",
+    "prompt": "How would you bound an autonomous coding agent?",
+    "answer": "Use an ephemeral sandbox, scoped repository checkout, no ambient credentials, default-deny network, resource and time limits, command allow/deny policy, and reviewed patches. Separate read, write, test, and publish permissions; require explicit approval for destructive or external actions and retain an audit trail.",
+    "origin": "generated synthesis",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "CORE-15",
+    "difficulty": "hard",
+    "category": "Agents, MCP, and Control",
+    "prompt": "What memory should an agent store, and what should it forget?",
+    "answer": "Store only durable, user-approved facts or proven procedural lessons with provenance, timestamps, scope, and deletion controls. Keep ephemeral task state separate. Avoid raw transcripts, secrets, uncertain inferences, and sensitive facts without purpose and retention policy.",
+    "origin": "research-derived",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "CORE-16",
+    "difficulty": "medium",
+    "category": "Orchestration Frameworks",
+    "prompt": "When should you use LangGraph rather than a simple function pipeline?",
+    "answer": "Use it when execution is long-running, stateful, branching, resumable, streamed, or approval-gated. A short deterministic request often needs ordinary code instead. Complexity should be justified by checkpointing, interrupts, or graph-level observability.",
+    "origin": "generated synthesis",
+    "references": [
+      "langgraph",
+      "temporal"
+    ]
+  },
+  {
+    "id": "CORE-17",
+    "difficulty": "hard",
+    "category": "Orchestration Frameworks",
+    "prompt": "Why must durable workflow nodes be idempotent?",
+    "answer": "Checkpoint replay or activity retry may execute a node more than once after ambiguous failure. If side effects are not idempotent, a resume can duplicate them. Persist operation keys and outcomes, and isolate side effects in retry-aware activities.",
+    "origin": "research-derived",
+    "references": [
+      "langgraph",
+      "temporal"
+    ]
+  },
+  {
+    "id": "CORE-18",
+    "difficulty": "medium",
+    "category": "Observability and Monitoring",
+    "prompt": "What should an LLM trace contain?",
+    "answer": "Include request and session correlation, model and prompt versions, sanitized inputs and outputs, retrieval and rerank steps, tool calls, token usage, latency, cost, errors, evaluations, and policy decisions. Capture content only under explicit privacy and retention controls.",
+    "origin": "generated synthesis",
+    "references": [
+      "otel",
+      "mlflow",
+      "evidently"
+    ]
+  },
+  {
+    "id": "CORE-19",
+    "difficulty": "hard",
+    "category": "Observability and Monitoring",
+    "prompt": "How do you define SLOs for a streaming LLM application?",
+    "answer": "Separate availability, time to first token, inter-token latency, end-to-end completion, and semantic quality. Define percentiles by workload slice and model route, then pair error budgets with capacity and fallback policy. Average latency is not sufficient.",
+    "origin": "research-derived",
+    "references": [
+      "otel",
+      "mlflow",
+      "evidently"
+    ]
+  },
+  {
+    "id": "CORE-20",
+    "difficulty": "hard",
+    "category": "Observability and Monitoring",
+    "prompt": "How do you detect quality drift without immediate labels?",
+    "answer": "Track input and retrieval distributions, refusal and tool patterns, deterministic validators, sampled judge scores, citation coverage, user corrections, and business proxies. Calibrate alarms against delayed human labels and segment by cohort; drift signals are hypotheses, not proof of degradation.",
+    "origin": "generated synthesis",
+    "references": [
+      "otel",
+      "mlflow",
+      "evidently"
+    ]
+  },
+  {
+    "id": "CORE-21",
+    "difficulty": "medium",
+    "category": "Serving, Deployment, and LLMOps",
+    "prompt": "Explain continuous batching.",
+    "answer": "A serving engine admits new requests and removes finished ones between decode iterations, keeping the GPU busy despite variable sequence lengths. It improves throughput but requires fairness, queue control, and latency isolation. Benchmark concurrency and sequence distributions, not only batch size.",
+    "origin": "research-derived",
+    "references": [
+      "paged",
+      "vllm",
+      "ray"
+    ]
+  },
+  {
+    "id": "CORE-22",
+    "difficulty": "hard",
+    "category": "Serving, Deployment, and LLMOps",
+    "prompt": "What metrics should drive LLM autoscaling?",
+    "answer": "Use queue depth or queued tokens, time to first token, decode throughput, active sequences, KV-cache utilization, memory headroom, and startup time. CPU often has weak correlation with GPU saturation. Predictive warm pools may be needed because model loading is slow.",
+    "origin": "generated synthesis",
+    "references": [
+      "paged",
+      "vllm",
+      "ray"
+    ]
+  },
+  {
+    "id": "CORE-23",
+    "difficulty": "hard",
+    "category": "Serving, Deployment, and LLMOps",
+    "prompt": "Design a safe multi-provider LLM gateway.",
+    "answer": "Normalize contracts but preserve provider-specific capability metadata. Add authentication, tenant budgets, token-aware limits, policy routing, retries with budgets, circuit breakers, audit logs, and semantic fallback rules. Pin model versions and expose route changes so fallbacks do not silently alter behavior.",
+    "origin": "research-derived",
+    "references": [
+      "paged",
+      "vllm",
+      "ray"
+    ]
+  },
+  {
+    "id": "CORE-24",
+    "difficulty": "medium",
+    "category": "Data and ML Lifecycle",
+    "prompt": "What does data versioning add beyond Git?",
+    "answer": "Large artifacts live in object storage while Git records content-addressed pointers, pipeline definitions, and lineage. Reproducibility requires code, parameters, environment, and data versions together. A mutable remote path is not a version.",
+    "origin": "generated synthesis",
+    "references": [
+      "dvc",
+      "feast",
+      "mlflow"
+    ]
+  },
+  {
+    "id": "CORE-25",
+    "difficulty": "hard",
+    "category": "Data and ML Lifecycle",
+    "prompt": "Explain point-in-time correct feature joins.",
+    "answer": "For each training label timestamp, select only feature values available at or before that time. This prevents future information from leaking into historical examples. The design needs entity keys, event and availability time, late-data policy, and parity tests with online serving.",
+    "origin": "research-derived",
+    "references": [
+      "dvc",
+      "feast",
+      "mlflow"
+    ]
+  },
+  {
+    "id": "CORE-26",
+    "difficulty": "medium",
+    "category": "Transformer Theory and Training",
+    "prompt": "Why is attention scaled by the square root of the head dimension?",
+    "answer": "Without scaling, query-key dot-product variance grows with dimension and pushes softmax into saturated regions with tiny gradients. Dividing by sqrt(d_k) stabilizes logits under common initialization assumptions. It is a variance-control argument, not a learned temperature.",
+    "origin": "generated synthesis",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "CORE-27",
+    "difficulty": "hard",
+    "category": "Transformer Theory and Training",
+    "prompt": "Compare pre-norm and post-norm transformers.",
+    "answer": "Pre-norm applies normalization before each sublayer and leaves a cleaner residual path, usually improving gradient flow in deep models. Post-norm normalizes after the residual addition and can need careful warmup or scaling. Architecture changes require retuning rather than a mechanical swap.",
+    "origin": "research-derived",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "CORE-28",
+    "difficulty": "hard",
+    "category": "Transformer Theory and Training",
+    "prompt": "Explain why MoE increases parameters without proportional FLOPs.",
+    "answer": "A router activates only a small number of experts per token, so total expert parameters can grow while per-token compute follows the selected experts. The hidden costs are expert memory, routing balance, all-to-all communication, and capacity overflow.",
+    "origin": "generated synthesis",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "CORE-29",
+    "difficulty": "medium",
+    "category": "Transformer Theory and Training",
+    "prompt": "Compare SFT, PPO-based RLHF, and DPO.",
+    "answer": "SFT imitates demonstrations. PPO-based RLHF optimizes a learned reward with a policy constraint but has a complex training loop. DPO learns directly from preference pairs relative to a reference policy; it is simpler but still inherits preference-data bias and coverage limits.",
+    "origin": "research-derived",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "CORE-30",
+    "difficulty": "hard",
+    "category": "Transformer Theory and Training",
+    "prompt": "How do LoRA rank and target modules affect adaptation?",
+    "answer": "Rank bounds the update subspace; higher rank increases capacity and memory. Targeting attention projections, MLPs, or both changes what behavior can move. Select with validation by task slice and inspect adapter interference rather than using a universal rank.",
+    "origin": "generated synthesis",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "CORE-31",
+    "difficulty": "medium",
+    "category": "Inference Optimization",
+    "prompt": "What exactly does a KV cache save?",
+    "answer": "It stores prior-layer key and value tensors so decoding a new token computes only its new projections and attends over cached history. It does not eliminate attention over prior positions. Memory grows with layers, sequence length, batch, KV heads, head dimension, and precision.",
+    "origin": "research-derived",
+    "references": [
+      "flash",
+      "paged",
+      "gqa"
+    ]
+  },
+  {
+    "id": "CORE-32",
+    "difficulty": "hard",
+    "category": "Inference Optimization",
+    "prompt": "Why can lower-bit quantization be slower?",
+    "answer": "A quantized model wins only if the hardware and runtime provide efficient dequantization and matrix kernels for its shapes. Unsupported formats add conversion overhead or fall back to slow paths. Measure end-to-end latency, memory, energy, and quality on target hardware.",
+    "origin": "generated synthesis",
+    "references": [
+      "flash",
+      "paged",
+      "gqa"
+    ]
+  },
+  {
+    "id": "CORE-33",
+    "difficulty": "hard",
+    "category": "Inference Optimization",
+    "prompt": "Explain speculative decoding's acceptance condition and benefit.",
+    "answer": "A draft model proposes several tokens; the target evaluates them in parallel and accepts a prefix using a correction rule that preserves the target distribution. Benefit depends on draft cost, acceptance rate, verification efficiency, and output length. Low acceptance can make it slower.",
+    "origin": "research-derived",
+    "references": [
+      "flash",
+      "paged",
+      "gqa"
+    ]
+  },
+  {
+    "id": "CORE-34",
+    "difficulty": "medium",
+    "category": "Backend, APIs, and Microservices",
+    "prompt": "FastAPI or Flask for an inference API?",
+    "answer": "FastAPI's ASGI model, typing, validation, OpenAPI, and streaming fit concurrent APIs. Flask remains excellent for simple synchronous services and its ecosystem. The decisive issues are workload, deployment server, blocking model calls, team experience, and operational needs.",
+    "origin": "generated synthesis",
+    "references": [
+      "fastapi",
+      "grpc",
+      "k8s"
+    ]
+  },
+  {
+    "id": "CORE-35",
+    "difficulty": "hard",
+    "category": "Backend, APIs, and Microservices",
+    "prompt": "Design backpressure for token streaming.",
+    "answer": "Bound admission and per-connection buffers, propagate slow-consumer signals, cancel model work on disconnect, and separate interactive from batch queues. Use token-weighted concurrency and deadlines. Never let unbounded output buffers consume server memory.",
+    "origin": "research-derived",
+    "references": [
+      "fastapi",
+      "grpc",
+      "k8s"
+    ]
+  },
+  {
+    "id": "CORE-36",
+    "difficulty": "hard",
+    "category": "Backend, APIs, and Microservices",
+    "prompt": "Where should microservice boundaries sit in an AI platform?",
+    "answer": "Separate capabilities with distinct ownership, data, scaling, failure, and release characteristics, such as ingestion, retrieval, inference, and evaluation. Keep strongly coupled low-latency steps together until evidence supports a split. Avoid a distributed monolith with shared databases and synchronized releases.",
+    "origin": "generated synthesis",
+    "references": [
+      "fastapi",
+      "grpc",
+      "k8s"
+    ]
+  },
+  {
+    "id": "CORE-37",
+    "difficulty": "medium",
+    "category": "Python Engineering",
+    "prompt": "When do Python threads help despite the GIL?",
+    "answer": "They help when work spends time in blocking I/O or native code that releases the GIL. Pure Python CPU-bound loops generally need processes, native vectorized code, or another runtime. Measure contention and library behavior instead of applying a slogan.",
+    "origin": "research-derived",
+    "references": [
+      "python"
+    ]
+  },
+  {
+    "id": "CORE-38",
+    "difficulty": "hard",
+    "category": "Python Engineering",
+    "prompt": "How do you prevent blocking an asyncio event loop?",
+    "answer": "Use genuinely asynchronous clients for network I/O, move unavoidable blocking functions to a bounded thread pool, use processes for CPU-bound Python, and instrument event-loop lag. Bound concurrency so offloading does not merely move overload to an executor queue.",
+    "origin": "generated synthesis",
+    "references": [
+      "python"
+    ]
+  },
+  {
+    "id": "CORE-39",
+    "difficulty": "medium",
+    "category": "Python Engineering",
+    "prompt": "Why use functools.wraps in a decorator?",
+    "answer": "wraps copies key metadata and establishes a __wrapped__ chain, preserving names, documentation, signatures through introspection, and framework behavior. Without it, debugging, dependency injection, route registration, and tests may see the wrapper instead of the original callable.",
+    "origin": "research-derived",
+    "references": [
+      "python"
+    ]
+  },
+  {
+    "id": "CORE-40",
+    "difficulty": "hard",
+    "category": "Python Engineering",
+    "prompt": "Compare threads, processes, and coroutines for an embedding service.",
+    "answer": "Coroutines efficiently multiplex many network calls; threads integrate blocking SDKs; processes parallelize CPU-heavy Python and isolate failures. Native GPU or BLAS work may already release the GIL and batch internally. Choose after profiling serialization, memory duplication, and batching.",
+    "origin": "generated synthesis",
+    "references": [
+      "python"
+    ]
+  },
+  {
+    "id": "CORE-41",
+    "difficulty": "medium",
+    "category": "Security, Safety, and Governance",
+    "prompt": "Why is prompt injection not solved by a stronger system prompt?",
+    "answer": "The model still processes attacker-controlled instructions in the same inference context and cannot enforce authority like an operating system. Security must come from least-privilege tools, content provenance, authorization, validation, isolation, and confirmation for consequential actions.",
+    "origin": "research-derived",
+    "references": [
+      "owasp",
+      "nist",
+      "mcp"
+    ]
+  },
+  {
+    "id": "CORE-42",
+    "difficulty": "hard",
+    "category": "Security, Safety, and Governance",
+    "prompt": "Threat-model a RAG system.",
+    "answer": "Assets include private documents, credentials, indexes, prompts, outputs, and tools. Threats include poisoned ingestion, cross-tenant retrieval, indirect prompt injection, membership inference, data exfiltration, insecure citations, and logging leaks. Map controls to each boundary and test bypasses.",
+    "origin": "generated synthesis",
+    "references": [
+      "owasp",
+      "nist",
+      "mcp"
+    ]
+  },
+  {
+    "id": "CORE-43",
+    "difficulty": "hard",
+    "category": "Security, Safety, and Governance",
+    "prompt": "What does least privilege mean for agents?",
+    "answer": "Grant capabilities per action, resource, tenant, and time, not a broad session token. Separate planning credentials from execution credentials, require step-up approval for high-risk actions, and issue ephemeral scoped tokens after policy checks. Audit both decisions and side effects.",
+    "origin": "research-derived",
+    "references": [
+      "owasp",
+      "nist",
+      "mcp"
+    ]
+  },
+  {
+    "id": "CORE-44",
+    "difficulty": "medium",
+    "category": "Distributed Systems and Reliability",
+    "prompt": "Why can retries make an outage worse?",
+    "answer": "If a dependency is overloaded, retries multiply traffic and consume more queues, threads, and connections. Use deadlines, small retry budgets, exponential backoff with jitter, circuit breakers, and idempotency. Retry only errors likely to be transient.",
+    "origin": "generated synthesis",
+    "references": [
+      "temporal",
+      "k8s",
+      "otel"
+    ]
+  },
+  {
+    "id": "CORE-45",
+    "difficulty": "hard",
+    "category": "Distributed Systems and Reliability",
+    "prompt": "How would you design effective exactly-once document ingestion?",
+    "answer": "Use at-least-once delivery with a content or source-version idempotency key, transactional state transitions, deterministic chunk IDs, and an outbox for downstream indexing events. Consumers upsert by version and reconciliation detects partial completion. Exactly-once is a business invariant, not a broker slogan.",
+    "origin": "research-derived",
+    "references": [
+      "temporal",
+      "k8s",
+      "otel"
+    ]
+  },
+  {
+    "id": "CORE-46",
+    "difficulty": "hard",
+    "category": "Distributed Systems and Reliability",
+    "prompt": "Model capacity for an LLM service.",
+    "answer": "Estimate arrival rate by slice, prompt and output token distributions, time to first token, decode rate, active sequence memory, batching efficiency, and SLO headroom. Use Little's Law for concurrency intuition, then validate with load tests including bursts, long contexts, and failures.",
+    "origin": "generated synthesis",
+    "references": [
+      "temporal",
+      "k8s",
+      "otel"
+    ]
+  },
+  {
+    "id": "CORE-47",
+    "difficulty": "medium",
+    "category": "Observability and Monitoring",
+    "prompt": "How do OpenTelemetry traces, metrics, and logs complement each other?",
+    "answer": "Traces explain individual request paths, metrics quantify fleet trends and SLOs, and logs capture discrete detailed events. Correlation fields connect them. Do not put high-cardinality or sensitive prompt content into metric labels.",
+    "origin": "research-derived",
+    "references": [
+      "otel",
+      "mlflow",
+      "evidently"
+    ]
+  },
+  {
+    "id": "CORE-48",
+    "difficulty": "hard",
+    "category": "RAG Architecture and Evaluation",
+    "prompt": "How do you evaluate an LLM-as-a-judge?",
+    "answer": "Create human-labeled calibration sets with disagreements and important slices, measure agreement and ranking consistency, test position and verbosity bias, blind model identities, and version judge prompts and models. Use deterministic checks where possible and do not let one judge define truth.",
+    "origin": "generated synthesis",
+    "references": [
+      "rag",
+      "beir",
+      "ragas"
+    ]
+  },
+  {
+    "id": "CORE-49",
+    "difficulty": "hard",
+    "category": "Agents, MCP, and Control",
+    "prompt": "How do you evaluate an autonomous agent beyond final success?",
+    "answer": "Score task success, partial progress, trajectory efficiency, tool selection, argument correctness, recovery, policy compliance, side effects, latency, and cost. Replay deterministic environments, inject failures, inspect traces, and use human review for ambiguous outcomes.",
+    "origin": "research-derived",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "CORE-50",
+    "difficulty": "hard",
+    "category": "Vector Databases and Search Engines",
+    "prompt": "Why do metadata filters complicate ANN recall?",
+    "answer": "A graph or clustered index was built for vector neighborhoods, not necessarily the filtered subset. Post-filtering can underfill results, while pre-filtering can fragment traversal. Measure filtered recall by selectivity and use index or partition strategies that support common filters.",
+    "origin": "generated synthesis",
+    "references": [
+      "pgvector",
+      "pinecone",
+      "qdrant"
+    ]
+  }
+]

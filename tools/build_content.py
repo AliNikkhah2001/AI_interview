@@ -1,0 +1,705 @@
+#!/usr/bin/env python3
+"""Build the static study site, question bank, Markdown, and LaTeX sources.
+
+The knowledge catalog is deliberately the single source of truth. The browser,
+JSON exports, Markdown handbook, and PDF inputs are generated from it.
+"""
+
+from __future__ import annotations
+
+import html
+import json
+import random
+import re
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+random.seed(42)
+
+
+REFERENCES = [
+    {"id":"transformer","title":"Attention Is All You Need","url":"https://arxiv.org/abs/1706.03762","kind":"paper"},
+    {"id":"rag","title":"Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks","url":"https://arxiv.org/abs/2005.11401","kind":"paper"},
+    {"id":"dpr","title":"Dense Passage Retrieval for Open-Domain Question Answering","url":"https://arxiv.org/abs/2004.04906","kind":"paper"},
+    {"id":"beir","title":"BEIR: A Heterogeneous Benchmark for Zero-shot Evaluation of Information Retrieval Models","url":"https://arxiv.org/abs/2104.08663","kind":"paper"},
+    {"id":"ragas","title":"RAGAS: Automated Evaluation of Retrieval Augmented Generation","url":"https://arxiv.org/abs/2309.15217","kind":"paper"},
+    {"id":"truthfulqa","title":"TruthfulQA: Measuring How Models Mimic Human Falsehoods","url":"https://arxiv.org/abs/2109.07958","kind":"paper"},
+    {"id":"react","title":"ReAct: Synergizing Reasoning and Acting in Language Models","url":"https://arxiv.org/abs/2210.03629","kind":"paper"},
+    {"id":"reflexion","title":"Reflexion: Language Agents with Verbal Reinforcement Learning","url":"https://arxiv.org/abs/2303.11366","kind":"paper"},
+    {"id":"toolformer","title":"Toolformer: Language Models Can Teach Themselves to Use Tools","url":"https://arxiv.org/abs/2302.04761","kind":"paper"},
+    {"id":"graphrag","title":"A Graph RAG Approach to Query-Focused Summarization","url":"https://arxiv.org/abs/2404.16130","kind":"paper"},
+    {"id":"kag","title":"KAG: Boosting LLMs in Professional Domains via Knowledge Augmented Generation","url":"https://arxiv.org/abs/2409.13731","kind":"paper"},
+    {"id":"mcp","title":"Model Context Protocol Specification (2026-07-28)","url":"https://modelcontextprotocol.io/specification/2026-07-28","kind":"specification"},
+    {"id":"flash","title":"FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness","url":"https://arxiv.org/abs/2205.14135","kind":"paper"},
+    {"id":"paged","title":"Efficient Memory Management for Large Language Model Serving with PagedAttention","url":"https://arxiv.org/abs/2309.06180","kind":"paper"},
+    {"id":"gqa","title":"GQA: Training Generalized Multi-Query Transformer Models","url":"https://arxiv.org/abs/2305.13245","kind":"paper"},
+    {"id":"speculative","title":"Fast Inference from Transformers via Speculative Decoding","url":"https://arxiv.org/abs/2211.17192","kind":"paper"},
+    {"id":"lora","title":"LoRA: Low-Rank Adaptation of Large Language Models","url":"https://arxiv.org/abs/2106.09685","kind":"paper"},
+    {"id":"qlora","title":"QLoRA: Efficient Finetuning of Quantized LLMs","url":"https://arxiv.org/abs/2305.14314","kind":"paper"},
+    {"id":"dpo","title":"Direct Preference Optimization","url":"https://arxiv.org/abs/2305.18290","kind":"paper"},
+    {"id":"pgvector","title":"pgvector Documentation","url":"https://github.com/pgvector/pgvector","kind":"official docs"},
+    {"id":"pinecone","title":"Pinecone Hybrid Search","url":"https://docs.pinecone.io/guides/search/hybrid-search","kind":"official docs"},
+    {"id":"qdrant","title":"Qdrant Documentation","url":"https://qdrant.tech/documentation/","kind":"official docs"},
+    {"id":"weaviate","title":"Weaviate Documentation","url":"https://docs.weaviate.io/weaviate","kind":"official docs"},
+    {"id":"milvus","title":"Milvus Documentation","url":"https://milvus.io/docs","kind":"official docs"},
+    {"id":"elastic","title":"Elasticsearch kNN Search","url":"https://www.elastic.co/docs/solutions/search/vector/knn","kind":"official docs"},
+    {"id":"neo4j","title":"Neo4j Vector Indexes","url":"https://neo4j.com/docs/cypher-manual/current/indexes/semantic-indexes/vector-indexes/","kind":"official docs"},
+    {"id":"langgraph","title":"LangGraph Overview","url":"https://docs.langchain.com/oss/python/langgraph/overview","kind":"official docs"},
+    {"id":"temporal","title":"Temporal Durable Execution","url":"https://docs.temporal.io/","kind":"official docs"},
+    {"id":"otel","title":"OpenTelemetry Semantic Conventions","url":"https://opentelemetry.io/docs/specs/semconv/","kind":"standard"},
+    {"id":"mlflow","title":"MLflow for LLMs and Agents","url":"https://mlflow.org/docs/latest/genai/","kind":"official docs"},
+    {"id":"evidently","title":"Evidently Documentation","url":"https://docs.evidentlyai.com/","kind":"official docs"},
+    {"id":"dvc","title":"DVC Data Pipelines and Versioning","url":"https://doc.dvc.org/start/data-pipelines/data-pipelines","kind":"official docs"},
+    {"id":"feast","title":"Feast Feature Store Documentation","url":"https://docs.feast.dev/","kind":"official docs"},
+    {"id":"vllm","title":"vLLM Documentation","url":"https://docs.vllm.ai/","kind":"official docs"},
+    {"id":"ray","title":"Ray Serve LLM Serving","url":"https://docs.ray.io/en/latest/serve/llm/","kind":"official docs"},
+    {"id":"kserve","title":"KServe Documentation","url":"https://kserve.github.io/website/","kind":"official docs"},
+    {"id":"k8s","title":"Kubernetes Horizontal Pod Autoscaling","url":"https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/","kind":"official docs"},
+    {"id":"fastapi","title":"FastAPI Documentation","url":"https://fastapi.tiangolo.com/","kind":"official docs"},
+    {"id":"grpc","title":"gRPC Documentation","url":"https://grpc.io/docs/","kind":"official docs"},
+    {"id":"python","title":"Python 3 Documentation","url":"https://docs.python.org/3/","kind":"official docs"},
+    {"id":"owasp","title":"OWASP Top 10 for LLM Applications","url":"https://genai.owasp.org/llm-top-10/","kind":"standard"},
+    {"id":"nist","title":"NIST AI Risk Management Framework","url":"https://www.nist.gov/itl/ai-risk-management-framework","kind":"standard"},
+]
+
+
+SOURCE_GROUPS = {
+    "Retrieval and Search Theory": ["rag","dpr","beir","pgvector","pinecone"],
+    "Vector Databases and Search Engines": ["pgvector","pinecone","qdrant","weaviate","milvus","elastic"],
+    "RAG Architecture and Evaluation": ["rag","beir","ragas","truthfulqa"],
+    "Knowledge Graphs and GraphRAG": ["graphrag","kag","neo4j"],
+    "Agents, MCP, and Control": ["react","reflexion","toolformer","mcp","langgraph"],
+    "Orchestration Frameworks": ["langgraph","temporal"],
+    "Observability and Monitoring": ["otel","mlflow","evidently"],
+    "Serving, Deployment, and LLMOps": ["paged","vllm","ray","kserve","k8s"],
+    "Data and ML Lifecycle": ["dvc","feast","mlflow","evidently"],
+    "Transformer Theory and Training": ["transformer","lora","qlora","dpo","gqa"],
+    "Inference Optimization": ["flash","paged","gqa","speculative","vllm"],
+    "Backend, APIs, and Microservices": ["fastapi","grpc","k8s"],
+    "Python Engineering": ["python"],
+    "Security, Safety, and Governance": ["owasp","nist","mcp"],
+    "Distributed Systems and Reliability": ["temporal","k8s","otel"],
+}
+
+
+def parse_topics(category: str, block: str):
+    rows = []
+    refs = SOURCE_GROUPS[category]
+    for line in block.strip().splitlines():
+        name, summary, tradeoff, pitfall = [part.strip() for part in line.split("|", 3)]
+        rows.append({
+            "id": re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-"),
+            "category": category,
+            "name": name,
+            "summary": summary,
+            "tradeoff": tradeoff,
+            "pitfall": pitfall,
+            "references": refs[:3],
+        })
+    return rows
+
+
+TOPICS = []
+TOPICS += parse_topics("Retrieval and Search Theory", """
+BM25 | A probabilistic lexical ranker that rewards term frequency while saturating repeated terms and normalizing document length. | It is fast, interpretable, and exact for rare tokens but cannot directly match paraphrases. | Treating it as obsolete removes a strong baseline and hurts identifier-heavy queries.
+TF-IDF | A sparse weighting scheme that combines within-document frequency with inverse collection frequency. | It is transparent and cheap but lacks BM25's term-frequency saturation and tuned length normalization. | Comparing raw cosine scores across changing corpora without rebuilding IDF causes drift.
+Dense retrieval | A bi-encoder maps queries and passages into a shared embedding space for nearest-neighbor search. | Semantic recall improves, while exact names, numbers, and out-of-domain language may regress. | Evaluating only on in-domain examples hides lexical misses and embedding drift.
+Sparse neural retrieval | Learned sparse models retain token-aligned inverted-index retrieval while expanding or reweighting terms. | They bridge lexical and semantic matching but increase index size and model cost. | Unbounded expansion creates latency and storage blowups.
+Late interaction | ColBERT-style systems preserve token-level embeddings and aggregate fine-grained similarities at query time. | Accuracy often beats single-vector retrieval, with a larger index and heavier scoring path. | Treating a late-interaction index like one-vector-per-document underestimates capacity needs.
+Cross-encoder reranking | A model jointly encodes query and candidate text to assign a relevance score. | It gives strong precision on a small candidate set but is too expensive for full-corpus retrieval. | Reranking too many long passages dominates p95 latency.
+Hybrid retrieval | Dense and lexical signals are retrieved together and fused, often with weighted scores or reciprocal-rank fusion. | It improves robustness across semantic and exact-match queries but requires score calibration and duplicate handling. | Adding incomparable raw scores without normalization makes one retriever dominate.
+Reciprocal rank fusion | RRF combines ranked lists using reciprocal rank positions rather than raw score scales. | It is robust without score calibration but ignores the magnitude and confidence of scores. | Using an overly small rank constant can overreward noisy top results.
+ANN recall | Approximate nearest-neighbor recall measures how many true nearest items are recovered by an index configuration. | Higher recall usually costs memory, build time, or query latency. | Reporting application answer quality without measuring index recall hides retrieval infrastructure defects.
+Retrieval metrics | Recall@k, precision@k, MRR, MAP, and nDCG measure different ranking behaviors. | A metric must match the product objective and judgment granularity. | Optimizing MRR for a task that consumes many passages can worsen context coverage.
+Embedding geometry | Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality. | Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. | Mixing an index metric with a differently trained embedding objective silently harms ranking.
+Query expansion | Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval. | Recall can improve at the expense of latency and topic drift. | Letting an LLM expand unconstrained queries can inject unsupported intent.
+""")
+
+TOPICS += parse_topics("Vector Databases and Search Engines", """
+pgvector | A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search. | It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily. | Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.
+Pinecone | A managed vector service with metadata filtering, namespaces, and dense-sparse hybrid retrieval. | Operations are outsourced, trading infrastructure control and portability for managed scale. | Poor namespace and metadata design creates noisy tenants and expensive fan-out queries.
+Qdrant | An open-source vector engine centered on HNSW, payload filtering, quantization, and distributed collections. | It offers operational control and rich filtering but adds a stateful distributed service to run. | Applying post-filtering after ANN can return too few eligible results.
+Weaviate | A vector database with collections, hybrid search, filters, modules, and multi-tenancy features. | An integrated schema accelerates product work but may couple ingestion and inference choices. | Automatic vectorization without explicit model version metadata makes reindexing unsafe.
+Milvus and Zilliz | Milvus is a distributed vector database; Zilliz provides its managed service with multiple index choices. | It targets large-scale separation of compute and storage, with more operational concepts than embedded options. | Selecting an index by popularity instead of dataset size and latency-recall tests wastes resources.
+Elasticsearch vector search | Elasticsearch combines inverted indexes, filters, aggregations, and approximate kNN in one search platform. | It is compelling for existing Elastic estates but vector memory and shard design require care. | Oversharding fragments candidate pools and increases coordination overhead.
+OpenSearch vector search | OpenSearch supports lexical and vector workloads with pluggable kNN engines and search pipelines. | Open governance and integrated search are attractive, while engine-specific behavior complicates tuning. | Assuming identical parameters across FAISS, Lucene, and NMSLIB backends produces misleading tests.
+Redis vector search | Redis Query Engine adds vector indexes and filters to an in-memory data platform. | Very low latency is possible, but RAM cost and persistence design matter at scale. | Using Redis only as a vector database without capacity planning can evict critical data.
+Chroma | Chroma is a developer-oriented embedding store commonly used for local prototypes and small applications. | It favors simplicity and iteration speed over complex distributed operations. | Promoting a local prototype topology directly to production skips backup, tenancy, and load tests.
+LanceDB | LanceDB uses a columnar, versioned data format and supports vector, full-text, and multimodal data locally or in cloud storage. | It fits data-lake and embedded workflows but differs operationally from a server-first database. | Ignoring compaction and version retention can degrade read performance and inflate storage.
+Vespa | Vespa combines structured filtering, lexical search, tensors, ranking functions, and online serving. | It enables sophisticated multi-stage ranking but has a steeper schema and operations learning curve. | Putting expensive ranking expressions in the first phase can collapse throughput.
+HNSW | A navigable multilayer proximity graph controlled by construction degree and search breadth. | It offers strong latency-recall behavior with significant memory and build cost. | Deleting or heavily filtering data without maintenance degrades graph quality.
+IVF and PQ | Inverted files narrow the search to clusters; product quantization compresses vectors for cheaper approximate scoring. | Memory and latency fall, while training quality and quantization error reduce recall. | Training centroids or codebooks on an unrepresentative sample bakes bias into the index.
+Metadata filtering | Attribute constraints restrict eligible vectors before, during, or after ANN search. | Early filtering preserves relevance but can make graph traversal sparse; post-filtering may underfill results. | Failing to test selective filters separately from unfiltered queries hides severe recall loss.
+""")
+
+TOPICS += parse_topics("RAG Architecture and Evaluation", """
+Document ingestion | Ingestion parses, normalizes, classifies, deduplicates, and records provenance before indexing. | Rich preprocessing improves retrieval but increases pipeline cost and reprocessing complexity. | Losing stable document and chunk identifiers makes updates create duplicates.
+Chunking | Chunking chooses semantic units, size, overlap, and metadata boundaries for retrieval and context assembly. | Smaller chunks improve precision; larger chunks preserve context and reduce fragmentation. | Fixed-size splitting across tables, code, or headings destroys meaning.
+Parent-child retrieval | Small child chunks retrieve precisely while larger parent sections are supplied to the model. | It separates retrieval granularity from generation context at extra storage and mapping cost. | Returning many overlapping parents wastes context and amplifies one source.
+Contextual compression | A post-retrieval step extracts or rewrites only query-relevant evidence from candidates. | It saves context tokens but can delete qualifiers or introduce summarization errors. | Using the same weak model for compression and answering creates correlated failures.
+Query routing | A router chooses retrievers, indexes, tools, or no-retrieval paths based on intent and risk. | Specialization improves quality and cost but adds classification errors and operational branches. | A route without confidence or fallback turns ambiguous queries into hard failures.
+Multi-query retrieval | The system generates several query formulations and merges their result sets. | Recall rises at the cost of additional searches, duplicates, and possible intent drift. | Treating all generated queries as equally trustworthy invites off-topic evidence.
+HyDE | Hypothetical Document Embeddings generate a likely answer passage and embed it as the retrieval query. | It can bridge terse questions to document style but may anchor retrieval on invented details. | Passing the hypothetical text to generation as evidence confuses a retrieval aid with a source.
+Reranking pipeline | A staged ranker retrieves broadly, applies filters, reranks candidates, and packs final context. | More stages improve control but add latency, failure modes, and tuning surfaces. | Evaluating only final answers makes it hard to locate which stage regressed.
+Context packing | Packing selects, orders, deduplicates, and labels evidence within a token budget. | Diversity and source coverage compete with local relevance and continuity. | Greedy top-score packing often repeats one document and crowds out complementary facts.
+Grounded generation | Prompts and decoding require answers to use cited evidence and abstain when evidence is insufficient. | Strong grounding can reduce creativity and answer rate while improving auditability. | A citation marker is not proof that the cited text entails the claim.
+RAG evaluation | Retrieval, context, generation, citation, latency, and cost require separate offline and online measures. | Automated judges accelerate iteration but need human calibration and bias checks. | Collapsing all dimensions into one score hides compensating failures.
+Faithfulness | Faithfulness asks whether claims in an answer are supported by the supplied context. | It is narrower and more testable than global factuality but depends on context quality. | Marking unsupported common knowledge as grounded inflates results.
+Answer relevance | Answer relevance measures whether a response directly addresses the user question without unnecessary content. | Concision may improve relevance while losing useful caveats. | A fluent on-topic answer can still be factually wrong, so relevance cannot stand alone.
+Synthetic test generation | Models generate questions, expected evidence, and variants from a source corpus to expand evaluation coverage. | Coverage grows cheaply, while generator bias and leakage can make the benchmark too easy. | Testing with the same model family that authored the cases can overstate quality.
+Online RAG monitoring | Production monitoring tracks retrieval gaps, unsupported claims, drift, feedback, latency, and cost by slice. | Rich telemetry improves diagnosis but raises privacy and storage obligations. | Logging full prompts and context without redaction can expose sensitive data.
+""")
+
+TOPICS += parse_topics("Knowledge Graphs and GraphRAG", """
+Property graphs | Nodes, typed relationships, and properties represent entities and their connections for traversal and pattern matching. | They are intuitive for operational queries but semantics depend on disciplined labels and schema. | Using untyped generic edges turns the graph into an expensive document store.
+RDF and ontologies | RDF triples plus vocabularies such as RDFS or OWL provide globally identified semantics and inference rules. | Formal interoperability grows, with more modeling and reasoning complexity. | Confusing open-world semantics with database constraints produces invalid assumptions.
+Cypher | Cypher expresses graph patterns, predicates, paths, updates, and aggregation for property graphs. | Declarative queries are readable, while unbounded path patterns can be expensive. | Omitting labels or relationship types can trigger broad scans.
+Knowledge graph construction | Construction extracts entities and relations, resolves identities, applies schema, validates facts, and records provenance. | Automation scales coverage but introduces extraction and entity-resolution errors. | Allowing generated edges without source spans prevents later verification.
+Entity resolution | Entity resolution links mentions and records that refer to the same real-world entity. | Aggressive merging improves connectivity but risks catastrophic false joins. | Matching on names alone fails for aliases, homonyms, and temporal identity changes.
+GraphRAG local search | Local search expands from query-relevant entities through nearby relationships and associated text. | It supports entity-centric multi-hop questions but depends on extraction and linking quality. | Unbounded neighborhood expansion floods context with high-degree hubs.
+GraphRAG global search | Global search summarizes graph communities and combines relevant community reports for corpus-level questions. | It addresses whole-corpus themes but has expensive indexing and lossy summaries. | Expecting global search to answer precise record lookups wastes cost and may lose detail.
+KAG | Knowledge Augmented Generation combines schema-aware graphs, chunk mutual indexing, alignment, and logical-form-guided reasoning. | It improves domain logic and multi-hop control at substantial modeling and maintenance cost. | Adopting KAG without stable domain schema simply relocates ambiguity.
+Graph quality evaluation | Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value. | Intrinsic graph metrics catch construction defects but may not predict application utility. | Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.
+Temporal knowledge graphs | Facts carry validity intervals, event time, and version history so queries can reason about change. | Temporal accuracy improves, while updates, conflicts, and query logic become harder. | Overwriting old facts destroys the ability to answer as-of questions.
+""")
+
+TOPICS += parse_topics("Agents, MCP, and Control", """
+Agent loop | An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping. | Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows. | Omitting hard budgets and stop conditions creates runaway calls.
+ReAct | ReAct interleaves reasoning with actions and observations to update plans using external evidence. | Tool feedback can correct model knowledge, while longer trajectories add latency and error opportunities. | Treating every thought as reliable state allows early mistakes to compound.
+Planning | Planning decomposes goals into ordered, conditional, or revisable steps before or during execution. | Upfront plans improve structure but become stale in uncertain environments. | Forcing a long immutable plan prevents recovery after new observations.
+Reflection | Reflection critiques outcomes or trajectories and stores actionable lessons for another attempt. | It can improve recovery without weight updates, while self-critique may repeat the same bias. | Saving vague reflections adds context without changing behavior.
+Tool calling | Models emit structured arguments for declared functions that a host validates and executes. | It narrows the action interface but does not make proposed actions safe or correct. | Executing model-produced arguments without schema and authorization checks invites damage.
+Model Context Protocol | MCP standardizes client-server discovery and invocation of tools, resources, prompts, and related capabilities. | Interoperability improves, while trust boundaries, consent, and capability scoping remain host responsibilities. | Treating a discovered MCP server as trusted creates prompt-injection and privilege risks.
+Agent memory | Working, episodic, semantic, and procedural memories preserve relevant state beyond a single model call. | Memory supports continuity but retrieval, deletion, privacy, and stale facts become product concerns. | Writing every interaction to long-term memory creates noise and privacy exposure.
+Human in the loop | High-risk actions pause for review, edit, approval, rejection, or direct human response. | Oversight reduces irreversible mistakes but adds latency and reviewer load. | Asking for approval after an action has already caused side effects is theater.
+State machines | Explicit states and transitions constrain allowed agent behavior and make recovery inspectable. | Predictability and testability improve at the cost of less open-ended autonomy. | Encoding side effects inside transition guards breaks replay safety.
+Idempotent tools | An idempotent tool can be retried with the same operation key without duplicating the intended effect. | Reliable retries require deduplication state and carefully defined semantics. | Assuming HTTP method alone guarantees business idempotency causes duplicate orders or messages.
+Agent handoffs | A handoff transfers a task and structured context to a specialized agent or deterministic service. | Specialization reduces prompt overload but adds routing and ownership ambiguity. | Passing the entire transcript leaks irrelevant data and confuses the recipient.
+Autonomy levels | Autonomy is graduated from suggest-only through approval-gated execution to bounded autonomous operation. | More autonomy reduces human effort while increasing required assurance and containment. | Assigning one global autonomy level ignores action-specific risk.
+Context engineering | Context engineering selects instructions, memory, evidence, tools, schemas, and state for each model turn. | Targeted context improves reliability and cost, but selection logic becomes core application code. | Appending everything causes attention dilution and instruction conflicts.
+Sandbox runs | A sandbox isolates untrusted code with resource limits, scoped files, network policy, timeouts, and audit logs. | Isolation enables capability while imposing startup and compatibility overhead. | A container without kernel, credential, and network boundaries is not a sufficient sandbox.
+""")
+
+TOPICS += parse_topics("Orchestration Frameworks", """
+LangGraph | LangGraph models long-running agent workflows as stateful graphs with checkpoints, interrupts, streaming, and durable execution. | Fine-grained control aids production reliability but exposes more state and graph design decisions. | Non-idempotent node side effects make checkpoint replay unsafe.
+LlamaIndex workflows | Event-driven workflows coordinate retrieval, tools, agents, and structured steps in the LlamaIndex ecosystem. | Strong data and indexing integrations speed RAG work but can couple application flow to framework abstractions. | Hiding all retrieval behind defaults makes evaluation and migration difficult.
+Haystack pipelines | Haystack connects typed components into retrieval, generation, routing, and agent pipelines. | Explicit components support testing, while custom graphs still require lifecycle discipline. | Allowing incompatible document schemas across components creates runtime surprises.
+PydanticAI | PydanticAI uses typed dependencies, tools, results, and validation to build model-agnostic Python agents. | Type safety improves integration but cannot validate semantic truth. | Confusing schema conformance with a correct answer produces false confidence.
+Semantic Kernel | Semantic Kernel offers planners, agents, plugins, memory connectors, and multi-language enterprise integration. | Its broad integration surface suits platform teams but introduces framework concepts and version coupling. | Registering overly broad plugins grants the model unnecessary authority.
+AutoGen | AutoGen structures multi-agent conversations and tool-using participants for collaborative task execution. | Role decomposition enables complex workflows but multiplies calls, coordination failures, and evaluation cost. | Adding agents without independent capabilities creates expensive echo chambers.
+CrewAI | CrewAI organizes role-based agents, tasks, crews, and flows for sequential or coordinated work. | It gives accessible orchestration but still needs explicit state, permissions, and observability. | Persona descriptions cannot substitute for tool-level access control.
+DSPy | DSPy treats prompts and modules as optimizable programs evaluated against examples and metrics. | Systematic optimization can beat manual prompting, while it depends on representative data and stable metrics. | Optimizing against a leaky judge overfits wording instead of capability.
+Temporal | Temporal persists workflow history and replays deterministic workflow code around durable activities. | It provides robust retries and long-running execution but requires deterministic workflow discipline. | Reading wall-clock time or random state directly in replayed code causes nondeterminism.
+Airflow, Dagster, and Prefect | General-purpose data orchestrators schedule DAGs, assets, or flows with retries, lineage, and operational UIs. | They excel at batch pipelines but are not automatically low-latency interactive agent runtimes. | Running per-token or per-chat-turn work as heavy batch tasks adds unacceptable overhead.
+""")
+
+TOPICS += parse_topics("Observability and Monitoring", """
+OpenTelemetry | OpenTelemetry provides vendor-neutral APIs, SDKs, collectors, and semantic conventions for traces, metrics, logs, and profiles. | Portability improves, while instrumentation quality and backend cost remain engineering work. | High-cardinality prompt or user attributes can overwhelm telemetry systems.
+Distributed tracing | Traces connect request spans across gateways, retrievers, models, tools, queues, and databases. | They reveal critical paths but sampling can hide rare quality failures. | Reusing trace identifiers across independent user requests breaks isolation.
+LLM tracing | LLM traces capture prompts, outputs, model settings, token usage, latency, tool calls, retrieval, and evaluations. | Debugging improves, while content capture raises privacy and retention risk. | Logging secrets or personal data by default creates a second sensitive datastore.
+Metrics and SLOs | Counters, histograms, gauges, service-level indicators, and objectives quantify reliability and performance. | Aggregate signals scale well but cannot explain individual semantic failures. | Averaging latency hides long-tail p95 and p99 user pain.
+Structured logging | Structured events use stable fields, severity, timestamps, correlation IDs, and redaction. | Search and aggregation improve, while schemas must evolve consistently. | Placing unbounded model output in one log field causes cost and ingestion failures.
+LangSmith | LangSmith provides tracing, datasets, evaluation, prompt management, and deployment-oriented tooling for LLM applications. | Tight LangChain integration accelerates work but requires portability planning. | Depending only on vendor UI annotations leaves evaluation logic unreproducible.
+Langfuse | Langfuse is an open-source platform for LLM traces, sessions, prompts, scores, datasets, and cost analytics. | Self-hosting offers control but shifts scaling, upgrades, and security to the team. | Capturing every token forever creates expensive sensitive retention.
+Arize Phoenix | Phoenix provides open-source tracing and evaluation for LLM, retrieval, and agent applications with OpenTelemetry support. | It unifies qualitative traces and quantitative evals, while production operations still need design. | Judge scores without slice analysis can mask failures for important cohorts.
+MLflow tracing | MLflow connects traces, evaluation datasets, scorers, experiments, and production monitoring. | A common ML platform improves lineage but may be heavier than a focused tracing tool. | Mixing incomparable scorer versions in one trend chart produces false regressions.
+W&B Weave | Weave tracks calls, objects, datasets, evaluations, and model application experiments. | Rich experiment lineage helps collaboration but introduces another governance surface. | Saving mutable datasets without immutable versions undermines reproducibility.
+Prompt and model drift | Drift monitoring detects changes in inputs, retrieved evidence, outputs, model versions, and user behavior. | Alerts catch regressions but thresholds must distinguish seasonality from harm. | Measuring embedding distribution shift alone does not prove answer quality changed.
+Cost observability | Cost telemetry attributes input, output, cache, retrieval, tool, and infrastructure spend to requests and tenants. | Unit economics become actionable, while provider pricing and caching rules evolve. | Tracking only average cost hides pathological long-running agents.
+Evaluation in production | Online evaluators combine sampled judges, deterministic checks, human feedback, and business outcomes. | Live coverage improves realism but evaluations must not expose or delay users. | Treating implicit clicks as unambiguous quality labels creates bias.
+""")
+
+TOPICS += parse_topics("Serving, Deployment, and LLMOps", """
+vLLM | vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs. | Throughput and memory utilization improve, while model and kernel compatibility must be verified. | Benchmarking only one concurrency level hides latency-throughput collapse points.
+SGLang | SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism. | Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. | Assuming every structured program benefits equally from cache reuse leads to poor capacity models.
+Text Generation Inference | TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support. | Ecosystem integration is strong, while supported optimization paths vary by model and hardware. | Enabling quantization without quality and kernel tests can reduce both accuracy and speed.
+TensorRT-LLM | TensorRT-LLM compiles and serves NVIDIA-optimized LLM graphs and kernels across GPUs. | Maximum NVIDIA performance comes with build complexity and hardware coupling. | Rebuilding engines for every shape without a deployment cache slows releases.
+NVIDIA Triton | Triton serves multiple model frameworks with dynamic batching, ensembles, metrics, and model repositories. | It standardizes diverse serving, though LLM-specific scheduling may require specialized backends. | Using dynamic batching without queue-delay limits breaks interactive latency.
+llama.cpp | llama.cpp runs quantized models efficiently on CPUs and varied local accelerators through a portable C++ stack. | Edge privacy and low dependency count trade off against datacenter throughput and model size. | Selecting a quantization by file size alone ignores accuracy and hardware kernels.
+KServe | KServe provides Kubernetes-native inference services, autoscaling, revisions, traffic splitting, and model runtimes. | Platform consistency improves, with Kubernetes operational overhead and cold-start concerns. | Scaling only on CPU misses token queue pressure in GPU workloads.
+Ray Serve | Ray Serve composes Python model deployments and scales replicas across a Ray cluster. | Flexible distributed Python pipelines fit multi-model systems but require cluster and object-store discipline. | Passing large tensors repeatedly through serialization paths wastes memory and latency.
+BentoML | BentoML packages model services, dependencies, APIs, and deployment configuration with adaptive batching. | Developer workflow is streamlined, while platform integration and runtime tuning still matter. | Treating packaging success as load readiness skips concurrency tests.
+Kubernetes and GPUs | Kubernetes schedules containers and device resources while operators add GPU sharing, queues, and autoscaling. | A common control plane helps governance but default scheduling is not token-aware. | Requesting whole GPUs for tiny models can strand capacity.
+LLM gateways | Gateways normalize provider APIs and add routing, budgets, rate limits, fallbacks, caching, and audit policy. | Central control improves governance but becomes a high-impact availability and security dependency. | Automatic fallback across non-equivalent models can silently change behavior.
+Canary and shadow releases | Canary traffic exposes a new version to a small cohort; shadowing duplicates requests without serving the new output. | Risk falls, while cost, comparison logic, and privacy obligations grow. | Comparing canaries with different traffic mixes confounds the result.
+Model registry | A registry versions model artifacts, lineage, signatures, evaluation evidence, aliases, and promotion state. | Governance and rollback improve but approval gates can slow iteration. | Using mutable stage names without immutable digests makes rollbacks uncertain.
+Autoscaling for LLMs | LLM autoscaling should consider queue depth, time-to-first-token, tokens per second, memory, and startup time. | Extra replicas reduce latency but GPUs are costly and slow to warm. | CPU-based autoscaling reacts late or incorrectly to GPU saturation.
+""")
+
+TOPICS += parse_topics("Data and ML Lifecycle", """
+DVC | DVC versions large data and model pointers with Git and defines reproducible pipeline stages and experiments. | Familiar Git workflows improve reproducibility, while remote storage and cache discipline are required. | Committing only code while silently replacing remote data breaks lineage.
+lakeFS | lakeFS adds Git-like branches, commits, merges, and hooks over object-storage data lakes. | Atomic data-lake changes enable testing, with server and metadata operations to manage. | Treating object versioning alone as branch-level data semantics is insufficient.
+Delta Lake and Iceberg | Open table formats add schemas, snapshots, partition evolution, and transactional metadata over object storage. | Reliable analytics improve, while compaction and catalog operations become essential. | Excess small files destroy scan performance despite correct table semantics.
+Feature stores | Feature stores define reusable features and connect historical offline data with low-latency online serving. | Training-serving consistency improves but adds infrastructure and ownership requirements. | Recomputing features differently online creates skew.
+Point-in-time correctness | Historical joins select only feature values known at each label timestamp. | Leakage is prevented at the cost of temporal keys and more expensive joins. | Joining the latest feature value into old examples creates unrealistically strong training results.
+Experiment tracking | Runs capture code, parameters, data, metrics, artifacts, environment, and parent relationships. | Comparison and reproducibility improve but inconsistent naming creates a junk drawer. | Logging a metric without dataset and code versions makes it uninterpretable.
+Data contracts | Contracts specify schema, semantics, freshness, ownership, quality, and compatibility expectations between producers and consumers. | Clear boundaries reduce silent breakage but require governance and enforcement. | Validating shape without semantic definitions misses unit and meaning changes.
+Data quality testing | Tests cover schema, nulls, ranges, uniqueness, distribution, freshness, and cross-table invariants. | Early detection prevents downstream damage, while brittle thresholds create alert fatigue. | Checking only aggregate distributions misses failures in important slices.
+Data lineage | Lineage links sources, transformations, datasets, features, prompts, models, evaluations, and deployments. | Impact analysis and auditability improve, while automated lineage can miss dynamic behavior. | Lineage without immutable identifiers gives a false sense of reproducibility.
+Reproducible environments | Lockfiles, containers, hardware metadata, seeds, and deterministic settings constrain run variability. | Reproducibility improves at the expense of build maintenance and sometimes performance. | A random seed alone cannot guarantee deterministic GPU execution.
+""")
+
+TOPICS += parse_topics("Transformer Theory and Training", """
+Tokenization | Tokenizers map text or bytes into model vocabulary IDs using algorithms such as BPE, WordPiece, or unigram models. | Larger vocabularies shorten sequences but increase embedding parameters and sparse coverage. | Comparing context lengths across tokenizers as if tokens were equal misstates capacity and cost.
+Embedding layer | Learned token vectors map discrete IDs into continuous model space and are often tied to output weights. | Weight tying saves parameters but constrains input-output geometry. | Forgetting vocabulary changes invalidates checkpoint embedding shapes.
+Self-attention math | Attention computes scaled query-key scores, applies masking and softmax, then mixes value vectors. | Every token can interact directly, while standard sequence cost grows quadratically. | Omitting the square-root head-dimension scale saturates softmax gradients.
+Multi-head attention | Multiple heads project attention into separate subspaces before concatenation and output projection. | Diverse interactions improve capacity but add projections and KV memory. | Assuming heads are independently interpretable can overstate mechanistic conclusions.
+Positional encoding | Position signals break permutation invariance using absolute, relative, rotary, or bias-based schemes. | Relative methods extrapolate differently, while implementation and scaling choices affect long context. | Extending context without validating the position scheme can collapse quality.
+RoPE | Rotary position embeddings rotate query and key coordinates so dot products encode relative offsets. | RoPE integrates cleanly with attention but long-context scaling needs careful frequency treatment. | Naively increasing the maximum length does not preserve trained frequency behavior.
+Feed-forward networks | Transformer MLP blocks expand hidden dimensions, apply nonlinear gates, and project back per token. | They hold substantial parameters and compute while offering parallel token processing. | Ignoring activation memory underestimates training capacity.
+Layer normalization and RMSNorm | Normalization stabilizes activations; RMSNorm removes mean centering and normalizes by root-mean-square magnitude. | Simpler normalization can be faster but architecture placement changes optimization dynamics. | Moving pre-norm to post-norm without retuning can destabilize deep training.
+Residual connections | Residual paths add transformed activations back to the stream to improve gradient flow and feature reuse. | Deep optimization becomes feasible, while residual scale can grow and require controls. | In-place mutation of residual tensors can break autograd or checkpointing.
+Mixture of Experts | MoE routes each token to a subset of expert networks, increasing parameters without proportional per-token compute. | Capacity scales efficiently but routing balance, communication, and memory are hard. | Expert collapse and uneven routing create stragglers and weak specialization.
+Causal language modeling | Next-token training factorizes sequence likelihood from left to right under a causal mask. | It provides a simple scalable objective but does not directly optimize instruction usefulness or truth. | Interpreting low perplexity as safe task performance is invalid.
+Cross-entropy and perplexity | Cross-entropy is negative log likelihood; perplexity exponentiates average token loss. | It is stable for model comparison on the same tokenization and data, not across arbitrary setups. | Comparing perplexity across vocabularies or tokenizers is misleading.
+SFT | Supervised fine-tuning teaches instruction-response behavior from curated demonstrations. | It is direct and stable but can overfit style and inherit annotation errors. | Training on conflicting instructions without provenance makes behavior unstable.
+RLHF and PPO | A preference model supplies rewards while PPO constrains policy updates relative to a reference model. | It can optimize human preferences but adds reward hacking and training complexity. | A biased reward model can produce confidently optimized failure modes.
+DPO | Direct Preference Optimization fits preferred over rejected responses through a classification-style objective relative to a reference policy. | It simplifies preference training but still depends on pair quality and distribution coverage. | Treating implicit user choices as clean preferences introduces confounding.
+LoRA | LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation. | Memory and storage fall, while rank and target-module choices limit expressiveness. | Merging incompatible adapters without evaluation creates interference.
+QLoRA | QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques. | Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. | Confusing training quantization with final serving quantization produces wrong expectations.
+Knowledge distillation | A student learns from teacher probabilities, generated data, rationales, or intermediate representations. | Serving cost falls but rare capabilities and calibration may be lost. | Distilling only easy teacher outputs creates a deceptively strong narrow model.
+""")
+
+TOPICS += parse_topics("Inference Optimization", """
+KV caching | Autoregressive decoding stores prior keys and values so each new token avoids recomputing attention over the entire prefix. | Decode speed improves while cache memory grows with layers, sequence, batch, and KV heads. | Capacity planning only model weights causes out-of-memory failures at long context.
+PagedAttention | PagedAttention manages KV cache in non-contiguous blocks using paging-inspired allocation to reduce fragmentation and enable sharing. | Utilization and batching improve, while block tables and kernels add runtime complexity. | Oversized blocks waste tail space; tiny blocks add metadata overhead.
+Continuous batching | Requests join and leave a running decode batch at iteration boundaries rather than waiting for a fixed batch. | Throughput and utilization rise, while scheduling fairness and latency isolation become harder. | Optimizing total tokens per second alone can starve short requests.
+Prefix caching | Shared prompt prefixes reuse precomputed KV blocks across requests with matching tokens and model state. | Repeated system prompts become cheaper, but hit rate, invalidation, and tenant isolation matter. | Cache keys that omit adapters or model revision return incorrect state.
+FlashAttention | FlashAttention tiles exact attention to reduce high-bandwidth-memory traffic and materialization of the score matrix. | Wall-clock speed and memory improve without approximate attention, but kernels depend on shapes and hardware. | Calling it subquadratic compute confuses IO optimization with arithmetic complexity.
+GQA and MQA | Grouped-query and multi-query attention share key-value heads across query heads to shrink KV cache and memory bandwidth. | Decode efficiency improves, with possible quality loss relative to full multi-head KV. | Converting weights naively after training does not reproduce a model trained for shared KV heads.
+Speculative decoding | A cheaper draft proposes tokens and a target model verifies them while preserving the target distribution. | Latency falls when acceptance is high, but drafting and verification overhead can dominate. | Measuring draft speed without acceptance rate gives meaningless projections.
+Quantization | Quantization maps weights or activations to lower precision using scales, groups, calibration, or quantization-aware training. | Memory and bandwidth fall, while accuracy and kernel support can degrade. | A smaller model file may run slower if hardware lacks optimized kernels.
+Tensor parallelism | Tensor parallelism shards matrix operations across devices and communicates partial results within layers. | It enables large models and lower per-request latency but requires high-bandwidth interconnects. | Spanning slow network links can make communication dominate compute.
+Pipeline parallelism | Pipeline parallelism assigns layer stages to devices and streams microbatches through them. | It scales model depth but creates bubbles and per-request latency. | Too few microbatches leave stages idle.
+Data parallel inference | Replicas serve independent requests and scale throughput with routing and load balancing. | It is operationally simple but duplicates model weights on every replica. | Random routing ignores prefix-cache locality and uneven sequence lengths.
+Expert parallelism | MoE experts are distributed across devices and tokens are routed with all-to-all communication. | Parameter capacity scales, while communication and load balance determine performance. | Average expert load hides hot experts that gate step time.
+Dynamic batching | A server waits briefly to combine compatible requests into a batch. | GPU efficiency improves while queue delay harms time-to-first-token. | One global maximum delay cannot serve both interactive and batch workloads well.
+Streaming generation | Servers emit tokens incrementally with backpressure, disconnect handling, and final usage accounting. | Perceived latency improves, but partial outputs complicate moderation and retries. | Retrying after visible partial output can duplicate text or side effects.
+""")
+
+TOPICS += parse_topics("Backend, APIs, and Microservices", """
+FastAPI | FastAPI builds typed ASGI APIs from Python hints with validation, dependency injection, and OpenAPI generation. | Development is fast, while blocking work must be isolated from the event loop. | Declaring a blocking database or model call inside async code stalls all requests.
+Starlette | Starlette is a lightweight ASGI toolkit providing routing, middleware, WebSockets, background tasks, and test support. | It offers control with fewer batteries than a full API framework. | Reimplementing validation and dependency patterns inconsistently increases defects.
+Litestar | Litestar is an ASGI framework with typing, dependency injection, OpenAPI, plugins, and data-transfer objects. | Rich framework features reduce boilerplate but introduce conventions and migration cost. | Choosing by benchmark alone ignores ecosystem and team familiarity.
+Flask | Flask is a minimal WSGI web framework with a large extension ecosystem. | Simplicity suits synchronous services, while async-first streaming needs different architecture. | Assuming an async view converts a WSGI deployment into high-concurrency ASGI is wrong.
+Django and DRF | Django supplies an ORM, admin, authentication, migrations, and conventions; DRF adds APIs. | Batteries accelerate business systems but can be heavy for a narrow inference gateway. | Performing N+1 ORM queries around an expensive model magnifies tail latency.
+REST API design | REST uses resource-oriented URLs, HTTP methods, status codes, caching, content negotiation, and idempotency semantics. | Broad interoperability is strong, while chatty workflows and schema evolution need care. | Returning 200 for every failure breaks clients and observability.
+gRPC | gRPC uses protobuf contracts and HTTP/2 for efficient unary and streaming RPCs with generated clients. | Typed internal services perform well, while browser and human debugging are less direct. | Changing field numbers or incompatible meanings breaks wire compatibility.
+WebSockets and SSE | WebSockets provide bidirectional frames; server-sent events provide simpler one-way HTTP streams. | SSE fits token streaming and reconnect semantics; WebSockets fit interactive duplex protocols. | Using WebSockets when one-way streaming is enough adds state and proxy complexity.
+API idempotency | Idempotency keys let retried mutation requests resolve to the same business operation and stored outcome. | Duplicate effects are prevented at the cost of durable deduplication state. | Expiring keys before upstream retry windows can reintroduce duplicates.
+Rate limiting | Token buckets, leaky buckets, and concurrency limits protect shared resources by identity and cost. | Stability and fairness improve but strict limits can reject valuable bursts. | Limiting requests instead of tokens lets a few long prompts monopolize capacity.
+Circuit breakers | Circuit breakers stop calls to a failing dependency, probe recovery, and combine with timeouts and fallbacks. | Cascading failure is reduced, while bad thresholds can create synchronized outages. | A breaker without bounded timeouts reacts only after resources are already exhausted.
+Microservice boundaries | Boundaries should follow ownership, data, scaling, failure isolation, and change cadence rather than nouns alone. | Independent deployment helps teams but adds networks, consistency, and operations. | Splitting too early creates a distributed monolith.
+Event-driven architecture | Producers publish immutable events to brokers while consumers process independently with delivery semantics. | Decoupling and replay improve, while ordering, duplication, schemas, and lag must be managed. | Assuming exactly-once business effects from at-least-once delivery causes duplicates.
+Object-oriented design | Encapsulation, composition, interfaces, and explicit invariants organize stateful behavior. | Abstraction improves changeability, while deep inheritance hides coupling. | Modeling every data record as a behavior-heavy class adds ceremony without invariants.
+""")
+
+TOPICS += parse_topics("Python Engineering", """
+Python threading and the GIL | CPython threads share memory; the GIL limits simultaneous Python bytecode but releases around many blocking operations. | Threads suit I/O-bound work and shared state, not pure Python CPU scaling. | Claiming threads are always useless ignores network and native-extension concurrency.
+Multiprocessing | Separate processes bypass the GIL and isolate memory while communicating through serialization or shared memory. | CPU parallelism improves at startup, memory, and coordination cost. | Passing large models to spawned workers duplicates memory unexpectedly.
+Asyncio | Asyncio cooperatively schedules coroutines on an event loop around awaitable I/O. | High connection concurrency is efficient, while blocking functions freeze the loop. | Creating coroutines without awaiting them silently drops work.
+Concurrent futures | ThreadPoolExecutor and ProcessPoolExecutor expose a common future-based API for concurrent callables. | Integration is simple, but cancellation and process serialization have limits. | Submitting unbounded tasks creates memory pressure and queue latency.
+Decorators | Decorators wrap or replace functions or classes to add behavior while preserving a callable interface. | Cross-cutting concerns become reusable, but hidden control flow complicates debugging. | Omitting functools.wraps breaks metadata and framework introspection.
+Context managers | Context managers guarantee paired setup and cleanup through with, __enter__/__exit__, or contextlib. | Resource safety improves and exceptions are localized. | Swallowing exceptions unintentionally in __exit__ hides failures.
+Generators | Generators suspend and resume execution around yield, enabling lazy iteration and streaming pipelines. | Memory use falls, while one-shot iteration and cleanup require care. | Reusing an exhausted generator returns no data without warning.
+Descriptors and properties | Descriptors define attribute access; properties provide managed getter, setter, and deleter behavior. | Validation and lazy access fit attribute syntax but may hide expensive operations. | Performing network I/O in a property surprises callers and tooling.
+Dataclasses and Pydantic | Dataclasses reduce class boilerplate; Pydantic adds parsing, validation, serialization, and schema generation. | Typed models improve boundaries but validation can add runtime cost. | Treating parsed external input as semantically authorized is unsafe.
+Type hints and protocols | Type hints support static analysis; Protocol defines structural interfaces without inheritance. | Refactoring and contracts improve, while runtime behavior is unchanged unless validated. | Assuming type annotations enforce production inputs creates vulnerabilities.
+Exceptions | Exceptions separate error propagation from normal return values and can preserve causal chains. | Central handling simplifies APIs, while overly broad catches erase actionable context. | Catching Exception and returning None turns failures into corrupt state.
+Memory management | CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory. | Automatic cleanup is convenient, while cycles and caches can retain large objects. | Watching only Python heap misses tensors allocated in native or GPU memory.
+Testing and mocking | Unit, integration, property, contract, and load tests cover different risks; mocks isolate only well-understood boundaries. | Fast tests aid iteration, while excessive mocking tests implementation rather than behavior. | Mocking the model, database, and network in the same test proves little about integration.
+Packaging and environments | pyproject.toml, lockfiles, wheels, virtual environments, and reproducible builds define deliverable Python software. | Isolation prevents dependency drift but needs platform and supply-chain controls. | Loose version ranges in production make rebuilds non-reproducible.
+""")
+
+TOPICS += parse_topics("Security, Safety, and Governance", """
+Prompt injection | Untrusted content attempts to override instructions, exfiltrate data, or induce tool actions. | Content isolation and least privilege reduce impact but cannot make untrusted text authoritative. | Telling the model to ignore attacks is not a security boundary.
+Tool authorization | The host checks identity, scope, resource, action, policy, and user intent before every tool execution. | Fine-grained authorization limits blast radius but adds policy complexity. | Authorizing the agent once at session start enables confused-deputy attacks.
+Secrets management | Credentials are issued narrowly, stored outside prompts and code, rotated, audited, and redacted from telemetry. | Short-lived credentials reduce exposure but require reliable identity infrastructure. | Environment variables copied into sandboxes or crash logs leak broad authority.
+Sandboxing | Defense in depth combines process, filesystem, network, syscall, credential, resource, and time boundaries. | Strong isolation raises operational cost and may restrict legitimate tools. | Running as non-root inside an otherwise privileged container is insufficient.
+Data privacy | Data minimization, purpose limitation, access control, retention, deletion, and regional handling apply to prompts and traces. | Privacy protection can reduce debugging data and personalization. | Redacting only user messages while retaining retrieved documents leaves exposure.
+Output validation | Structured schema, semantic checks, policy filters, allowlists, and deterministic verification gate model output. | Fail-closed validation improves safety but may lower completion rate. | A valid JSON schema does not prove safe SQL, URLs, or business intent.
+Model supply chain | Weights, datasets, containers, packages, adapters, and prompts require provenance, scanning, signing, and review. | Assurance improves while promotion pipelines become more deliberate. | Loading arbitrary pickle-based artifacts can execute code.
+AI risk management | Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk. | Governance improves accountability but can become checkbox compliance without technical signals. | A model card without deployment-specific threat modeling is incomplete.
+Red teaming | Adversarial testing explores misuse, prompt injection, privacy, bias, jailbreaks, tool abuse, and failure recovery. | It reveals unknown weaknesses but provides samples, not a guarantee of safety. | Running one generic jailbreak list misses application-specific assets and actions.
+Auditability | Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes. | Investigations and compliance improve, while logs themselves become sensitive assets. | Logging reasoning text instead of decisive actions and evidence can reduce clarity.
+""")
+
+TOPICS += parse_topics("Distributed Systems and Reliability", """
+CAP and consistency | Under a network partition, a distributed system must trade availability against consistent reads and writes. | Stronger guarantees simplify application invariants but increase latency and unavailability. | Quoting CAP without identifying partitions and operations does not guide design.
+Consensus | Protocols such as Raft replicate an ordered log so nodes agree despite failures. | Coordination provides a consistent control plane but costs extra messages and quorum latency. | Deploying a quorum across unreliable links can reduce availability.
+Queues and backpressure | Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. | Smoothing improves utilization, while waiting increases latency and stale work. | An unbounded queue converts overload into memory exhaustion.
+Retries and timeouts | Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. | Success rate improves, while retries amplify overload and tail latency. | Layered automatic retries create multiplicative request storms.
+Caching | Caches trade staleness and invalidation complexity for lower latency and load. | Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation. | Omitting tenant, model, prompt version, or authorization from a cache key leaks data.
+Load balancing | Balancers route by health, load, locality, affinity, or capacity across replicas. | Distribution improves availability but generic least-connections may ignore token workload size. | Sending a long-context request to the least-busy replica can still cause head-of-line blocking.
+Fault isolation | Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources. | Blast radius shrinks at some efficiency cost. | A single global vector index or queue can defeat otherwise isolated services.
+Exactly-once effects | Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. | Business effects can be effectively once, but state and retention are needed. | Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.
+Multi-region design | Regions trade user latency, residency, failover speed, replication lag, and operational complexity. | Active-active improves availability and latency but makes writes and conflict resolution harder. | A standby region that never receives realistic traffic may fail during disaster recovery.
+Capacity planning | Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. | Headroom handles bursts but idle accelerators are expensive. | Planning with average sequence length underestimates tail memory and latency.
+""")
+
+
+assert len({t["id"] for t in TOPICS}) == len(TOPICS), "topic ids must be unique"
+
+
+def make_questions(topics):
+    questions = []
+    by_cat = {}
+    for t in topics:
+        by_cat.setdefault(t["category"], []).append(t)
+
+    qid = 1
+    for idx, t in enumerate(topics):
+        peers = [p for p in by_cat[t["category"]] if p["id"] != t["id"]]
+        other = random.sample(peers, min(3, len(peers)))
+        while len(other) < 3:
+            other.append(random.choice([p for p in topics if p["id"] != t["id"]]))
+
+        specs = [
+            (f"Which statement best describes {t['name']}?", t["summary"], [p["summary"] for p in other], "medium"),
+            (f"What is the central engineering tradeoff of {t['name']}?", t["tradeoff"], [p["tradeoff"] for p in other], "hard"),
+            (f"Which failure mode should an interviewer expect you to identify for {t['name']}?", t["pitfall"], [p["pitfall"] for p in other], "hard"),
+            (f"A design review is specifically concerned with this risk: {t['pitfall']} Which topic should be reviewed first?", t["name"], [p["name"] for p in other], "medium"),
+            (f"Which design note most accurately balances the benefits and costs of {t['name']}?", t["tradeoff"], [p["tradeoff"] for p in reversed(other)], "hard"),
+            (f"Which explanation would be strongest in a system-design interview about {t['name']}?", t["summary"], [p["summary"] for p in reversed(other)], "medium"),
+            (f"Which production warning is most directly associated with {t['name']}?", t["pitfall"], [p["pitfall"] for p in reversed(other)], "hard"),
+        ]
+        for prompt, correct, distractors, difficulty in specs:
+            opts = [correct] + distractors[:3]
+            random.shuffle(opts)
+            questions.append({
+                "id": f"MCQ-{qid:04d}", "type":"mcq", "difficulty":difficulty,
+                "category":t["category"], "topic":t["name"], "prompt":prompt,
+                "options":opts, "answer":correct,
+                "explanation":f"{t['summary']} Tradeoff: {t['tradeoff']} Watch for: {t['pitfall']}",
+                "references":t["references"],
+            })
+            qid += 1
+
+        for prompt, answer, difficulty in [
+            (f"Define {t['name']} in interview-ready language.", t["summary"], "medium"),
+            (f"State the main tradeoff and production pitfall for {t['name']}.", f"Tradeoff: {t['tradeoff']} Pitfall: {t['pitfall']}", "hard"),
+        ]:
+            questions.append({
+                "id":f"FC-{qid:04d}", "type":"flashcard", "difficulty":difficulty,
+                "category":t["category"], "topic":t["name"], "prompt":prompt,
+                "answer":answer, "explanation":answer, "references":t["references"],
+            })
+            qid += 1
+
+        questions.append({
+            "id":f"LA-{qid:04d}", "type":"long-answer", "difficulty":"hard",
+            "category":t["category"], "topic":t["name"],
+            "prompt":f"Explain {t['name']} from first principles, then show how you would evaluate and operate it in production.",
+            "answer":f"Start with the mechanism: {t['summary']} Make the tradeoff explicit: {t['tradeoff']} Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: {t['pitfall']}",
+            "explanation":"A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.",
+            "references":t["references"],
+        })
+        qid += 1
+    return questions
+
+
+QUESTIONS = make_questions(TOPICS)
+
+
+CORE_PROMPTS = [
+    ("medium","Retrieval and Search Theory","Why should BM25 remain in a modern RAG baseline?","BM25 is inexpensive, interpretable, and strong on rare terms, identifiers, and exact wording. Dense retrieval covers paraphrases but can miss those cases. Compare lexical, dense, and hybrid retrieval on the same judged set, then use slice metrics rather than assuming one method dominates."),
+    ("hard","Retrieval and Search Theory","Derive the role of term-frequency saturation and document-length normalization in BM25.","BM25 increases score with term frequency but uses a saturating fraction so repeated terms have diminishing returns. Its length normalization compares document length with the collection average, preventing long documents from winning just because they contain more words. Explain how k1 controls saturation and b controls normalization, then discuss tuning by corpus."),
+    ("medium","Vector Databases and Search Engines","When would you choose pgvector over a dedicated vector database?","Choose pgvector when relational joins, transactions, operational simplicity, and moderate scale dominate. A dedicated service becomes attractive for independently scaled vector workloads, specialized distributed indexing, or managed operations. Validate both with filtered recall, latency, update rate, backup, and total cost."),
+    ("hard","Vector Databases and Search Engines","Compare HNSW with IVF-PQ for a billion-vector workload.","HNSW usually provides strong latency-recall but consumes substantial RAM and has costly construction. IVF-PQ compresses vectors and searches selected clusters, reducing memory at the cost of training and quantization error. Benchmark representative filters and updates; do not make the choice from unfiltered synthetic vectors."),
+    ("medium","RAG Architecture and Evaluation","How do you select a chunk size?","Use document structure and question evidence span, not one universal token count. Measure retrieval recall, context precision, answer quality, and cost across headings, tables, code, and prose. Parent-child retrieval can decouple precise retrieval chunks from larger generation context."),
+    ("hard","RAG Architecture and Evaluation","Design an evaluation suite that localizes RAG failures.","Separate ingestion correctness, retriever recall and ranking, context packing, faithfulness, answer correctness, citation entailment, latency, and cost. Build golden and synthetic cases with important slices, calibrate automated judges against humans, and retain per-stage traces so a final-answer regression can be attributed."),
+    ("hard","RAG Architecture and Evaluation","What is the difference between faithfulness and factual correctness?","Faithfulness asks whether claims follow from supplied context; factual correctness asks whether they are true in the world or against a reference. An answer can be faithful to incorrect context, or factually correct but unsupported by retrieved evidence. Production evaluation often needs both plus citation quality."),
+    ("medium","Knowledge Graphs and GraphRAG","When is GraphRAG justified over vector RAG?","GraphRAG is justified for relationship-heavy, multi-hop, entity-centric, or whole-corpus thematic questions where graph structure adds retrieval value. It costs more to construct, resolve, update, and evaluate. Start with a question taxonomy and prove lift on graph-shaped slices."),
+    ("hard","Knowledge Graphs and GraphRAG","Compare GraphRAG local search, global search, and KAG.","Local search expands around query entities for detailed multi-hop context. Global search aggregates community summaries for corpus-level themes. KAG adds schema-aware representation, chunk-graph mutual indexing, and logical-form-guided reasoning for professional domains; it demands stronger domain modeling."),
+    ("hard","Knowledge Graphs and GraphRAG","How do you prevent hallucinated graph edges from becoming authoritative?","Attach every entity and edge to source spans, extraction model versions, confidence, and temporal validity. Apply schema constraints, deterministic validators, duplicate resolution, sampled human review, and downstream contradiction checks. Queries should be able to require verified provenance."),
+    ("medium","Agents, MCP, and Control","What makes an agent different from a deterministic workflow?","A workflow has predefined transitions; an agent chooses actions dynamically from observations and tools. Many production systems combine both: deterministic boundaries and approvals around agentic decision points. Use the least autonomy needed for the task."),
+    ("hard","Agents, MCP, and Control","Design safe retries for an agent that can send payments.","Generate a durable business idempotency key before the side effect, validate authorization and amount at execution, persist the result, and make retries return that result. Separate planning from execution, require approval for policy-defined thresholds, and reconcile ambiguous timeouts with the payment provider before retrying."),
+    ("medium","Agents, MCP, and Control","Explain MCP's trust boundary.","MCP standardizes capability discovery and invocation; it does not make a server, tool result, or prompt trusted. The host must authenticate servers, scope credentials, authorize every action, surface consent, validate inputs and outputs, and isolate untrusted content from instructions."),
+    ("hard","Agents, MCP, and Control","How would you bound an autonomous coding agent?","Use an ephemeral sandbox, scoped repository checkout, no ambient credentials, default-deny network, resource and time limits, command allow/deny policy, and reviewed patches. Separate read, write, test, and publish permissions; require explicit approval for destructive or external actions and retain an audit trail."),
+    ("hard","Agents, MCP, and Control","What memory should an agent store, and what should it forget?","Store only durable, user-approved facts or proven procedural lessons with provenance, timestamps, scope, and deletion controls. Keep ephemeral task state separate. Avoid raw transcripts, secrets, uncertain inferences, and sensitive facts without purpose and retention policy."),
+    ("medium","Orchestration Frameworks","When should you use LangGraph rather than a simple function pipeline?","Use it when execution is long-running, stateful, branching, resumable, streamed, or approval-gated. A short deterministic request often needs ordinary code instead. Complexity should be justified by checkpointing, interrupts, or graph-level observability."),
+    ("hard","Orchestration Frameworks","Why must durable workflow nodes be idempotent?","Checkpoint replay or activity retry may execute a node more than once after ambiguous failure. If side effects are not idempotent, a resume can duplicate them. Persist operation keys and outcomes, and isolate side effects in retry-aware activities."),
+    ("medium","Observability and Monitoring","What should an LLM trace contain?","Include request and session correlation, model and prompt versions, sanitized inputs and outputs, retrieval and rerank steps, tool calls, token usage, latency, cost, errors, evaluations, and policy decisions. Capture content only under explicit privacy and retention controls."),
+    ("hard","Observability and Monitoring","How do you define SLOs for a streaming LLM application?","Separate availability, time to first token, inter-token latency, end-to-end completion, and semantic quality. Define percentiles by workload slice and model route, then pair error budgets with capacity and fallback policy. Average latency is not sufficient."),
+    ("hard","Observability and Monitoring","How do you detect quality drift without immediate labels?","Track input and retrieval distributions, refusal and tool patterns, deterministic validators, sampled judge scores, citation coverage, user corrections, and business proxies. Calibrate alarms against delayed human labels and segment by cohort; drift signals are hypotheses, not proof of degradation."),
+    ("medium","Serving, Deployment, and LLMOps","Explain continuous batching.","A serving engine admits new requests and removes finished ones between decode iterations, keeping the GPU busy despite variable sequence lengths. It improves throughput but requires fairness, queue control, and latency isolation. Benchmark concurrency and sequence distributions, not only batch size."),
+    ("hard","Serving, Deployment, and LLMOps","What metrics should drive LLM autoscaling?","Use queue depth or queued tokens, time to first token, decode throughput, active sequences, KV-cache utilization, memory headroom, and startup time. CPU often has weak correlation with GPU saturation. Predictive warm pools may be needed because model loading is slow."),
+    ("hard","Serving, Deployment, and LLMOps","Design a safe multi-provider LLM gateway.","Normalize contracts but preserve provider-specific capability metadata. Add authentication, tenant budgets, token-aware limits, policy routing, retries with budgets, circuit breakers, audit logs, and semantic fallback rules. Pin model versions and expose route changes so fallbacks do not silently alter behavior."),
+    ("medium","Data and ML Lifecycle","What does data versioning add beyond Git?","Large artifacts live in object storage while Git records content-addressed pointers, pipeline definitions, and lineage. Reproducibility requires code, parameters, environment, and data versions together. A mutable remote path is not a version."),
+    ("hard","Data and ML Lifecycle","Explain point-in-time correct feature joins.","For each training label timestamp, select only feature values available at or before that time. This prevents future information from leaking into historical examples. The design needs entity keys, event and availability time, late-data policy, and parity tests with online serving."),
+    ("medium","Transformer Theory and Training","Why is attention scaled by the square root of the head dimension?","Without scaling, query-key dot-product variance grows with dimension and pushes softmax into saturated regions with tiny gradients. Dividing by sqrt(d_k) stabilizes logits under common initialization assumptions. It is a variance-control argument, not a learned temperature."),
+    ("hard","Transformer Theory and Training","Compare pre-norm and post-norm transformers.","Pre-norm applies normalization before each sublayer and leaves a cleaner residual path, usually improving gradient flow in deep models. Post-norm normalizes after the residual addition and can need careful warmup or scaling. Architecture changes require retuning rather than a mechanical swap."),
+    ("hard","Transformer Theory and Training","Explain why MoE increases parameters without proportional FLOPs.","A router activates only a small number of experts per token, so total expert parameters can grow while per-token compute follows the selected experts. The hidden costs are expert memory, routing balance, all-to-all communication, and capacity overflow."),
+    ("medium","Transformer Theory and Training","Compare SFT, PPO-based RLHF, and DPO.","SFT imitates demonstrations. PPO-based RLHF optimizes a learned reward with a policy constraint but has a complex training loop. DPO learns directly from preference pairs relative to a reference policy; it is simpler but still inherits preference-data bias and coverage limits."),
+    ("hard","Transformer Theory and Training","How do LoRA rank and target modules affect adaptation?","Rank bounds the update subspace; higher rank increases capacity and memory. Targeting attention projections, MLPs, or both changes what behavior can move. Select with validation by task slice and inspect adapter interference rather than using a universal rank."),
+    ("medium","Inference Optimization","What exactly does a KV cache save?","It stores prior-layer key and value tensors so decoding a new token computes only its new projections and attends over cached history. It does not eliminate attention over prior positions. Memory grows with layers, sequence length, batch, KV heads, head dimension, and precision."),
+    ("hard","Inference Optimization","Why can lower-bit quantization be slower?","A quantized model wins only if the hardware and runtime provide efficient dequantization and matrix kernels for its shapes. Unsupported formats add conversion overhead or fall back to slow paths. Measure end-to-end latency, memory, energy, and quality on target hardware."),
+    ("hard","Inference Optimization","Explain speculative decoding's acceptance condition and benefit.","A draft model proposes several tokens; the target evaluates them in parallel and accepts a prefix using a correction rule that preserves the target distribution. Benefit depends on draft cost, acceptance rate, verification efficiency, and output length. Low acceptance can make it slower."),
+    ("medium","Backend, APIs, and Microservices","FastAPI or Flask for an inference API?","FastAPI's ASGI model, typing, validation, OpenAPI, and streaming fit concurrent APIs. Flask remains excellent for simple synchronous services and its ecosystem. The decisive issues are workload, deployment server, blocking model calls, team experience, and operational needs."),
+    ("hard","Backend, APIs, and Microservices","Design backpressure for token streaming.","Bound admission and per-connection buffers, propagate slow-consumer signals, cancel model work on disconnect, and separate interactive from batch queues. Use token-weighted concurrency and deadlines. Never let unbounded output buffers consume server memory."),
+    ("hard","Backend, APIs, and Microservices","Where should microservice boundaries sit in an AI platform?","Separate capabilities with distinct ownership, data, scaling, failure, and release characteristics, such as ingestion, retrieval, inference, and evaluation. Keep strongly coupled low-latency steps together until evidence supports a split. Avoid a distributed monolith with shared databases and synchronized releases."),
+    ("medium","Python Engineering","When do Python threads help despite the GIL?","They help when work spends time in blocking I/O or native code that releases the GIL. Pure Python CPU-bound loops generally need processes, native vectorized code, or another runtime. Measure contention and library behavior instead of applying a slogan."),
+    ("hard","Python Engineering","How do you prevent blocking an asyncio event loop?","Use genuinely asynchronous clients for network I/O, move unavoidable blocking functions to a bounded thread pool, use processes for CPU-bound Python, and instrument event-loop lag. Bound concurrency so offloading does not merely move overload to an executor queue."),
+    ("medium","Python Engineering","Why use functools.wraps in a decorator?","wraps copies key metadata and establishes a __wrapped__ chain, preserving names, documentation, signatures through introspection, and framework behavior. Without it, debugging, dependency injection, route registration, and tests may see the wrapper instead of the original callable."),
+    ("hard","Python Engineering","Compare threads, processes, and coroutines for an embedding service.","Coroutines efficiently multiplex many network calls; threads integrate blocking SDKs; processes parallelize CPU-heavy Python and isolate failures. Native GPU or BLAS work may already release the GIL and batch internally. Choose after profiling serialization, memory duplication, and batching."),
+    ("medium","Security, Safety, and Governance","Why is prompt injection not solved by a stronger system prompt?","The model still processes attacker-controlled instructions in the same inference context and cannot enforce authority like an operating system. Security must come from least-privilege tools, content provenance, authorization, validation, isolation, and confirmation for consequential actions."),
+    ("hard","Security, Safety, and Governance","Threat-model a RAG system.","Assets include private documents, credentials, indexes, prompts, outputs, and tools. Threats include poisoned ingestion, cross-tenant retrieval, indirect prompt injection, membership inference, data exfiltration, insecure citations, and logging leaks. Map controls to each boundary and test bypasses."),
+    ("hard","Security, Safety, and Governance","What does least privilege mean for agents?","Grant capabilities per action, resource, tenant, and time, not a broad session token. Separate planning credentials from execution credentials, require step-up approval for high-risk actions, and issue ephemeral scoped tokens after policy checks. Audit both decisions and side effects."),
+    ("medium","Distributed Systems and Reliability","Why can retries make an outage worse?","If a dependency is overloaded, retries multiply traffic and consume more queues, threads, and connections. Use deadlines, small retry budgets, exponential backoff with jitter, circuit breakers, and idempotency. Retry only errors likely to be transient."),
+    ("hard","Distributed Systems and Reliability","How would you design effective exactly-once document ingestion?","Use at-least-once delivery with a content or source-version idempotency key, transactional state transitions, deterministic chunk IDs, and an outbox for downstream indexing events. Consumers upsert by version and reconciliation detects partial completion. Exactly-once is a business invariant, not a broker slogan."),
+    ("hard","Distributed Systems and Reliability","Model capacity for an LLM service.","Estimate arrival rate by slice, prompt and output token distributions, time to first token, decode rate, active sequence memory, batching efficiency, and SLO headroom. Use Little's Law for concurrency intuition, then validate with load tests including bursts, long contexts, and failures."),
+    ("medium","Observability and Monitoring","How do OpenTelemetry traces, metrics, and logs complement each other?","Traces explain individual request paths, metrics quantify fleet trends and SLOs, and logs capture discrete detailed events. Correlation fields connect them. Do not put high-cardinality or sensitive prompt content into metric labels."),
+    ("hard","RAG Architecture and Evaluation","How do you evaluate an LLM-as-a-judge?","Create human-labeled calibration sets with disagreements and important slices, measure agreement and ranking consistency, test position and verbosity bias, blind model identities, and version judge prompts and models. Use deterministic checks where possible and do not let one judge define truth."),
+    ("hard","Agents, MCP, and Control","How do you evaluate an autonomous agent beyond final success?","Score task success, partial progress, trajectory efficiency, tool selection, argument correctness, recovery, policy compliance, side effects, latency, and cost. Replay deterministic environments, inject failures, inspect traces, and use human review for ambiguous outcomes."),
+    ("hard","Vector Databases and Search Engines","Why do metadata filters complicate ANN recall?","A graph or clustered index was built for vector neighborhoods, not necessarily the filtered subset. Post-filtering can underfill results, while pre-filtering can fragment traversal. Measure filtered recall by selectivity and use index or partition strategies that support common filters."),
+]
+
+assert len(CORE_PROMPTS) == 50
+CORE_QUESTIONS = []
+for i, (difficulty, category, prompt, answer) in enumerate(CORE_PROMPTS, 1):
+    CORE_QUESTIONS.append({
+        "id":f"CORE-{i:02d}", "difficulty":difficulty, "category":category,
+        "prompt":prompt, "answer":answer,
+        "origin":"research-derived" if i % 2 else "generated synthesis",
+        "references":SOURCE_GROUPS[category][:3],
+    })
+
+
+DESIGNS = [
+    {"id":"enterprise-rag","title":"Multi-tenant enterprise RAG","brief":"Design a citation-first assistant over 50 million private documents for 500 organizations.","diagram":"flowchart LR\n U[User] --> G[Policy gateway]\n G --> Q[Query router]\n Q --> H[Hybrid retrieval]\n H --> R[Reranker]\n R --> L[LLM + citations]\n L --> E[Eval and traces]","stages":[
+        {"q":"Initial design","a":"Separate an access-aware ingestion plane from the query plane. Preserve tenant, ACL, source version, and stable chunk IDs; retrieve lexical and dense candidates under authorization, rerank, pack diverse evidence, generate constrained citations, and log a redacted trace."},
+        {"q":"Challenge: 10x documents and strict deletion","a":"Partition by tenant and locality, version embedding indexes, process change-data events idempotently, and maintain a deletion ledger that removes source, chunks, caches, and trace content. Use blue-green reindexing and reconciliation scans."},
+        {"q":"Challenge: answer quality falls after an embedding upgrade","a":"Shadow the new index on frozen and live evaluation sets, compare recall and downstream quality by query slice, and inspect nearest-neighbor shifts. Keep dual-read capability and roll back the alias if guardrails fail."},
+        {"q":"Tradeoffs and choices","a":"pgvector reduces services when relational ACL joins dominate; a dedicated store may scale vector traffic independently. Hybrid retrieval protects exact terms. Strong ACL filtering can reduce ANN recall, so tenant partitioning and filtered-recall tests are essential."}]},
+    {"id":"agent-platform","title":"Approval-gated agent platform","brief":"Design a platform where agents use email, calendar, CRM, and payment tools with different risk levels.","diagram":"flowchart TD\n I[Intent] --> P[Planner]\n P --> C[Policy engine]\n C -->|low risk| T[Tool sandbox]\n C -->|high risk| H[Human approval]\n H --> T\n T --> A[Audit log]","stages":[
+        {"q":"Initial design","a":"Maintain an explicit state machine. The planner proposes typed actions; a deterministic policy engine checks identity, scope, risk, and consent; high-risk actions pause durably; the executor receives a short-lived scoped token and writes an immutable result."},
+        {"q":"Challenge: a tool times out after charging a card","a":"Never blindly retry. Query by idempotency key, reconcile provider state, and return the stored outcome. Keep planning and execution separate so model retries cannot invent new operation keys."},
+        {"q":"Challenge: malicious email contains tool instructions","a":"Mark email as untrusted data, do not concatenate it into authority-bearing instructions, restrict available capabilities, validate recipients and amounts from trusted state, and require approval for consequential actions."},
+        {"q":"Tradeoffs and choices","a":"Dynamic agents handle novel requests but deterministic workflows are safer for financial steps. Per-action least privilege and durable approvals add latency but reduce blast radius. Store concise state, not unrestricted reasoning transcripts."}]},
+    {"id":"llm-gateway","title":"Global multi-provider LLM gateway","brief":"Design a gateway serving 20 products across three model providers with budgets and regional policy.","diagram":"flowchart LR\n C[Clients] --> G[Gateway]\n G --> R[Policy router]\n R --> A[Provider A]\n R --> B[Provider B]\n R --> S[Self-hosted]\n G --> O[OTel + cost ledger]","stages":[
+        {"q":"Initial design","a":"Authenticate services and users, normalize a minimal request contract, retain capability metadata, enforce regional and data policies, estimate tokens before admission, route by model requirements, and stream through bounded buffers with full usage accounting."},
+        {"q":"Challenge: provider A has elevated p99 latency","a":"Use deadline-aware circuit breaking and route eligible traffic to pinned alternatives. Preserve non-equivalent capability constraints, surface the actual model route, and protect the fallback from a retry storm."},
+        {"q":"Challenge: one tenant consumes half the GPU fleet","a":"Apply tenant token buckets, weighted fair queues, concurrent-token limits, and reserved capacity. Attribute cache, input, output, and tool cost to the tenant and alert on anomalies."},
+        {"q":"Tradeoffs and choices","a":"A central gateway simplifies governance but is a critical dependency. Global caching lowers cost but creates privacy and invalidation risk. Provider abstraction should not erase semantic differences such as tool schemas or context limits."}]},
+    {"id":"code-agent","title":"Autonomous code agent sandbox","brief":"Design a code agent that can modify repositories and run tests without endangering infrastructure.","diagram":"flowchart TD\n R[Repo snapshot] --> S[Ephemeral sandbox]\n P[Task policy] --> S\n S --> T[Tests]\n T --> D[Patch + evidence]\n D --> H[Human review]\n H --> M[Merge service]","stages":[
+        {"q":"Initial design","a":"Clone a pinned snapshot into an ephemeral unprivileged sandbox. Mount only the workspace writable, deny network by default, issue no ambient credentials, cap CPU, memory, processes, disk, and time, then return a patch, test evidence, and audit record."},
+        {"q":"Challenge: tests need package downloads","a":"Use an allowlisted dependency proxy with pinned hashes and egress logging, or prebuild trusted images. Do not grant general internet access or repository write credentials to the sandbox."},
+        {"q":"Challenge: repository contains malicious test code","a":"Treat repository code as untrusted. Harden the runtime boundary, block host sockets and metadata endpoints, use disposable workers, scan artifacts, and separate the merge identity from the execution identity."},
+        {"q":"Tradeoffs and choices","a":"MicroVMs offer stronger tenant isolation than ordinary containers but start more slowly. Warm pools reduce latency yet require secure reset. Automated merging improves speed but should be limited to low-risk paths with strong tests."}]},
+    {"id":"eval-platform","title":"Continuous AI evaluation platform","brief":"Design a platform that evaluates prompts, models, RAG pipelines, and agents before and after release.","diagram":"flowchart LR\n D[Versioned datasets] --> O[Eval orchestrator]\n O --> C[Candidates]\n C --> J[Checks + judges]\n J --> M[Metrics by slice]\n M --> G[Release gate]\n G --> P[Production sampling]","stages":[
+        {"q":"Initial design","a":"Version datasets, prompts, models, tool environments, scorers, and code. Run deterministic tests first, then model judges and sampled human review. Store per-case traces and aggregate by task, risk, language, and tenant slice."},
+        {"q":"Challenge: judge scores improve but users complain","a":"Audit judge calibration, position and verbosity bias, and dataset representativeness. Add complaint-derived cases, blind candidates, and connect online business and correction signals without treating them as perfect labels."},
+        {"q":"Challenge: agent evaluations are flaky","a":"Use deterministic simulators, frozen tool snapshots, seeded stochastic settings where supported, retry classification, and trajectory-level assertions. Separate environment failures from policy and reasoning failures."},
+        {"q":"Tradeoffs and choices","a":"Large golden sets improve coverage but slow releases; tier tests by speed and risk. LLM judges scale but need calibration. A single aggregate score is convenient and dangerous, so gate critical slices independently."}]},
+    {"id":"ingestion","title":"Resilient document ingestion","brief":"Design an ingestion pipeline for PDFs, HTML, email, tables, and code with near-real-time updates.","diagram":"flowchart LR\n S[Sources] --> Q[Event queue]\n Q --> P[Parse + normalize]\n P --> V[Validate + dedupe]\n V --> C[Chunk + enrich]\n C --> I[Indexes]\n I --> R[Reconciliation]","stages":[
+        {"q":"Initial design","a":"Use source-version events and an idempotent state machine. Store immutable raw content, parse to a canonical document model, validate and classify, create deterministic chunks, enrich, and atomically promote lexical and vector index versions."},
+        {"q":"Challenge: a parser upgrade changes every chunk boundary","a":"Version parser and chunker output, build a parallel index, compare retrieval and citation stability, and switch an alias only after acceptance. Keep old versions for rollback and delete them by retention policy."},
+        {"q":"Challenge: events arrive out of order","a":"Use source sequence or modification versions, reject stale transitions, and reconcile current source inventory against indexed state. Tombstones must dominate older create events."},
+        {"q":"Tradeoffs and choices","a":"Exactly-once broker delivery is unnecessary if effects are idempotent. Rich parsing improves quality but increases cost. Near-real-time indexing may use smaller incremental shards later compacted into efficient layouts."}]},
+    {"id":"graphrag-compliance","title":"Compliance GraphRAG","brief":"Design a system that answers policy questions across regulations, contracts, and internal controls over time.","diagram":"flowchart TD\n D[Versioned clauses] --> X[Entity + relation extraction]\n X --> K[Temporal knowledge graph]\n K --> Q[Local/global router]\n Q --> L[Evidence-bound answer]\n L --> A[Reviewer + audit]","stages":[
+        {"q":"Initial design","a":"Model regulations, obligations, controls, owners, jurisdictions, and validity intervals. Attach every node and edge to source spans and extraction versions. Route precise entity questions to local traversal and thematic questions to community summaries."},
+        {"q":"Challenge: two regulations conflict","a":"Preserve both facts with jurisdiction, authority, and valid time rather than overwriting. Apply explicit precedence rules where approved and surface the conflict with citations for human interpretation."},
+        {"q":"Challenge: auditors need as-of answers","a":"Use bitemporal or validity-aware facts, immutable source versions, and query-time cutoffs. Store the exact graph, prompt, model, and evidence versions used for each answer."},
+        {"q":"Tradeoffs and choices","a":"Formal schema and temporal semantics add modeling cost but are justified by auditability. Vector-only RAG is simpler for prose lookup; graphs earn their cost on relationships, conflicts, and multi-hop obligations."}]},
+    {"id":"realtime-copilot","title":"Real-time support copilot","brief":"Design an assistant that listens to a live support conversation and suggests grounded responses under 700 ms.","diagram":"flowchart LR\n A[Audio] --> T[Streaming ASR]\n T --> S[State summarizer]\n S --> R[Fast retrieval]\n R --> M[Small model]\n M --> U[Agent UI]\n U --> F[Feedback]","stages":[
+        {"q":"Initial design","a":"Stream ASR partials, maintain a compact conversation state, detect stable intent boundaries, retrieve from a tenant-aware cache and hybrid index, and use a low-latency model with citations. Never auto-send; suggestions remain human controlled."},
+        {"q":"Challenge: latency spikes during peak hours","a":"Use token-aware admission, prewarm capacity, degrade to cached macros or smaller models, cap retrieval and output budgets, and monitor time to first suggestion separately from final completion."},
+        {"q":"Challenge: ASR mishears an account number","a":"Do not infer high-impact identifiers from uncertain audio. Display confidence, request confirmation, and resolve accounts through authenticated UI context rather than model text."},
+        {"q":"Tradeoffs and choices","a":"Frequent suggestions feel responsive but can distract and amplify partial-transcript errors. Smaller models reduce latency but may need stronger templates. Human control lowers automation but is appropriate for uncertain real-time signals."}]},
+    {"id":"multimodal-search","title":"Multimodal product search","brief":"Design text, image, and attribute search for 200 million commerce products.","diagram":"flowchart LR\n Q[Text or image query] --> E[Modality encoders]\n E --> V[Vector candidates]\n Q --> L[Lexical + filters]\n V --> F[Fusion]\n L --> F\n F --> R[Learning-to-rank]","stages":[
+        {"q":"Initial design","a":"Create versioned text and image embeddings, retain structured attributes, retrieve modality-specific candidates, fuse ranks, filter availability and policy, then rerank with behavioral features. Evaluate by query type and inventory segment."},
+        {"q":"Challenge: new catalog items have no interactions","a":"Rely on content embeddings and attributes, use exploration, and separate cold-start metrics. Avoid training labels that make popular products the only relevant answers."},
+        {"q":"Challenge: exact SKU searches regress","a":"Route identifier-shaped queries to lexical or key-value lookup and combine with semantic search only as fallback. Keep BM25 or exact matching in the hybrid design."},
+        {"q":"Tradeoffs and choices","a":"A shared multimodal space simplifies cross-modal retrieval but specialized encoders can be stronger. Rich reranking improves relevance at latency cost. Behavior data improves conversion but introduces position and popularity bias."}]},
+    {"id":"global-inference","title":"Multi-region LLM inference","brief":"Design self-hosted inference for users in North America, Europe, and Asia with residency constraints.","diagram":"flowchart TD\n U[Regional users] --> G[Geo policy gateway]\n G --> NA[NA cell]\n G --> EU[EU cell]\n G --> AP[AP cell]\n NA --> C[Model registry]\n EU --> C\n AP --> C","stages":[
+        {"q":"Initial design","a":"Build independent regional cells with pinned model artifacts, local telemetry, token-aware queues, and residency-safe storage. A control plane distributes signed releases and policy, while the data plane serves without cross-region prompt transfer."},
+        {"q":"Challenge: Europe loses half its GPU capacity","a":"Apply regional admission and degradation first. Fail over only requests whose policy permits leaving the region; otherwise use a smaller local model or queue within deadlines. Communicate degraded capability explicitly."},
+        {"q":"Challenge: model release behaves differently on one GPU type","a":"Treat hardware and runtime as part of the release identity. Run per-hardware conformance, quality, and performance tests, and canary independently by cell before global promotion."},
+        {"q":"Tradeoffs and choices","a":"Active-active cells improve latency and availability but duplicate expensive weights and caches. Cross-region fallback raises residency and consistency concerns. Centralized control should not be required for serving an already-approved model."}]},
+    {"id":"recommendation","title":"LLM-assisted recommendation system","brief":"Design recommendations that combine collaborative signals, content embeddings, and natural-language explanations.","diagram":"flowchart LR\n U[User context] --> C[Candidate generators]\n C --> R[Ranker]\n R --> P[Policy and diversity]\n P --> X[Explanation RAG]\n X --> O[Response]\n O --> L[Outcomes]","stages":[
+        {"q":"Initial design","a":"Generate candidates from collaborative, popularity, and vector channels; rank with point-in-time correct features; apply inventory, policy, and diversity constraints; generate explanations only from verified product attributes and recommendation factors."},
+        {"q":"Challenge: explanations claim unsupported benefits","a":"Use structured evidence templates or constrained generation, validate every claim against catalog fields, and omit explanations when evidence is insufficient. Evaluate explanation faithfulness separately from ranking quality."},
+        {"q":"Challenge: filter bubbles increase","a":"Add calibrated diversity and exploration, monitor exposure by cohort and supplier, and distinguish user satisfaction from short-term click maximization."},
+        {"q":"Tradeoffs and choices","a":"LLMs add interface quality but should not replace a measured ranker by default. Exploration improves long-term learning with short-term risk. Feature freshness improves relevance but increases online-store complexity."}]},
+    {"id":"fraud-hitl","title":"Fraud investigation agent","brief":"Design an agent that assembles evidence and recommends actions but cannot silently freeze accounts.","diagram":"flowchart TD\n E[Alerts] --> A[Evidence agent]\n A --> G[Case graph]\n G --> R[Risk rules]\n R --> H[Investigator]\n H --> X[Action service]\n X --> U[Audit + outcomes]","stages":[
+        {"q":"Initial design","a":"The agent retrieves immutable transaction evidence, constructs a case timeline and graph, cites every claim, and proposes actions. Deterministic policy calculates risk and an authenticated investigator approves account-impacting actions."},
+        {"q":"Challenge: adversary places prompt injection in transaction notes","a":"Treat notes as untrusted evidence, escape and label them, never expose general tools to the evidence-processing model, and derive actions only through typed policy-checked proposals."},
+        {"q":"Challenge: false positives disproportionately affect one cohort","a":"Monitor error and review outcomes by legally and ethically appropriate slices, audit features and thresholds, add escalation and appeal paths, and pause automated recommendations where evidence is weak."},
+        {"q":"Tradeoffs and choices","a":"Graph views help investigators follow relationships but extraction error must be visible. Human review costs time but protects high-impact decisions. Online learning from investigator outcomes needs controls for reviewer bias."}]},
+]
+
+
+def latex_escape(value: str) -> str:
+    value = value.replace("\\", r"\textbackslash{}")
+    table = {"&":r"\&", "%":r"\%", "$":r"\$", "#":r"\#", "_":r"\_", "{":r"\{", "}":r"\}", "~":r"\textasciitilde{}", "^":r"\textasciicircum{}"}
+    return "".join(table.get(ch, ch) for ch in value)
+
+
+def write_json(path: Path, obj):
+    path.write_text(json.dumps(obj, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def build_markdown():
+    stats = f"{len(TOPICS)} topics, {len(QUESTIONS)} generated practice questions, 50 core interview questions, and {len(DESIGNS)} system-design challenges"
+    lines = ["# AI Engineering Interview Atlas", "", f"> {stats}.", "", "A research-grounded practice repository for AI engineering, LLM systems, RAG, agents, deployment, data, observability, theory, and backend engineering.", "", "## Use the atlas", "", "- Open `index.html` through GitHub Pages for search, filters, flashcards, and design drills.", "- Read `output/pdf/ai_engineering_interview_handbook.pdf` for the complete printable handbook.", "- Use `data/questions.json` and `data/topics.json` for custom study tools.", "", "## Curriculum map", ""]
+    for category in SOURCE_GROUPS:
+        lines.append(f"### {category}")
+        lines.append("")
+        lines.append(" · ".join(t["name"] for t in TOPICS if t["category"] == category))
+        lines.append("")
+    lines += ["## Architecture map", "", "```mermaid", "flowchart TD", "  F[Foundations] --> R[Retrieval and RAG]", "  F --> T[Transformers and optimization]", "  R --> A[Agents and orchestration]", "  T --> D[Serving and deployment]", "  A --> O[Observability and evaluation]", "  D --> O", "  O --> G[Security and governance]", "  G --> P[Production reliability]", "```", "", "## Source policy", "", "Explanations are original synthesis grounded in primary papers, official documentation, specifications, and standards. The question bank does not copy proprietary interview banks. See [SOURCES.md](SOURCES.md).", "", "## Rebuild", "", "```bash", "python3 tools/build_content.py", "latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=handbook handbook/ai_engineering_interview_handbook.tex", "```", "", "## License", "", "Educational content and code are released under the MIT License. Third-party names belong to their respective owners.", ""]
+    (ROOT / "README.md").write_text("\n".join(lines), encoding="utf-8")
+
+
+def build_sources_md():
+    lines = ["# Primary sources", "", "Research snapshot: 2026-09-02. Sources are primary papers, official project documentation, specifications, and standards.", ""]
+    for r in REFERENCES:
+        lines.append(f"- **{r['title']}** ({r['kind']}): {r['url']}")
+    lines += ["", "## Method", "", "The atlas uses sources to verify mechanisms, terminology, and current product scope. Interview questions and explanations are original synthesis. Product comparisons are workload-dependent; benchmark on representative data, filters, hardware, and service-level objectives.", ""]
+    (ROOT / "SOURCES.md").write_text("\n".join(lines), encoding="utf-8")
+
+
+def build_site():
+    categories = list(SOURCE_GROUPS)
+    category_options = "".join(f'<option value="{html.escape(c)}">{html.escape(c)}</option>' for c in categories)
+    index = f'''<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Engineering Interview Atlas</title><meta name="description" content="A research-grounded AI engineering interview atlas with {len(QUESTIONS)+50} questions and system design drills.">
+<link rel="stylesheet" href="styles.css"></head>
+<body><a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><a class="brand" href="#map"><span class="mark">AI</span><span>Interview Atlas</span></a>
+<nav aria-label="Primary"><button data-view="map" class="active">Map</button><button data-view="topics">Topics</button><button data-view="practice">Practice</button><button data-view="core">Core 50</button><button data-view="design">System Design</button><button data-view="sources">Sources</button></nav>
+<a class="pdf-link" href="output/pdf/ai_engineering_interview_handbook.pdf">PDF handbook</a></header>
+<main id="main">
+<section class="command"><div><p class="eyebrow">RESEARCH-GROUNDED PRACTICE SYSTEM</p><h1>Build the whole AI engineering stack in your head.</h1><p>From BM25 and graph retrieval to KV-cache math, agent control, telemetry, and resilient services.</p></div>
+<div class="stats"><div><strong>{len(TOPICS)}</strong><span>topics</span></div><div><strong>{len(QUESTIONS)+50}</strong><span>questions</span></div><div><strong>{len(DESIGNS)}</strong><span>design drills</span></div><div><strong>{len(REFERENCES)}</strong><span>primary sources</span></div></div>
+<div class="search-wrap"><label for="globalSearch">Search the atlas</label><input id="globalSearch" type="search" placeholder="Try: pgvector, truthfulness, KV cache, decorators…" autocomplete="off"><kbd>/</kbd></div></section>
+<section id="map" class="view active" aria-labelledby="map-title"><div class="section-head"><div><p class="eyebrow">CURRICULUM</p><h2 id="map-title">The engineering landscape</h2></div><p>Open a domain, then drill into the mechanism, tradeoff, and production failure.</p></div><div id="mindmap" class="mindmap"></div>
+<div class="diagram-grid"><article class="diagram-card"><h3>Production AI request path</h3><div class="flow"><span>Client</span><b>→</b><span>Gateway</span><b>→</b><span>Agent / RAG</span><b>→</b><span>Model server</span><b>→</b><span>Telemetry</span></div><p>Policy and evaluation cross every stage; they are not post-processing.</p></article>
+<article class="diagram-card"><h3>RAG decomposition</h3><div class="pipeline"><div>Ingest<small>parse · version</small></div><div>Index<small>lexical · vector · graph</small></div><div>Retrieve<small>route · fuse · rerank</small></div><div>Generate<small>pack · cite · abstain</small></div><div>Evaluate<small>quality · cost · drift</small></div></div></article></div></section>
+<section id="topics" class="view"><div class="section-head"><div><p class="eyebrow">ENCYCLOPEDIA</p><h2>Topic notes</h2></div><select id="topicCategory"><option value="">All domains</option>{category_options}</select></div><div id="topicGrid" class="topic-grid"></div></section>
+<section id="practice" class="view"><div class="section-head"><div><p class="eyebrow">ACTIVE RECALL</p><h2>Practice engine</h2></div><div class="filters"><select id="qType"><option value="">All formats</option><option value="mcq">4-option MCQ</option><option value="flashcard">Flashcard</option><option value="long-answer">Long answer</option></select><select id="qDifficulty"><option value="">Medium + hard</option><option value="medium">Medium</option><option value="hard">Hard</option></select><select id="qCategory"><option value="">All domains</option>{category_options}</select></div></div>
+<div class="practice-layout"><aside><div class="progress-ring"><strong id="seenCount">0</strong><span>reviewed</span></div><p id="poolCount"></p><button id="shuffleBtn" class="secondary">Shuffle pool</button><button id="resetBtn" class="ghost">Reset progress</button></aside><article id="questionCard" class="question-card"></article></div></section>
+<section id="core" class="view"><div class="section-head"><div><p class="eyebrow">INTERVIEW SET</p><h2>50 medium and hard questions</h2></div><p>Research-derived prompts and original design synthesis, with answer rubrics.</p></div><div id="coreList" class="accordion-list"></div></section>
+<section id="design" class="view"><div class="section-head"><div><p class="eyebrow">SYSTEM DESIGN</p><h2>Progressive design interviews</h2></div><p>Start with the architecture, then absorb scale, failure, safety, and tradeoff twists.</p></div><div id="designList" class="design-list"></div></section>
+<section id="sources" class="view"><div class="section-head"><div><p class="eyebrow">RESEARCH</p><h2>Primary sources</h2></div><p>Official documentation, specifications, standards, and original papers. Snapshot: 2 September 2026.</p></div><div id="sourceGrid" class="source-grid"></div></section>
+</main><footer><span>AI Engineering Interview Atlas</span><span>Original synthesis · primary-source grounded · MIT</span></footer>
+<script src="app.js"></script></body></html>'''
+    (ROOT / "index.html").write_text(index, encoding="utf-8")
+
+
+def build_css():
+    css = r''':root{--ink:#0b1320;--muted:#5f6b7a;--paper:#f4f7fb;--panel:#fff;--line:#dbe3ed;--navy:#0c2744;--blue:#1e63e9;--cyan:#1db6c7;--amber:#ffb547;--red:#d84f4f;--shadow:0 16px 50px rgba(12,39,68,.08);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--paper)}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-width:320px}.skip{position:absolute;left:-999px}.skip:focus{left:1rem;top:1rem;background:#fff;padding:.75rem;z-index:20}.topbar{position:sticky;top:0;z-index:10;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:2rem;padding:.8rem clamp(1rem,4vw,4rem);background:rgba(244,247,251,.94);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:.65rem;color:var(--navy);font-weight:800;text-decoration:none}.mark{display:grid;place-items:center;width:2.2rem;height:2.2rem;border-radius:.65rem;background:var(--navy);color:#fff;font-size:.8rem;letter-spacing:.08em}.topbar nav{display:flex;gap:.2rem;justify-content:center}.topbar button{border:0;background:transparent;padding:.6rem .7rem;border-radius:.5rem;font-size:.88rem;color:var(--muted);cursor:pointer}.topbar button:hover,.topbar button.active{background:#fff;color:var(--navy);box-shadow:0 3px 14px rgba(12,39,68,.08)}.pdf-link{color:#fff;background:var(--blue);text-decoration:none;border-radius:.6rem;padding:.65rem .85rem;font-weight:700;font-size:.88rem}main{max-width:1500px;margin:auto;padding:0 clamp(1rem,4vw,4rem) 4rem}.command{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(20rem,.8fr);gap:2rem 5rem;padding:clamp(3rem,7vw,7rem) 0 3rem;border-bottom:1px solid var(--line)}.command h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(2.6rem,6vw,5.7rem);line-height:.95;letter-spacing:-.055em;max-width:13ch;margin:.35rem 0 1.2rem;color:var(--navy)}.command p{font-size:1.05rem;line-height:1.7;color:var(--muted);max-width:63ch}.eyebrow{font-size:.72rem!important;font-weight:900;letter-spacing:.18em;color:var(--blue)!important;margin:0}.stats{align-self:end;display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:1rem;overflow:hidden;background:#fff;box-shadow:var(--shadow)}.stats div{padding:1.3rem;border:1px solid var(--line);margin:-1px 0 0 -1px}.stats strong{display:block;font-size:2rem;color:var(--navy)}.stats span{color:var(--muted);font-size:.82rem}.search-wrap{grid-column:1/-1;position:relative;display:flex;align-items:center;background:#fff;border:1px solid var(--line);border-radius:.8rem;padding:.35rem .5rem .35rem 1rem;box-shadow:var(--shadow)}.search-wrap label{font-size:.75rem;font-weight:800;color:var(--blue);margin-right:1rem;text-transform:uppercase;letter-spacing:.09em}.search-wrap input{flex:1;border:0;outline:0;padding:1rem;background:transparent;font-size:1rem}.search-wrap kbd{padding:.35rem .55rem;border:1px solid var(--line);border-radius:.35rem;color:var(--muted);background:var(--paper)}.view{display:none;padding-top:3.2rem}.view.active{display:block}.section-head{display:flex;align-items:end;justify-content:space-between;gap:2rem;margin-bottom:1.5rem}.section-head h2{font-family:Georgia,"Times New Roman",serif;color:var(--navy);font-size:clamp(2rem,4vw,3.5rem);letter-spacing:-.04em;margin:.25rem 0 0}.section-head>p{max-width:50ch;color:var(--muted);line-height:1.6}.section-head select,.filters select{border:1px solid var(--line);background:#fff;border-radius:.55rem;padding:.7rem;color:var(--ink)}.mindmap{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}.branch{background:var(--panel);border:1px solid var(--line);border-radius:.9rem;overflow:hidden}.branch summary{list-style:none;cursor:pointer;padding:1rem 1.1rem;font-weight:800;color:var(--navy);display:flex;justify-content:space-between;gap:1rem}.branch summary::-webkit-details-marker{display:none}.branch summary span{color:var(--blue);font-size:.8rem}.branch ul{margin:0;padding:0 1rem 1rem;list-style:none;display:grid;gap:.45rem}.branch li{border-left:2px solid var(--cyan);padding:.3rem 0 .3rem .8rem;font-size:.88rem}.diagram-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}.diagram-card{background:var(--navy);color:#fff;padding:1.4rem;border-radius:.9rem;overflow:auto}.diagram-card h3{margin-top:0}.diagram-card p{color:#b9c9dc}.flow,.pipeline{display:flex;align-items:stretch;gap:.5rem;min-width:600px}.flow span,.pipeline div{flex:1;background:#173d64;border:1px solid #31577e;border-radius:.5rem;padding:.8rem;text-align:center}.flow b{align-self:center;color:var(--cyan)}.pipeline div{display:flex;flex-direction:column;font-weight:800}.pipeline small{margin-top:.35rem;font-weight:400;color:#b9c9dc}.topic-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}.topic-card{background:#fff;border:1px solid var(--line);border-radius:.8rem;padding:1.1rem;display:flex;flex-direction:column;min-height:20rem}.topic-card .cat,.question-card .cat{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:900}.topic-card h3{margin:.45rem 0;color:var(--navy);font-size:1.15rem}.topic-card p{color:var(--muted);line-height:1.55;font-size:.9rem}.topic-card dl{margin-top:auto}.topic-card dt{font-size:.75rem;font-weight:900;text-transform:uppercase;color:var(--navy);margin-top:.8rem}.topic-card dd{margin:.25rem 0;color:var(--muted);font-size:.85rem;line-height:1.45}.filters{display:flex;gap:.5rem;flex-wrap:wrap}.practice-layout{display:grid;grid-template-columns:14rem 1fr;gap:1rem}.practice-layout aside{background:var(--navy);color:#fff;border-radius:.9rem;padding:1.2rem;height:max-content}.progress-ring{width:8rem;height:8rem;margin:0 auto 1rem;border:8px solid #244a6e;border-top-color:var(--cyan);border-radius:50%;display:grid;place-content:center;text-align:center}.progress-ring strong{font-size:2rem}.progress-ring span{font-size:.75rem;color:#b9c9dc}.practice-layout aside p{font-size:.82rem;color:#b9c9dc}.practice-layout button,.question-card button{width:100%;padding:.75rem;border-radius:.55rem;border:0;font-weight:800;cursor:pointer;margin-top:.5rem}.secondary{background:var(--cyan);color:#072533}.ghost{background:transparent!important;color:#fff;border:1px solid #31577e!important}.question-card{min-height:33rem;background:#fff;border:1px solid var(--line);border-radius:.9rem;padding:clamp(1.2rem,3vw,2.5rem);box-shadow:var(--shadow)}.question-card h3{font-family:Georgia,"Times New Roman",serif;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.2;color:var(--navy);margin:.7rem 0 1.5rem;max-width:30ch}.badges{display:flex;gap:.5rem}.badge{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;padding:.25rem .45rem;border-radius:.3rem;background:#eaf0fa;color:var(--navy);font-weight:900}.options{display:grid;gap:.6rem}.option{display:flex;gap:.8rem;text-align:left!important;background:var(--paper);border:1px solid var(--line)!important;color:var(--ink);margin:0!important}.option:hover{border-color:var(--blue)!important}.option.correct{border-color:#1c9b70!important;background:#eaf8f2}.option.wrong{border-color:var(--red)!important;background:#fff0f0}.answer{margin-top:1rem;padding:1rem;border-left:4px solid var(--cyan);background:#eefbfc;line-height:1.6}.question-actions{display:flex;gap:.6rem;margin-top:1.2rem}.question-actions button{width:auto;background:var(--blue);color:#fff}.question-actions button.secondary{background:var(--navy)}.accordion-list{display:grid;gap:.65rem}.qa{background:#fff;border:1px solid var(--line);border-radius:.7rem}.qa summary{cursor:pointer;list-style:none;padding:1rem;display:grid;grid-template-columns:5rem 1fr auto;gap:1rem;align-items:start}.qa summary::-webkit-details-marker{display:none}.qa summary strong{color:var(--navy)}.qa .qa-answer{padding:0 1rem 1.2rem 7rem;color:var(--muted);line-height:1.65;max-width:95ch}.design-list{display:grid;gap:1rem}.design-case{background:#fff;border:1px solid var(--line);border-radius:.9rem;overflow:hidden}.design-case>header{padding:1.2rem;display:flex;justify-content:space-between;gap:2rem;align-items:start}.design-case h3{font-family:Georgia,"Times New Roman",serif;font-size:1.8rem;color:var(--navy);margin:0}.design-case header p{color:var(--muted);margin:.4rem 0 0}.case-body{display:grid;grid-template-columns:minmax(18rem,.8fr) 1.2fr;border-top:1px solid var(--line)}.case-diagram{background:var(--navy);padding:1rem;display:grid;gap:.6rem;align-content:center}.case-diagram .node{background:#173d64;color:#fff;border:1px solid #31577e;border-radius:.5rem;padding:.65rem;text-align:center}.case-diagram .arrow{text-align:center;color:var(--cyan)}.stages{padding:1.2rem}.stage{border-left:3px solid var(--amber);padding:0 0 1rem 1rem}.stage h4{margin:0;color:var(--navy)}.stage p{color:var(--muted);line-height:1.55;margin:.35rem 0}.source-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem}.source-card{display:block;background:#fff;border:1px solid var(--line);border-radius:.7rem;padding:1rem;text-decoration:none;color:var(--ink)}.source-card:hover{border-color:var(--blue);transform:translateY(-2px)}.source-card small{display:block;color:var(--blue);font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem}.source-card span{color:var(--navy);font-weight:700;line-height:1.4}footer{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:2rem clamp(1rem,4vw,4rem);color:var(--muted);font-size:.85rem}.empty{grid-column:1/-1;padding:3rem;text-align:center;color:var(--muted)}@media(max-width:1050px){.topbar{grid-template-columns:auto 1fr}.topbar nav{order:3;grid-column:1/-1;overflow:auto;justify-content:start}.pdf-link{justify-self:end}.command{grid-template-columns:1fr}.mindmap,.topic-grid,.source-grid{grid-template-columns:repeat(2,1fr)}.practice-layout{grid-template-columns:1fr}.practice-layout aside{display:flex;align-items:center;gap:1rem}.progress-ring{margin:0;width:6rem;height:6rem;flex:0 0 6rem}.case-body{grid-template-columns:1fr}}@media(max-width:680px){.topbar{gap:.6rem;padding:.6rem}.brand span:last-child{display:none}.pdf-link{font-size:.75rem}.command{padding-top:3rem}.command h1{font-size:3rem}.stats{grid-template-columns:1fr 1fr}.search-wrap label,.search-wrap kbd{display:none}.section-head{align-items:start;flex-direction:column}.mindmap,.topic-grid,.source-grid,.diagram-grid{grid-template-columns:1fr}.practice-layout aside{display:block}.qa summary{grid-template-columns:4rem 1fr}.qa summary .badge{display:none}.qa .qa-answer{padding-left:1rem}.question-actions{flex-direction:column}.question-actions button{width:100%}footer{flex-direction:column;gap:.5rem}}'''
+    (ROOT / "styles.css").write_text(css, encoding="utf-8")
+
+
+def build_js():
+    js = r'''const state={topics:[],questions:[],core:[],designs:[],refs:[],pool:[],index:0,seen:new Set(JSON.parse(localStorage.getItem("atlas-seen")||"[]"))};
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+Promise.all(["data/topics.json","data/questions.json","data/core_questions.json","data/designs.json","data/references.json"].map(u=>fetch(u).then(r=>r.json()))).then(([t,q,c,d,r])=>{Object.assign(state,{topics:t,questions:q,core:c,designs:d,refs:r});renderAll();applyQuestionFilters()});
+function showView(id){$$('.view').forEach(v=>v.classList.toggle('active',v.id===id));$$('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id));history.replaceState(null,'','#'+id);scrollTo({top:$('.command').offsetHeight,behavior:'smooth'})}
+$$('nav button').forEach(b=>b.onclick=()=>showView(b.dataset.view));
+function renderAll(){renderMap();renderTopics();renderCore();renderDesigns();renderSources()}
+function renderMap(){const groups=Object.groupBy?Object.groupBy(state.topics,t=>t.category):state.topics.reduce((a,t)=>((a[t.category]??=[]).push(t),a),{});$('#mindmap').innerHTML=Object.entries(groups).map(([c,ts])=>`<details class="branch" open><summary>${esc(c)}<span>${ts.length} topics</span></summary><ul>${ts.map(t=>`<li data-search="${esc((t.name+' '+t.summary).toLowerCase())}">${esc(t.name)}</li>`).join('')}</ul></details>`).join('')}
+function renderTopics(){const c=$('#topicCategory').value,q=$('#globalSearch').value.trim().toLowerCase();const xs=state.topics.filter(t=>(!c||t.category===c)&&(!q||(t.name+' '+t.summary+' '+t.tradeoff+' '+t.pitfall).toLowerCase().includes(q)));$('#topicGrid').innerHTML=xs.length?xs.map(t=>`<article class="topic-card"><span class="cat">${esc(t.category)}</span><h3>${esc(t.name)}</h3><p>${esc(t.summary)}</p><dl><dt>Tradeoff</dt><dd>${esc(t.tradeoff)}</dd><dt>Production failure</dt><dd>${esc(t.pitfall)}</dd></dl></article>`).join(''):'<p class="empty">No topics match this filter.</p>'}
+$('#topicCategory').onchange=renderTopics;
+function applyQuestionFilters(){const type=$('#qType').value,d=$('#qDifficulty').value,c=$('#qCategory').value,q=$('#globalSearch').value.trim().toLowerCase();state.pool=state.questions.filter(x=>(!type||x.type===type)&&(!d||x.difficulty===d)&&(!c||x.category===c)&&(!q||(x.prompt+' '+x.topic+' '+x.category).toLowerCase().includes(q)));state.index=0;renderQuestion()}
+['#qType','#qDifficulty','#qCategory'].forEach(s=>$(s).onchange=applyQuestionFilters);
+function renderQuestion(){const el=$('#questionCard');$('#seenCount').textContent=state.seen.size;$('#poolCount').textContent=`${state.pool.length.toLocaleString()} questions in this pool`;if(!state.pool.length){el.innerHTML='<p class="empty">No questions match this filter.</p>';return}const q=state.pool[state.index%state.pool.length];const opts=q.options?`<div class="options">${q.options.map((o,i)=>`<button class="option" data-value="${esc(o)}"><b>${String.fromCharCode(65+i)}</b><span>${esc(o)}</span></button>`).join('')}</div>`:'';el.innerHTML=`<div class="badges"><span class="badge">${esc(q.id)}</span><span class="badge">${esc(q.type)}</span><span class="badge">${esc(q.difficulty)}</span></div><span class="cat">${esc(q.category)} · ${esc(q.topic)}</span><h3>${esc(q.prompt)}</h3>${opts}<div id="answerBox"></div><div class="question-actions"><button id="reveal">Reveal answer</button><button id="next" class="secondary">Next question →</button></div>`;$$('.option').forEach(b=>b.onclick=()=>grade(b,q));$('#reveal').onclick=()=>reveal(q);$('#next').onclick=()=>{markSeen(q);state.index=(state.index+1)%state.pool.length;renderQuestion()}}
+function grade(btn,q){$$('.option').forEach(b=>{b.disabled=true;b.classList.toggle('correct',b.dataset.value===q.answer)});if(btn.dataset.value!==q.answer)btn.classList.add('wrong');reveal(q)}
+function reveal(q){$('#answerBox').innerHTML=`<div class="answer"><strong>Answer</strong><p>${esc(q.answer)}</p><small>${esc(q.explanation||'')}</small></div>`;markSeen(q)}
+function markSeen(q){state.seen.add(q.id);localStorage.setItem('atlas-seen',JSON.stringify([...state.seen]));$('#seenCount').textContent=state.seen.size}
+$('#shuffleBtn').onclick=()=>{state.pool.sort(()=>Math.random()-.5);state.index=0;renderQuestion()};$('#resetBtn').onclick=()=>{state.seen.clear();localStorage.removeItem('atlas-seen');renderQuestion()};
+function renderCore(){const q=$('#globalSearch').value.trim().toLowerCase();const xs=state.core.filter(x=>!q||(x.prompt+' '+x.answer+' '+x.category).toLowerCase().includes(q));$('#coreList').innerHTML=xs.map(x=>`<details class="qa"><summary><span class="badge">${esc(x.id)} · ${esc(x.difficulty)}</span><strong>${esc(x.prompt)}</strong><span class="badge">${esc(x.origin)}</span></summary><div class="qa-answer"><p>${esc(x.answer)}</p><small>${esc(x.category)}</small></div></details>`).join('')}
+function renderDesigns(){const q=$('#globalSearch').value.trim().toLowerCase();const xs=state.designs.filter(x=>!q||(x.title+' '+x.brief+' '+JSON.stringify(x.stages)).toLowerCase().includes(q));$('#designList').innerHTML=xs.map((d,i)=>{const nodes=d.diagram.split('\n').filter(x=>x.includes('[')).map(x=>x.match(/\[([^\]]+)\]/)?.[1]).filter(Boolean);return `<article class="design-case"><header><div><span class="badge">DESIGN ${String(i+1).padStart(2,'0')}</span><h3>${esc(d.title)}</h3><p>${esc(d.brief)}</p></div><span class="badge">4-stage interview</span></header><div class="case-body"><div class="case-diagram">${nodes.map((n,j)=>`${j?'<div class="arrow">↓</div>':''}<div class="node">${esc(n)}</div>`).join('')}</div><div class="stages">${d.stages.map((s,j)=>`<div class="stage"><h4>${j+1}. ${esc(s.q)}</h4><p>${esc(s.a)}</p></div>`).join('')}</div></div></article>`}).join('')}
+function renderSources(){const q=$('#globalSearch').value.trim().toLowerCase();const xs=state.refs.filter(x=>!q||(x.title+' '+x.kind).toLowerCase().includes(q));$('#sourceGrid').innerHTML=xs.map(r=>`<a class="source-card" href="${esc(r.url)}" target="_blank" rel="noreferrer"><small>${esc(r.kind)}</small><span>${esc(r.title)}</span></a>`).join('')}
+let timer;$('#globalSearch').oninput=()=>{clearTimeout(timer);timer=setTimeout(()=>{renderTopics();renderCore();renderDesigns();renderSources();applyQuestionFilters();const q=$('#globalSearch').value.trim().toLowerCase();$$('#mindmap li').forEach(li=>li.hidden=q&&!li.dataset.search.includes(q))},120)};
+document.addEventListener('keydown',e=>{if(e.key==='/'&&document.activeElement.tagName!=='INPUT'){e.preventDefault();$('#globalSearch').focus()}});if(location.hash&&$(location.hash))showView(location.hash.slice(1));'''
+    (ROOT / "app.js").write_text(js, encoding="utf-8")
+
+
+def build_latex():
+    lines = [r"\documentclass[10pt]{article}",r"\usepackage[margin=0.68in]{geometry}",r"\usepackage[T1]{fontenc}",r"\usepackage{lmodern}",r"\usepackage{xcolor}",r"\usepackage{hyperref}",r"\usepackage{fancyhdr}",r"\usepackage{titlesec}",r"\usepackage{enumitem}",r"\usepackage{longtable}",r"\usepackage{tabularx}",r"\usepackage{tikz}",r"\usetikzlibrary{arrows.meta,positioning,shapes.geometric}",r"\definecolor{navy}{HTML}{0C2744}",r"\definecolor{blue}{HTML}{1E63E9}",r"\definecolor{cyan}{HTML}{1DB6C7}",r"\definecolor{paper}{HTML}{F4F7FB}",r"\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,pdftitle={AI Engineering Interview Atlas}}",r"\pagestyle{fancy}\fancyhf{}\fancyhead[L]{\textcolor{navy}{AI Engineering Interview Atlas}}\fancyhead[R]{\textcolor{gray}{\leftmark}}\fancyfoot[C]{\thepage}",r"\titleformat{\section}{\Large\bfseries\color{navy}}{\thesection}{.7em}{}",r"\titleformat{\subsection}{\large\bfseries\color{blue}}{\thesubsection}{.7em}{}",r"\setlist{nosep,leftmargin=*}",r"\newcommand{\tradeoff}[1]{\par\smallskip\noindent\textbf{Tradeoff.} #1}",r"\newcommand{\pitfall}[1]{\par\smallskip\noindent\textbf{Production failure.} #1}",r"\newcommand{\badge}[1]{\colorbox{paper}{\textcolor{blue}{\textbf{#1}}}}",r"\begin{document}",r"\begin{titlepage}\pagecolor{navy}\color{white}\vspace*{1.1in}{\Huge\bfseries AI Engineering\\Interview Atlas\par}\vspace{.4in}{\Large Systems, theory, and 1,000+ questions\par}\vfill{\large Research snapshot: 2 September 2026\par}\vspace{.15in}{\normalsize Primary papers, official documentation, specifications, and standards\par}\vspace{.7in}{\color{cyan}\rule{\textwidth}{3pt}}\end{titlepage}\nopagecolor\color{black}",r"\tableofcontents\newpage",r"\section{How to use this handbook}",f"This handbook contains {len(TOPICS)} topic notes, {len(QUESTIONS)} generated practice questions, 50 core interview questions, and {len(DESIGNS)} progressive system-design challenges. Study mechanisms first, state tradeoffs second, then describe measurement, failure handling, and rollback.",r"\subsection{Curriculum architecture}",r"\begin{center}\begin{tikzpicture}[node distance=9mm and 12mm,box/.style={draw=cyan,fill=paper,rounded corners,align=center,minimum width=27mm,minimum height=9mm},arr/.style={-{Stealth},thick,draw=blue}]\node[box](f){Foundations};\node[box,right=of f](r){Retrieval\\and RAG};\node[box,right=of r](a){Agents\\and control};\node[box,below=of f](t){Transformers};\node[box,right=of t](s){Serving\\and LLMOps};\node[box,right=of s](o){Observability\\and safety};\draw[arr](f)--(r);\draw[arr](r)--(a);\draw[arr](f)--(t);\draw[arr](t)--(s);\draw[arr](s)--(o);\draw[arr](a)--(o);\end{tikzpicture}\end{center}"]
+    for category in SOURCE_GROUPS:
+        lines.append(r"\section{" + latex_escape(category) + "}")
+        for t in [x for x in TOPICS if x["category"] == category]:
+            lines += [r"\subsection{" + latex_escape(t["name"]) + "}", latex_escape(t["summary"]), r"\tradeoff{" + latex_escape(t["tradeoff"]) + "}", r"\pitfall{" + latex_escape(t["pitfall"]) + "}"]
+    lines += [r"\clearpage\section{Core 50 interview questions}"]
+    for q in CORE_QUESTIONS:
+        lines += [r"\subsection*{" + latex_escape(q["id"] + " - " + q["prompt"]) + "}", r"\badge{" + latex_escape(q["difficulty"].upper()) + r"} \quad " + latex_escape(q["category"]), r"\par\smallskip\textbf{Answer rubric.} " + latex_escape(q["answer"])]
+    lines += [r"\clearpage\section{Progressive system-design challenges}"]
+    for d in DESIGNS:
+        lines += [r"\subsection{" + latex_escape(d["title"]) + "}", latex_escape(d["brief"]), r"\begin{enumerate}"]
+        for s in d["stages"]:
+            lines.append(r"\item \textbf{" + latex_escape(s["q"]) + "} " + latex_escape(s["a"]))
+        lines.append(r"\end{enumerate}")
+    lines += [r"\clearpage\section{Complete practice bank}","Questions are grouped by topic. Four-option questions include the correct answer and a compact explanation; flashcards and long answers provide model rubrics."]
+    current = None
+    for q in QUESTIONS:
+        if q["category"] != current:
+            current = q["category"]
+            lines.append(r"\subsection{" + latex_escape(current) + "}")
+        lines += [r"\paragraph{" + latex_escape(q["id"] + " [" + q["difficulty"] + "]") + "} " + latex_escape(q["prompt"])]
+        if q.get("options"):
+            lines.append(r"\begin{enumerate}[label=\Alph*.]")
+            lines.extend(r"\item " + latex_escape(o) for o in q["options"])
+            lines.append(r"\end{enumerate}")
+        lines += [r"\noindent\textbf{Answer.} " + latex_escape(q["answer"]), r"\par\textit{" + latex_escape(q.get("explanation", "")) + "}"]
+    lines += [r"\clearpage\section{Primary sources}",r"\begin{enumerate}"]
+    for r in REFERENCES:
+        lines.append(r"\item \href{" + r["url"] + "}{" + latex_escape(r["title"]) + "} (" + latex_escape(r["kind"]) + ")")
+    lines += [r"\end{enumerate}",r"\end{document}"]
+    (ROOT / "handbook" / "ai_engineering_interview_handbook.tex").write_text("\n".join(lines), encoding="utf-8")
+
+
+def build_workflow_and_misc():
+    workflow = '''name: Deploy GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
+'''
+    (ROOT / ".github" / "workflows" / "pages.yml").write_text(workflow, encoding="utf-8")
+    (ROOT / ".nojekyll").write_text("", encoding="utf-8")
+    (ROOT / "LICENSE").write_text("MIT License\n\nCopyright (c) 2026 Ali Nikkhah\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.\n", encoding="utf-8")
+
+
+def main():
+    for d in [ROOT / "data", ROOT / "handbook", ROOT / ".github" / "workflows"]:
+        d.mkdir(parents=True, exist_ok=True)
+    write_json(ROOT / "data" / "topics.json", TOPICS)
+    write_json(ROOT / "data" / "questions.json", QUESTIONS)
+    write_json(ROOT / "data" / "core_questions.json", CORE_QUESTIONS)
+    write_json(ROOT / "data" / "designs.json", DESIGNS)
+    write_json(ROOT / "data" / "references.json", REFERENCES)
+    write_json(ROOT / "data" / "manifest.json", {"topics":len(TOPICS),"generated_questions":len(QUESTIONS),"core_questions":50,"design_challenges":len(DESIGNS),"sources":len(REFERENCES),"research_snapshot":"2026-09-02"})
+    build_markdown(); build_sources_md(); build_site(); build_css(); build_js(); build_latex(); build_workflow_and_misc()
+    print(json.dumps({"topics":len(TOPICS),"questions":len(QUESTIONS),"core":len(CORE_QUESTIONS),"designs":len(DESIGNS),"sources":len(REFERENCES)}, indent=2))
+
+
+if __name__ == "__main__":
+    main()

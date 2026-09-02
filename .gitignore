@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+handbook/*.aux
+handbook/*.fdb_latexmk
+handbook/*.fls
+handbook/*.log
+tmp/

@@ -1,0 +1,290 @@
+[
+  {
+    "id": "enterprise-rag",
+    "title": "Multi-tenant enterprise RAG",
+    "brief": "Design a citation-first assistant over 50 million private documents for 500 organizations.",
+    "diagram": "flowchart LR\n U[User] --> G[Policy gateway]\n G --> Q[Query router]\n Q --> H[Hybrid retrieval]\n H --> R[Reranker]\n R --> L[LLM + citations]\n L --> E[Eval and traces]",
+    "stages": [
+      {
+        "q": "Initial design",
+        "a": "Separate an access-aware ingestion plane from the query plane. Preserve tenant, ACL, source version, and stable chunk IDs; retrieve lexical and dense candidates under authorization, rerank, pack diverse evidence, generate constrained citations, and log a redacted trace."
+      },
+      {
+        "q": "Challenge: 10x documents and strict deletion",
+        "a": "Partition by tenant and locality, version embedding indexes, process change-data events idempotently, and maintain a deletion ledger that removes source, chunks, caches, and trace content. Use blue-green reindexing and reconciliation scans."
+      },
+      {
+        "q": "Challenge: answer quality falls after an embedding upgrade",
+        "a": "Shadow the new index on frozen and live evaluation sets, compare recall and downstream quality by query slice, and inspect nearest-neighbor shifts. Keep dual-read capability and roll back the alias if guardrails fail."
+      },
+      {
+        "q": "Tradeoffs and choices",
+        "a": "pgvector reduces services when relational ACL joins dominate; a dedicated store may scale vector traffic independently. Hybrid retrieval protects exact terms. Strong ACL filtering can reduce ANN recall, so tenant partitioning and filtered-recall tests are essential."
+      }
+    ]
+  },
+  {
+    "id": "agent-platform",
+    "title": "Approval-gated agent platform",
+    "brief": "Design a platform where agents use email, calendar, CRM, and payment tools with different risk levels.",
+    "diagram": "flowchart TD\n I[Intent] --> P[Planner]\n P --> C[Policy engine]\n C -->|low risk| T[Tool sandbox]\n C -->|high risk| H[Human approval]\n H --> T\n T --> A[Audit log]",
+    "stages": [
+      {
+        "q": "Initial design",
+        "a": "Maintain an explicit state machine. The planner proposes typed actions; a deterministic policy engine checks identity, scope, risk, and consent; high-risk actions pause durably; the executor receives a short-lived scoped token and writes an immutable result."
+      },
+      {
+        "q": "Challenge: a tool times out after charging a card",
+        "a": "Never blindly retry. Query by idempotency key, reconcile provider state, and return the stored outcome. Keep planning and execution separate so model retries cannot invent new operation keys."
+      },
+      {
+        "q": "Challenge: malicious email contains tool instructions",
+        "a": "Mark email as untrusted data, do not concatenate it into authority-bearing instructions, restrict available capabilities, validate recipients and amounts from trusted state, and require approval for consequential actions."
+      },
+      {
+        "q": "Tradeoffs and choices",
+        "a": "Dynamic agents handle novel requests but deterministic workflows are safer for financial steps. Per-action least privilege and durable approvals add latency but reduce blast radius. Store concise state, not unrestricted reasoning transcripts."
+      }
+    ]
+  },
+  {
+    "id": "llm-gateway",
+    "title": "Global multi-provider LLM gateway",
+    "brief": "Design a gateway serving 20 products across three model providers with budgets and regional policy.",
+    "diagram": "flowchart LR\n C[Clients] --> G[Gateway]\n G --> R[Policy router]\n R --> A[Provider A]\n R --> B[Provider B]\n R --> S[Self-hosted]\n G --> O[OTel + cost ledger]",
+    "stages": [
+      {
+        "q": "Initial design",
+        "a": "Authenticate services and users, normalize a minimal request contract, retain capability metadata, enforce regional and data policies, estimate tokens before admission, route by model requirements, and stream through bounded buffers with full usage accounting."
+      },
+      {
+        "q": "Challenge: provider A has elevated p99 latency",
+        "a": "Use deadline-aware circuit breaking and route eligible traffic to pinned alternatives. Preserve non-equivalent capability constraints, surface the actual model route, and protect the fallback from a retry storm."
+      },
+      {
+        "q": "Challenge: one tenant consumes half the GPU fleet",
+        "a": "Apply tenant token buckets, weighted fair queues, concurrent-token limits, and reserved capacity. Attribute cache, input, output, and tool cost to the tenant and alert on anomalies."
+      },
+      {
+        "q": "Tradeoffs and choices",
+        "a": "A central gateway simplifies governance but is a critical dependency. Global caching lowers cost but creates privacy and invalidation risk. Provider abstraction should not erase semantic differences such as tool schemas or context limits."
+      }
+    ]
+  },
+  {
+    "id": "code-agent",
+    "title": "Autonomous code agent sandbox",
+    "brief": "Design a code agent that can modify repositories and run tests without endangering infrastructure.",
+    "diagram": "flowchart TD\n R[Repo snapshot] --> S[Ephemeral sandbox]\n P[Task policy] --> S\n S --> T[Tests]\n T --> D[Patch + evidence]\n D --> H[Human review]\n H --> M[Merge service]",
+    "stages": [
+      {
+        "q": "Initial design",
+        "a": "Clone a pinned snapshot into an ephemeral unprivileged sandbox. Mount only the workspace writable, deny network by default, issue no ambient credentials, cap CPU, memory, processes, disk, and time, then return a patch, test evidence, and audit record."
+      },
+      {
+        "q": "Challenge: tests need package downloads",
+        "a": "Use an allowlisted dependency proxy with pinned hashes and egress logging, or prebuild trusted images. Do not grant general internet access or repository write credentials to the sandbox."
+      },
+      {
+        "q": "Challenge: repository contains malicious test code",
+        "a": "Treat repository code as untrusted. Harden the runtime boundary, block host sockets and metadata endpoints, use disposable workers, scan artifacts, and separate the merge identity from the execution identity."
+      },
+      {
+        "q": "Tradeoffs and choices",
+        "a": "MicroVMs offer stronger tenant isolation than ordinary containers but start more slowly. Warm pools reduce latency yet require secure reset. Automated merging improves speed but should be limited to low-risk paths with strong tests."
+      }
+    ]
+  },
+  {
+    "id": "eval-platform",
+    "title": "Continuous AI evaluation platform",
+    "brief": "Design a platform that evaluates prompts, models, RAG pipelines, and agents before and after release.",
+    "diagram": "flowchart LR\n D[Versioned datasets] --> O[Eval orchestrator]\n O --> C[Candidates]\n C --> J[Checks + judges]\n J --> M[Metrics by slice]\n M --> G[Release gate]\n G --> P[Production sampling]",
+    "stages": [
+      {
+        "q": "Initial design",
+        "a": "Version datasets, prompts, models, tool environments, scorers, and code. Run deterministic tests first, then model judges and sampled human review. Store per-case traces and aggregate by task, risk, language, and tenant slice."
+      },
+      {
+        "q": "Challenge: judge scores improve but users complain",
+        "a": "Audit judge calibration, position and verbosity bias, and dataset representativeness. Add complaint-derived cases, blind candidates, and connect online business and correction signals without treating them as perfect labels."
+      },
+      {
+        "q": "Challenge: agent evaluations are flaky",
+        "a": "Use deterministic simulators, frozen tool snapshots, seeded stochastic settings where supported, retry classification, and trajectory-level assertions. Separate environment failures from policy and reasoning failures."
+      },
+      {
+        "q": "Tradeoffs and choices",
+        "a": "Large golden sets improve coverage but slow releases; tier tests by speed and risk. LLM judges scale but need calibration. A single aggregate score is convenient and dangerous, so gate critical slices independently."
+      }
+    ]
+  },
+  {
+    "id": "ingestion",
+    "title": "Resilient document ingestion",
+    "brief": "Design an ingestion pipeline for PDFs, HTML, email, tables, and code with near-real-time updates.",
+    "diagram": "flowchart LR\n S[Sources] --> Q[Event queue]\n Q --> P[Parse + normalize]\n P --> V[Validate + dedupe]\n V --> C[Chunk + enrich]\n C --> I[Indexes]\n I --> R[Reconciliation]",
+    "stages": [
+      {
+        "q": "Initial design",
+        "a": "Use source-version events and an idempotent state machine. Store immutable raw content, parse to a canonical document model, validate and classify, create deterministic chunks, enrich, and atomically promote lexical and vector index versions."
+      },
+      {
+        "q": "Challenge: a parser upgrade changes every chunk boundary",
+        "a": "Version parser and chunker output, build a parallel index, compare retrieval and citation stability, and switch an alias only after acceptance. Keep old versions for rollback and delete them by retention policy."
+      },
+      {
+        "q": "Challenge: events arrive out of order",
+        "a": "Use source sequence or modification versions, reject stale transitions, and reconcile current source inventory against indexed state. Tombstones must dominate older create events."
+      },
+      {
+        "q": "Tradeoffs and choices",
+        "a": "Exactly-once broker delivery is unnecessary if effects are idempotent. Rich parsing improves quality but increases cost. Near-real-time indexing may use smaller incremental shards later compacted into efficient layouts."
+      }
+    ]
+  },
+  {
+    "id": "graphrag-compliance",
+    "title": "Compliance GraphRAG",
+    "brief": "Design a system that answers policy questions across regulations, contracts, and internal controls over time.",
+    "diagram": "flowchart TD\n D[Versioned clauses] --> X[Entity + relation extraction]\n X --> K[Temporal knowledge graph]\n K --> Q[Local/global router]\n Q --> L[Evidence-bound answer]\n L --> A[Reviewer + audit]",
+    "stages": [
+      {
+        "q": "Initial design",
+        "a": "Model regulations, obligations, controls, owners, jurisdictions, and validity intervals. Attach every node and edge to source spans and extraction versions. Route precise entity questions to local traversal and thematic questions to community summaries."
+      },
+      {
+        "q": "Challenge: two regulations conflict",
+        "a": "Preserve both facts with jurisdiction, authority, and valid time rather than overwriting. Apply explicit precedence rules where approved and surface the conflict with citations for human interpretation."
+      },
+      {
+        "q": "Challenge: auditors need as-of answers",
+        "a": "Use bitemporal or validity-aware facts, immutable source versions, and query-time cutoffs. Store the exact graph, prompt, model, and evidence versions used for each answer."
+      },
+      {
+        "q": "Tradeoffs and choices",
+        "a": "Formal schema and temporal semantics add modeling cost but are justified by auditability. Vector-only RAG is simpler for prose lookup; graphs earn their cost on relationships, conflicts, and multi-hop obligations."
+      }
+    ]
+  },
+  {
+    "id": "realtime-copilot",
+    "title": "Real-time support copilot",
+    "brief": "Design an assistant that listens to a live support conversation and suggests grounded responses under 700 ms.",
+    "diagram": "flowchart LR\n A[Audio] --> T[Streaming ASR]\n T --> S[State summarizer]\n S --> R[Fast retrieval]\n R --> M[Small model]\n M --> U[Agent UI]\n U --> F[Feedback]",
+    "stages": [
+      {
+        "q": "Initial design",
+        "a": "Stream ASR partials, maintain a compact conversation state, detect stable intent boundaries, retrieve from a tenant-aware cache and hybrid index, and use a low-latency model with citations. Never auto-send; suggestions remain human controlled."
+      },
+      {
+        "q": "Challenge: latency spikes during peak hours",
+        "a": "Use token-aware admission, prewarm capacity, degrade to cached macros or smaller models, cap retrieval and output budgets, and monitor time to first suggestion separately from final completion."
+      },
+      {
+        "q": "Challenge: ASR mishears an account number",
+        "a": "Do not infer high-impact identifiers from uncertain audio. Display confidence, request confirmation, and resolve accounts through authenticated UI context rather than model text."
+      },
+      {
+        "q": "Tradeoffs and choices",
+        "a": "Frequent suggestions feel responsive but can distract and amplify partial-transcript errors. Smaller models reduce latency but may need stronger templates. Human control lowers automation but is appropriate for uncertain real-time signals."
+      }
+    ]
+  },
+  {
+    "id": "multimodal-search",
+    "title": "Multimodal product search",
+    "brief": "Design text, image, and attribute search for 200 million commerce products.",
+    "diagram": "flowchart LR\n Q[Text or image query] --> E[Modality encoders]\n E --> V[Vector candidates]\n Q --> L[Lexical + filters]\n V --> F[Fusion]\n L --> F\n F --> R[Learning-to-rank]",
+    "stages": [
+      {
+        "q": "Initial design",
+        "a": "Create versioned text and image embeddings, retain structured attributes, retrieve modality-specific candidates, fuse ranks, filter availability and policy, then rerank with behavioral features. Evaluate by query type and inventory segment."
+      },
+      {
+        "q": "Challenge: new catalog items have no interactions",
+        "a": "Rely on content embeddings and attributes, use exploration, and separate cold-start metrics. Avoid training labels that make popular products the only relevant answers."
+      },
+      {
+        "q": "Challenge: exact SKU searches regress",
+        "a": "Route identifier-shaped queries to lexical or key-value lookup and combine with semantic search only as fallback. Keep BM25 or exact matching in the hybrid design."
+      },
+      {
+        "q": "Tradeoffs and choices",
+        "a": "A shared multimodal space simplifies cross-modal retrieval but specialized encoders can be stronger. Rich reranking improves relevance at latency cost. Behavior data improves conversion but introduces position and popularity bias."
+      }
+    ]
+  },
+  {
+    "id": "global-inference",
+    "title": "Multi-region LLM inference",
+    "brief": "Design self-hosted inference for users in North America, Europe, and Asia with residency constraints.",
+    "diagram": "flowchart TD\n U[Regional users] --> G[Geo policy gateway]\n G --> NA[NA cell]\n G --> EU[EU cell]\n G --> AP[AP cell]\n NA --> C[Model registry]\n EU --> C\n AP --> C",
+    "stages": [
+      {
+        "q": "Initial design",
+        "a": "Build independent regional cells with pinned model artifacts, local telemetry, token-aware queues, and residency-safe storage. A control plane distributes signed releases and policy, while the data plane serves without cross-region prompt transfer."
+      },
+      {
+        "q": "Challenge: Europe loses half its GPU capacity",
+        "a": "Apply regional admission and degradation first. Fail over only requests whose policy permits leaving the region; otherwise use a smaller local model or queue within deadlines. Communicate degraded capability explicitly."
+      },
+      {
+        "q": "Challenge: model release behaves differently on one GPU type",
+        "a": "Treat hardware and runtime as part of the release identity. Run per-hardware conformance, quality, and performance tests, and canary independently by cell before global promotion."
+      },
+      {
+        "q": "Tradeoffs and choices",
+        "a": "Active-active cells improve latency and availability but duplicate expensive weights and caches. Cross-region fallback raises residency and consistency concerns. Centralized control should not be required for serving an already-approved model."
+      }
+    ]
+  },
+  {
+    "id": "recommendation",
+    "title": "LLM-assisted recommendation system",
+    "brief": "Design recommendations that combine collaborative signals, content embeddings, and natural-language explanations.",
+    "diagram": "flowchart LR\n U[User context] --> C[Candidate generators]\n C --> R[Ranker]\n R --> P[Policy and diversity]\n P --> X[Explanation RAG]\n X --> O[Response]\n O --> L[Outcomes]",
+    "stages": [
+      {
+        "q": "Initial design",
+        "a": "Generate candidates from collaborative, popularity, and vector channels; rank with point-in-time correct features; apply inventory, policy, and diversity constraints; generate explanations only from verified product attributes and recommendation factors."
+      },
+      {
+        "q": "Challenge: explanations claim unsupported benefits",
+        "a": "Use structured evidence templates or constrained generation, validate every claim against catalog fields, and omit explanations when evidence is insufficient. Evaluate explanation faithfulness separately from ranking quality."
+      },
+      {
+        "q": "Challenge: filter bubbles increase",
+        "a": "Add calibrated diversity and exploration, monitor exposure by cohort and supplier, and distinguish user satisfaction from short-term click maximization."
+      },
+      {
+        "q": "Tradeoffs and choices",
+        "a": "LLMs add interface quality but should not replace a measured ranker by default. Exploration improves long-term learning with short-term risk. Feature freshness improves relevance but increases online-store complexity."
+      }
+    ]
+  },
+  {
+    "id": "fraud-hitl",
+    "title": "Fraud investigation agent",
+    "brief": "Design an agent that assembles evidence and recommends actions but cannot silently freeze accounts.",
+    "diagram": "flowchart TD\n E[Alerts] --> A[Evidence agent]\n A --> G[Case graph]\n G --> R[Risk rules]\n R --> H[Investigator]\n H --> X[Action service]\n X --> U[Audit + outcomes]",
+    "stages": [
+      {
+        "q": "Initial design",
+        "a": "The agent retrieves immutable transaction evidence, constructs a case timeline and graph, cites every claim, and proposes actions. Deterministic policy calculates risk and an authenticated investigator approves account-impacting actions."
+      },
+      {
+        "q": "Challenge: adversary places prompt injection in transaction notes",
+        "a": "Treat notes as untrusted evidence, escape and label them, never expose general tools to the evidence-processing model, and derive actions only through typed policy-checked proposals."
+      },
+      {
+        "q": "Challenge: false positives disproportionately affect one cohort",
+        "a": "Monitor error and review outcomes by legally and ethically appropriate slices, audit features and thresholds, add escalation and appeal paths, and pause automated recommendations where evidence is weak."
+      },
+      {
+        "q": "Tradeoffs and choices",
+        "a": "Graph views help investigators follow relationships but extraction error must be visible. Human review costs time but protects high-impact decisions. Online learning from investigator outcomes needs controls for reviewer bias."
+      }
+    ]
+  }
+]

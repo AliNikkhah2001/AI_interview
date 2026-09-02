@@ -1,0 +1,2460 @@
+[
+  {
+    "id": "bm25",
+    "category": "Retrieval and Search Theory",
+    "name": "BM25",
+    "summary": "A probabilistic lexical ranker that rewards term frequency while saturating repeated terms and normalizing document length.",
+    "tradeoff": "It is fast, interpretable, and exact for rare tokens but cannot directly match paraphrases.",
+    "pitfall": "Treating it as obsolete removes a strong baseline and hurts identifier-heavy queries.",
+    "references": [
+      "rag",
+      "dpr",
+      "beir"
+    ]
+  },
+  {
+    "id": "tf-idf",
+    "category": "Retrieval and Search Theory",
+    "name": "TF-IDF",
+    "summary": "A sparse weighting scheme that combines within-document frequency with inverse collection frequency.",
+    "tradeoff": "It is transparent and cheap but lacks BM25's term-frequency saturation and tuned length normalization.",
+    "pitfall": "Comparing raw cosine scores across changing corpora without rebuilding IDF causes drift.",
+    "references": [
+      "rag",
+      "dpr",
+      "beir"
+    ]
+  },
+  {
+    "id": "dense-retrieval",
+    "category": "Retrieval and Search Theory",
+    "name": "Dense retrieval",
+    "summary": "A bi-encoder maps queries and passages into a shared embedding space for nearest-neighbor search.",
+    "tradeoff": "Semantic recall improves, while exact names, numbers, and out-of-domain language may regress.",
+    "pitfall": "Evaluating only on in-domain examples hides lexical misses and embedding drift.",
+    "references": [
+      "rag",
+      "dpr",
+      "beir"
+    ]
+  },
+  {
+    "id": "sparse-neural-retrieval",
+    "category": "Retrieval and Search Theory",
+    "name": "Sparse neural retrieval",
+    "summary": "Learned sparse models retain token-aligned inverted-index retrieval while expanding or reweighting terms.",
+    "tradeoff": "They bridge lexical and semantic matching but increase index size and model cost.",
+    "pitfall": "Unbounded expansion creates latency and storage blowups.",
+    "references": [
+      "rag",
+      "dpr",
+      "beir"
+    ]
+  },
+  {
+    "id": "late-interaction",
+    "category": "Retrieval and Search Theory",
+    "name": "Late interaction",
+    "summary": "ColBERT-style systems preserve token-level embeddings and aggregate fine-grained similarities at query time.",
+    "tradeoff": "Accuracy often beats single-vector retrieval, with a larger index and heavier scoring path.",
+    "pitfall": "Treating a late-interaction index like one-vector-per-document underestimates capacity needs.",
+    "references": [
+      "rag",
+      "dpr",
+      "beir"
+    ]
+  },
+  {
+    "id": "cross-encoder-reranking",
+    "category": "Retrieval and Search Theory",
+    "name": "Cross-encoder reranking",
+    "summary": "A model jointly encodes query and candidate text to assign a relevance score.",
+    "tradeoff": "It gives strong precision on a small candidate set but is too expensive for full-corpus retrieval.",
+    "pitfall": "Reranking too many long passages dominates p95 latency.",
+    "references": [
+      "rag",
+      "dpr",
+      "beir"
+    ]
+  },
+  {
+    "id": "hybrid-retrieval",
+    "category": "Retrieval and Search Theory",
+    "name": "Hybrid retrieval",
+    "summary": "Dense and lexical signals are retrieved together and fused, often with weighted scores or reciprocal-rank fusion.",
+    "tradeoff": "It improves robustness across semantic and exact-match queries but requires score calibration and duplicate handling.",
+    "pitfall": "Adding incomparable raw scores without normalization makes one retriever dominate.",
+    "references": [
+      "rag",
+      "dpr",
+      "beir"
+    ]
+  },
+  {
+    "id": "reciprocal-rank-fusion",
+    "category": "Retrieval and Search Theory",
+    "name": "Reciprocal rank fusion",
+    "summary": "RRF combines ranked lists using reciprocal rank positions rather than raw score scales.",
+    "tradeoff": "It is robust without score calibration but ignores the magnitude and confidence of scores.",
+    "pitfall": "Using an overly small rank constant can overreward noisy top results.",
+    "references": [
+      "rag",
+      "dpr",
+      "beir"
+    ]
+  },
+  {
+    "id": "ann-recall",
+    "category": "Retrieval and Search Theory",
+    "name": "ANN recall",
+    "summary": "Approximate nearest-neighbor recall measures how many true nearest items are recovered by an index configuration.",
+    "tradeoff": "Higher recall usually costs memory, build time, or query latency.",
+    "pitfall": "Reporting application answer quality without measuring index recall hides retrieval infrastructure defects.",
+    "references": [
+      "rag",
+      "dpr",
+      "beir"
+    ]
+  },
+  {
+    "id": "retrieval-metrics",
+    "category": "Retrieval and Search Theory",
+    "name": "Retrieval metrics",
+    "summary": "Recall@k, precision@k, MRR, MAP, and nDCG measure different ranking behaviors.",
+    "tradeoff": "A metric must match the product objective and judgment granularity.",
+    "pitfall": "Optimizing MRR for a task that consumes many passages can worsen context coverage.",
+    "references": [
+      "rag",
+      "dpr",
+      "beir"
+    ]
+  },
+  {
+    "id": "embedding-geometry",
+    "category": "Retrieval and Search Theory",
+    "name": "Embedding geometry",
+    "summary": "Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality.",
+    "tradeoff": "Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions.",
+    "pitfall": "Mixing an index metric with a differently trained embedding objective silently harms ranking.",
+    "references": [
+      "rag",
+      "dpr",
+      "beir"
+    ]
+  },
+  {
+    "id": "query-expansion",
+    "category": "Retrieval and Search Theory",
+    "name": "Query expansion",
+    "summary": "Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval.",
+    "tradeoff": "Recall can improve at the expense of latency and topic drift.",
+    "pitfall": "Letting an LLM expand unconstrained queries can inject unsupported intent.",
+    "references": [
+      "rag",
+      "dpr",
+      "beir"
+    ]
+  },
+  {
+    "id": "pgvector",
+    "category": "Vector Databases and Search Engines",
+    "name": "pgvector",
+    "summary": "A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search.",
+    "tradeoff": "It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily.",
+    "pitfall": "Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.",
+    "references": [
+      "pgvector",
+      "pinecone",
+      "qdrant"
+    ]
+  },
+  {
+    "id": "pinecone",
+    "category": "Vector Databases and Search Engines",
+    "name": "Pinecone",
+    "summary": "A managed vector service with metadata filtering, namespaces, and dense-sparse hybrid retrieval.",
+    "tradeoff": "Operations are outsourced, trading infrastructure control and portability for managed scale.",
+    "pitfall": "Poor namespace and metadata design creates noisy tenants and expensive fan-out queries.",
+    "references": [
+      "pgvector",
+      "pinecone",
+      "qdrant"
+    ]
+  },
+  {
+    "id": "qdrant",
+    "category": "Vector Databases and Search Engines",
+    "name": "Qdrant",
+    "summary": "An open-source vector engine centered on HNSW, payload filtering, quantization, and distributed collections.",
+    "tradeoff": "It offers operational control and rich filtering but adds a stateful distributed service to run.",
+    "pitfall": "Applying post-filtering after ANN can return too few eligible results.",
+    "references": [
+      "pgvector",
+      "pinecone",
+      "qdrant"
+    ]
+  },
+  {
+    "id": "weaviate",
+    "category": "Vector Databases and Search Engines",
+    "name": "Weaviate",
+    "summary": "A vector database with collections, hybrid search, filters, modules, and multi-tenancy features.",
+    "tradeoff": "An integrated schema accelerates product work but may couple ingestion and inference choices.",
+    "pitfall": "Automatic vectorization without explicit model version metadata makes reindexing unsafe.",
+    "references": [
+      "pgvector",
+      "pinecone",
+      "qdrant"
+    ]
+  },
+  {
+    "id": "milvus-and-zilliz",
+    "category": "Vector Databases and Search Engines",
+    "name": "Milvus and Zilliz",
+    "summary": "Milvus is a distributed vector database; Zilliz provides its managed service with multiple index choices.",
+    "tradeoff": "It targets large-scale separation of compute and storage, with more operational concepts than embedded options.",
+    "pitfall": "Selecting an index by popularity instead of dataset size and latency-recall tests wastes resources.",
+    "references": [
+      "pgvector",
+      "pinecone",
+      "qdrant"
+    ]
+  },
+  {
+    "id": "elasticsearch-vector-search",
+    "category": "Vector Databases and Search Engines",
+    "name": "Elasticsearch vector search",
+    "summary": "Elasticsearch combines inverted indexes, filters, aggregations, and approximate kNN in one search platform.",
+    "tradeoff": "It is compelling for existing Elastic estates but vector memory and shard design require care.",
+    "pitfall": "Oversharding fragments candidate pools and increases coordination overhead.",
+    "references": [
+      "pgvector",
+      "pinecone",
+      "qdrant"
+    ]
+  },
+  {
+    "id": "opensearch-vector-search",
+    "category": "Vector Databases and Search Engines",
+    "name": "OpenSearch vector search",
+    "summary": "OpenSearch supports lexical and vector workloads with pluggable kNN engines and search pipelines.",
+    "tradeoff": "Open governance and integrated search are attractive, while engine-specific behavior complicates tuning.",
+    "pitfall": "Assuming identical parameters across FAISS, Lucene, and NMSLIB backends produces misleading tests.",
+    "references": [
+      "pgvector",
+      "pinecone",
+      "qdrant"
+    ]
+  },
+  {
+    "id": "redis-vector-search",
+    "category": "Vector Databases and Search Engines",
+    "name": "Redis vector search",
+    "summary": "Redis Query Engine adds vector indexes and filters to an in-memory data platform.",
+    "tradeoff": "Very low latency is possible, but RAM cost and persistence design matter at scale.",
+    "pitfall": "Using Redis only as a vector database without capacity planning can evict critical data.",
+    "references": [
+      "pgvector",
+      "pinecone",
+      "qdrant"
+    ]
+  },
+  {
+    "id": "chroma",
+    "category": "Vector Databases and Search Engines",
+    "name": "Chroma",
+    "summary": "Chroma is a developer-oriented embedding store commonly used for local prototypes and small applications.",
+    "tradeoff": "It favors simplicity and iteration speed over complex distributed operations.",
+    "pitfall": "Promoting a local prototype topology directly to production skips backup, tenancy, and load tests.",
+    "references": [
+      "pgvector",
+      "pinecone",
+      "qdrant"
+    ]
+  },
+  {
+    "id": "lancedb",
+    "category": "Vector Databases and Search Engines",
+    "name": "LanceDB",
+    "summary": "LanceDB uses a columnar, versioned data format and supports vector, full-text, and multimodal data locally or in cloud storage.",
+    "tradeoff": "It fits data-lake and embedded workflows but differs operationally from a server-first database.",
+    "pitfall": "Ignoring compaction and version retention can degrade read performance and inflate storage.",
+    "references": [
+      "pgvector",
+      "pinecone",
+      "qdrant"
+    ]
+  },
+  {
+    "id": "vespa",
+    "category": "Vector Databases and Search Engines",
+    "name": "Vespa",
+    "summary": "Vespa combines structured filtering, lexical search, tensors, ranking functions, and online serving.",
+    "tradeoff": "It enables sophisticated multi-stage ranking but has a steeper schema and operations learning curve.",
+    "pitfall": "Putting expensive ranking expressions in the first phase can collapse throughput.",
+    "references": [
+      "pgvector",
+      "pinecone",
+      "qdrant"
+    ]
+  },
+  {
+    "id": "hnsw",
+    "category": "Vector Databases and Search Engines",
+    "name": "HNSW",
+    "summary": "A navigable multilayer proximity graph controlled by construction degree and search breadth.",
+    "tradeoff": "It offers strong latency-recall behavior with significant memory and build cost.",
+    "pitfall": "Deleting or heavily filtering data without maintenance degrades graph quality.",
+    "references": [
+      "pgvector",
+      "pinecone",
+      "qdrant"
+    ]
+  },
+  {
+    "id": "ivf-and-pq",
+    "category": "Vector Databases and Search Engines",
+    "name": "IVF and PQ",
+    "summary": "Inverted files narrow the search to clusters; product quantization compresses vectors for cheaper approximate scoring.",
+    "tradeoff": "Memory and latency fall, while training quality and quantization error reduce recall.",
+    "pitfall": "Training centroids or codebooks on an unrepresentative sample bakes bias into the index.",
+    "references": [
+      "pgvector",
+      "pinecone",
+      "qdrant"
+    ]
+  },
+  {
+    "id": "metadata-filtering",
+    "category": "Vector Databases and Search Engines",
+    "name": "Metadata filtering",
+    "summary": "Attribute constraints restrict eligible vectors before, during, or after ANN search.",
+    "tradeoff": "Early filtering preserves relevance but can make graph traversal sparse; post-filtering may underfill results.",
+    "pitfall": "Failing to test selective filters separately from unfiltered queries hides severe recall loss.",
+    "references": [
+      "pgvector",
+      "pinecone",
+      "qdrant"
+    ]
+  },
+  {
+    "id": "document-ingestion",
+    "category": "RAG Architecture and Evaluation",
+    "name": "Document ingestion",
+    "summary": "Ingestion parses, normalizes, classifies, deduplicates, and records provenance before indexing.",
+    "tradeoff": "Rich preprocessing improves retrieval but increases pipeline cost and reprocessing complexity.",
+    "pitfall": "Losing stable document and chunk identifiers makes updates create duplicates.",
+    "references": [
+      "rag",
+      "beir",
+      "ragas"
+    ]
+  },
+  {
+    "id": "chunking",
+    "category": "RAG Architecture and Evaluation",
+    "name": "Chunking",
+    "summary": "Chunking chooses semantic units, size, overlap, and metadata boundaries for retrieval and context assembly.",
+    "tradeoff": "Smaller chunks improve precision; larger chunks preserve context and reduce fragmentation.",
+    "pitfall": "Fixed-size splitting across tables, code, or headings destroys meaning.",
+    "references": [
+      "rag",
+      "beir",
+      "ragas"
+    ]
+  },
+  {
+    "id": "parent-child-retrieval",
+    "category": "RAG Architecture and Evaluation",
+    "name": "Parent-child retrieval",
+    "summary": "Small child chunks retrieve precisely while larger parent sections are supplied to the model.",
+    "tradeoff": "It separates retrieval granularity from generation context at extra storage and mapping cost.",
+    "pitfall": "Returning many overlapping parents wastes context and amplifies one source.",
+    "references": [
+      "rag",
+      "beir",
+      "ragas"
+    ]
+  },
+  {
+    "id": "contextual-compression",
+    "category": "RAG Architecture and Evaluation",
+    "name": "Contextual compression",
+    "summary": "A post-retrieval step extracts or rewrites only query-relevant evidence from candidates.",
+    "tradeoff": "It saves context tokens but can delete qualifiers or introduce summarization errors.",
+    "pitfall": "Using the same weak model for compression and answering creates correlated failures.",
+    "references": [
+      "rag",
+      "beir",
+      "ragas"
+    ]
+  },
+  {
+    "id": "query-routing",
+    "category": "RAG Architecture and Evaluation",
+    "name": "Query routing",
+    "summary": "A router chooses retrievers, indexes, tools, or no-retrieval paths based on intent and risk.",
+    "tradeoff": "Specialization improves quality and cost but adds classification errors and operational branches.",
+    "pitfall": "A route without confidence or fallback turns ambiguous queries into hard failures.",
+    "references": [
+      "rag",
+      "beir",
+      "ragas"
+    ]
+  },
+  {
+    "id": "multi-query-retrieval",
+    "category": "RAG Architecture and Evaluation",
+    "name": "Multi-query retrieval",
+    "summary": "The system generates several query formulations and merges their result sets.",
+    "tradeoff": "Recall rises at the cost of additional searches, duplicates, and possible intent drift.",
+    "pitfall": "Treating all generated queries as equally trustworthy invites off-topic evidence.",
+    "references": [
+      "rag",
+      "beir",
+      "ragas"
+    ]
+  },
+  {
+    "id": "hyde",
+    "category": "RAG Architecture and Evaluation",
+    "name": "HyDE",
+    "summary": "Hypothetical Document Embeddings generate a likely answer passage and embed it as the retrieval query.",
+    "tradeoff": "It can bridge terse questions to document style but may anchor retrieval on invented details.",
+    "pitfall": "Passing the hypothetical text to generation as evidence confuses a retrieval aid with a source.",
+    "references": [
+      "rag",
+      "beir",
+      "ragas"
+    ]
+  },
+  {
+    "id": "reranking-pipeline",
+    "category": "RAG Architecture and Evaluation",
+    "name": "Reranking pipeline",
+    "summary": "A staged ranker retrieves broadly, applies filters, reranks candidates, and packs final context.",
+    "tradeoff": "More stages improve control but add latency, failure modes, and tuning surfaces.",
+    "pitfall": "Evaluating only final answers makes it hard to locate which stage regressed.",
+    "references": [
+      "rag",
+      "beir",
+      "ragas"
+    ]
+  },
+  {
+    "id": "context-packing",
+    "category": "RAG Architecture and Evaluation",
+    "name": "Context packing",
+    "summary": "Packing selects, orders, deduplicates, and labels evidence within a token budget.",
+    "tradeoff": "Diversity and source coverage compete with local relevance and continuity.",
+    "pitfall": "Greedy top-score packing often repeats one document and crowds out complementary facts.",
+    "references": [
+      "rag",
+      "beir",
+      "ragas"
+    ]
+  },
+  {
+    "id": "grounded-generation",
+    "category": "RAG Architecture and Evaluation",
+    "name": "Grounded generation",
+    "summary": "Prompts and decoding require answers to use cited evidence and abstain when evidence is insufficient.",
+    "tradeoff": "Strong grounding can reduce creativity and answer rate while improving auditability.",
+    "pitfall": "A citation marker is not proof that the cited text entails the claim.",
+    "references": [
+      "rag",
+      "beir",
+      "ragas"
+    ]
+  },
+  {
+    "id": "rag-evaluation",
+    "category": "RAG Architecture and Evaluation",
+    "name": "RAG evaluation",
+    "summary": "Retrieval, context, generation, citation, latency, and cost require separate offline and online measures.",
+    "tradeoff": "Automated judges accelerate iteration but need human calibration and bias checks.",
+    "pitfall": "Collapsing all dimensions into one score hides compensating failures.",
+    "references": [
+      "rag",
+      "beir",
+      "ragas"
+    ]
+  },
+  {
+    "id": "faithfulness",
+    "category": "RAG Architecture and Evaluation",
+    "name": "Faithfulness",
+    "summary": "Faithfulness asks whether claims in an answer are supported by the supplied context.",
+    "tradeoff": "It is narrower and more testable than global factuality but depends on context quality.",
+    "pitfall": "Marking unsupported common knowledge as grounded inflates results.",
+    "references": [
+      "rag",
+      "beir",
+      "ragas"
+    ]
+  },
+  {
+    "id": "answer-relevance",
+    "category": "RAG Architecture and Evaluation",
+    "name": "Answer relevance",
+    "summary": "Answer relevance measures whether a response directly addresses the user question without unnecessary content.",
+    "tradeoff": "Concision may improve relevance while losing useful caveats.",
+    "pitfall": "A fluent on-topic answer can still be factually wrong, so relevance cannot stand alone.",
+    "references": [
+      "rag",
+      "beir",
+      "ragas"
+    ]
+  },
+  {
+    "id": "synthetic-test-generation",
+    "category": "RAG Architecture and Evaluation",
+    "name": "Synthetic test generation",
+    "summary": "Models generate questions, expected evidence, and variants from a source corpus to expand evaluation coverage.",
+    "tradeoff": "Coverage grows cheaply, while generator bias and leakage can make the benchmark too easy.",
+    "pitfall": "Testing with the same model family that authored the cases can overstate quality.",
+    "references": [
+      "rag",
+      "beir",
+      "ragas"
+    ]
+  },
+  {
+    "id": "online-rag-monitoring",
+    "category": "RAG Architecture and Evaluation",
+    "name": "Online RAG monitoring",
+    "summary": "Production monitoring tracks retrieval gaps, unsupported claims, drift, feedback, latency, and cost by slice.",
+    "tradeoff": "Rich telemetry improves diagnosis but raises privacy and storage obligations.",
+    "pitfall": "Logging full prompts and context without redaction can expose sensitive data.",
+    "references": [
+      "rag",
+      "beir",
+      "ragas"
+    ]
+  },
+  {
+    "id": "property-graphs",
+    "category": "Knowledge Graphs and GraphRAG",
+    "name": "Property graphs",
+    "summary": "Nodes, typed relationships, and properties represent entities and their connections for traversal and pattern matching.",
+    "tradeoff": "They are intuitive for operational queries but semantics depend on disciplined labels and schema.",
+    "pitfall": "Using untyped generic edges turns the graph into an expensive document store.",
+    "references": [
+      "graphrag",
+      "kag",
+      "neo4j"
+    ]
+  },
+  {
+    "id": "rdf-and-ontologies",
+    "category": "Knowledge Graphs and GraphRAG",
+    "name": "RDF and ontologies",
+    "summary": "RDF triples plus vocabularies such as RDFS or OWL provide globally identified semantics and inference rules.",
+    "tradeoff": "Formal interoperability grows, with more modeling and reasoning complexity.",
+    "pitfall": "Confusing open-world semantics with database constraints produces invalid assumptions.",
+    "references": [
+      "graphrag",
+      "kag",
+      "neo4j"
+    ]
+  },
+  {
+    "id": "cypher",
+    "category": "Knowledge Graphs and GraphRAG",
+    "name": "Cypher",
+    "summary": "Cypher expresses graph patterns, predicates, paths, updates, and aggregation for property graphs.",
+    "tradeoff": "Declarative queries are readable, while unbounded path patterns can be expensive.",
+    "pitfall": "Omitting labels or relationship types can trigger broad scans.",
+    "references": [
+      "graphrag",
+      "kag",
+      "neo4j"
+    ]
+  },
+  {
+    "id": "knowledge-graph-construction",
+    "category": "Knowledge Graphs and GraphRAG",
+    "name": "Knowledge graph construction",
+    "summary": "Construction extracts entities and relations, resolves identities, applies schema, validates facts, and records provenance.",
+    "tradeoff": "Automation scales coverage but introduces extraction and entity-resolution errors.",
+    "pitfall": "Allowing generated edges without source spans prevents later verification.",
+    "references": [
+      "graphrag",
+      "kag",
+      "neo4j"
+    ]
+  },
+  {
+    "id": "entity-resolution",
+    "category": "Knowledge Graphs and GraphRAG",
+    "name": "Entity resolution",
+    "summary": "Entity resolution links mentions and records that refer to the same real-world entity.",
+    "tradeoff": "Aggressive merging improves connectivity but risks catastrophic false joins.",
+    "pitfall": "Matching on names alone fails for aliases, homonyms, and temporal identity changes.",
+    "references": [
+      "graphrag",
+      "kag",
+      "neo4j"
+    ]
+  },
+  {
+    "id": "graphrag-local-search",
+    "category": "Knowledge Graphs and GraphRAG",
+    "name": "GraphRAG local search",
+    "summary": "Local search expands from query-relevant entities through nearby relationships and associated text.",
+    "tradeoff": "It supports entity-centric multi-hop questions but depends on extraction and linking quality.",
+    "pitfall": "Unbounded neighborhood expansion floods context with high-degree hubs.",
+    "references": [
+      "graphrag",
+      "kag",
+      "neo4j"
+    ]
+  },
+  {
+    "id": "graphrag-global-search",
+    "category": "Knowledge Graphs and GraphRAG",
+    "name": "GraphRAG global search",
+    "summary": "Global search summarizes graph communities and combines relevant community reports for corpus-level questions.",
+    "tradeoff": "It addresses whole-corpus themes but has expensive indexing and lossy summaries.",
+    "pitfall": "Expecting global search to answer precise record lookups wastes cost and may lose detail.",
+    "references": [
+      "graphrag",
+      "kag",
+      "neo4j"
+    ]
+  },
+  {
+    "id": "kag",
+    "category": "Knowledge Graphs and GraphRAG",
+    "name": "KAG",
+    "summary": "Knowledge Augmented Generation combines schema-aware graphs, chunk mutual indexing, alignment, and logical-form-guided reasoning.",
+    "tradeoff": "It improves domain logic and multi-hop control at substantial modeling and maintenance cost.",
+    "pitfall": "Adopting KAG without stable domain schema simply relocates ambiguity.",
+    "references": [
+      "graphrag",
+      "kag",
+      "neo4j"
+    ]
+  },
+  {
+    "id": "graph-quality-evaluation",
+    "category": "Knowledge Graphs and GraphRAG",
+    "name": "Graph quality evaluation",
+    "summary": "Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value.",
+    "tradeoff": "Intrinsic graph metrics catch construction defects but may not predict application utility.",
+    "pitfall": "Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.",
+    "references": [
+      "graphrag",
+      "kag",
+      "neo4j"
+    ]
+  },
+  {
+    "id": "temporal-knowledge-graphs",
+    "category": "Knowledge Graphs and GraphRAG",
+    "name": "Temporal knowledge graphs",
+    "summary": "Facts carry validity intervals, event time, and version history so queries can reason about change.",
+    "tradeoff": "Temporal accuracy improves, while updates, conflicts, and query logic become harder.",
+    "pitfall": "Overwriting old facts destroys the ability to answer as-of questions.",
+    "references": [
+      "graphrag",
+      "kag",
+      "neo4j"
+    ]
+  },
+  {
+    "id": "agent-loop",
+    "category": "Agents, MCP, and Control",
+    "name": "Agent loop",
+    "summary": "An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping.",
+    "tradeoff": "Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows.",
+    "pitfall": "Omitting hard budgets and stop conditions creates runaway calls.",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "react",
+    "category": "Agents, MCP, and Control",
+    "name": "ReAct",
+    "summary": "ReAct interleaves reasoning with actions and observations to update plans using external evidence.",
+    "tradeoff": "Tool feedback can correct model knowledge, while longer trajectories add latency and error opportunities.",
+    "pitfall": "Treating every thought as reliable state allows early mistakes to compound.",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "planning",
+    "category": "Agents, MCP, and Control",
+    "name": "Planning",
+    "summary": "Planning decomposes goals into ordered, conditional, or revisable steps before or during execution.",
+    "tradeoff": "Upfront plans improve structure but become stale in uncertain environments.",
+    "pitfall": "Forcing a long immutable plan prevents recovery after new observations.",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "reflection",
+    "category": "Agents, MCP, and Control",
+    "name": "Reflection",
+    "summary": "Reflection critiques outcomes or trajectories and stores actionable lessons for another attempt.",
+    "tradeoff": "It can improve recovery without weight updates, while self-critique may repeat the same bias.",
+    "pitfall": "Saving vague reflections adds context without changing behavior.",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "tool-calling",
+    "category": "Agents, MCP, and Control",
+    "name": "Tool calling",
+    "summary": "Models emit structured arguments for declared functions that a host validates and executes.",
+    "tradeoff": "It narrows the action interface but does not make proposed actions safe or correct.",
+    "pitfall": "Executing model-produced arguments without schema and authorization checks invites damage.",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "model-context-protocol",
+    "category": "Agents, MCP, and Control",
+    "name": "Model Context Protocol",
+    "summary": "MCP standardizes client-server discovery and invocation of tools, resources, prompts, and related capabilities.",
+    "tradeoff": "Interoperability improves, while trust boundaries, consent, and capability scoping remain host responsibilities.",
+    "pitfall": "Treating a discovered MCP server as trusted creates prompt-injection and privilege risks.",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "agent-memory",
+    "category": "Agents, MCP, and Control",
+    "name": "Agent memory",
+    "summary": "Working, episodic, semantic, and procedural memories preserve relevant state beyond a single model call.",
+    "tradeoff": "Memory supports continuity but retrieval, deletion, privacy, and stale facts become product concerns.",
+    "pitfall": "Writing every interaction to long-term memory creates noise and privacy exposure.",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "human-in-the-loop",
+    "category": "Agents, MCP, and Control",
+    "name": "Human in the loop",
+    "summary": "High-risk actions pause for review, edit, approval, rejection, or direct human response.",
+    "tradeoff": "Oversight reduces irreversible mistakes but adds latency and reviewer load.",
+    "pitfall": "Asking for approval after an action has already caused side effects is theater.",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "state-machines",
+    "category": "Agents, MCP, and Control",
+    "name": "State machines",
+    "summary": "Explicit states and transitions constrain allowed agent behavior and make recovery inspectable.",
+    "tradeoff": "Predictability and testability improve at the cost of less open-ended autonomy.",
+    "pitfall": "Encoding side effects inside transition guards breaks replay safety.",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "idempotent-tools",
+    "category": "Agents, MCP, and Control",
+    "name": "Idempotent tools",
+    "summary": "An idempotent tool can be retried with the same operation key without duplicating the intended effect.",
+    "tradeoff": "Reliable retries require deduplication state and carefully defined semantics.",
+    "pitfall": "Assuming HTTP method alone guarantees business idempotency causes duplicate orders or messages.",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "agent-handoffs",
+    "category": "Agents, MCP, and Control",
+    "name": "Agent handoffs",
+    "summary": "A handoff transfers a task and structured context to a specialized agent or deterministic service.",
+    "tradeoff": "Specialization reduces prompt overload but adds routing and ownership ambiguity.",
+    "pitfall": "Passing the entire transcript leaks irrelevant data and confuses the recipient.",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "autonomy-levels",
+    "category": "Agents, MCP, and Control",
+    "name": "Autonomy levels",
+    "summary": "Autonomy is graduated from suggest-only through approval-gated execution to bounded autonomous operation.",
+    "tradeoff": "More autonomy reduces human effort while increasing required assurance and containment.",
+    "pitfall": "Assigning one global autonomy level ignores action-specific risk.",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "context-engineering",
+    "category": "Agents, MCP, and Control",
+    "name": "Context engineering",
+    "summary": "Context engineering selects instructions, memory, evidence, tools, schemas, and state for each model turn.",
+    "tradeoff": "Targeted context improves reliability and cost, but selection logic becomes core application code.",
+    "pitfall": "Appending everything causes attention dilution and instruction conflicts.",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "sandbox-runs",
+    "category": "Agents, MCP, and Control",
+    "name": "Sandbox runs",
+    "summary": "A sandbox isolates untrusted code with resource limits, scoped files, network policy, timeouts, and audit logs.",
+    "tradeoff": "Isolation enables capability while imposing startup and compatibility overhead.",
+    "pitfall": "A container without kernel, credential, and network boundaries is not a sufficient sandbox.",
+    "references": [
+      "react",
+      "reflexion",
+      "toolformer"
+    ]
+  },
+  {
+    "id": "langgraph",
+    "category": "Orchestration Frameworks",
+    "name": "LangGraph",
+    "summary": "LangGraph models long-running agent workflows as stateful graphs with checkpoints, interrupts, streaming, and durable execution.",
+    "tradeoff": "Fine-grained control aids production reliability but exposes more state and graph design decisions.",
+    "pitfall": "Non-idempotent node side effects make checkpoint replay unsafe.",
+    "references": [
+      "langgraph",
+      "temporal"
+    ]
+  },
+  {
+    "id": "llamaindex-workflows",
+    "category": "Orchestration Frameworks",
+    "name": "LlamaIndex workflows",
+    "summary": "Event-driven workflows coordinate retrieval, tools, agents, and structured steps in the LlamaIndex ecosystem.",
+    "tradeoff": "Strong data and indexing integrations speed RAG work but can couple application flow to framework abstractions.",
+    "pitfall": "Hiding all retrieval behind defaults makes evaluation and migration difficult.",
+    "references": [
+      "langgraph",
+      "temporal"
+    ]
+  },
+  {
+    "id": "haystack-pipelines",
+    "category": "Orchestration Frameworks",
+    "name": "Haystack pipelines",
+    "summary": "Haystack connects typed components into retrieval, generation, routing, and agent pipelines.",
+    "tradeoff": "Explicit components support testing, while custom graphs still require lifecycle discipline.",
+    "pitfall": "Allowing incompatible document schemas across components creates runtime surprises.",
+    "references": [
+      "langgraph",
+      "temporal"
+    ]
+  },
+  {
+    "id": "pydanticai",
+    "category": "Orchestration Frameworks",
+    "name": "PydanticAI",
+    "summary": "PydanticAI uses typed dependencies, tools, results, and validation to build model-agnostic Python agents.",
+    "tradeoff": "Type safety improves integration but cannot validate semantic truth.",
+    "pitfall": "Confusing schema conformance with a correct answer produces false confidence.",
+    "references": [
+      "langgraph",
+      "temporal"
+    ]
+  },
+  {
+    "id": "semantic-kernel",
+    "category": "Orchestration Frameworks",
+    "name": "Semantic Kernel",
+    "summary": "Semantic Kernel offers planners, agents, plugins, memory connectors, and multi-language enterprise integration.",
+    "tradeoff": "Its broad integration surface suits platform teams but introduces framework concepts and version coupling.",
+    "pitfall": "Registering overly broad plugins grants the model unnecessary authority.",
+    "references": [
+      "langgraph",
+      "temporal"
+    ]
+  },
+  {
+    "id": "autogen",
+    "category": "Orchestration Frameworks",
+    "name": "AutoGen",
+    "summary": "AutoGen structures multi-agent conversations and tool-using participants for collaborative task execution.",
+    "tradeoff": "Role decomposition enables complex workflows but multiplies calls, coordination failures, and evaluation cost.",
+    "pitfall": "Adding agents without independent capabilities creates expensive echo chambers.",
+    "references": [
+      "langgraph",
+      "temporal"
+    ]
+  },
+  {
+    "id": "crewai",
+    "category": "Orchestration Frameworks",
+    "name": "CrewAI",
+    "summary": "CrewAI organizes role-based agents, tasks, crews, and flows for sequential or coordinated work.",
+    "tradeoff": "It gives accessible orchestration but still needs explicit state, permissions, and observability.",
+    "pitfall": "Persona descriptions cannot substitute for tool-level access control.",
+    "references": [
+      "langgraph",
+      "temporal"
+    ]
+  },
+  {
+    "id": "dspy",
+    "category": "Orchestration Frameworks",
+    "name": "DSPy",
+    "summary": "DSPy treats prompts and modules as optimizable programs evaluated against examples and metrics.",
+    "tradeoff": "Systematic optimization can beat manual prompting, while it depends on representative data and stable metrics.",
+    "pitfall": "Optimizing against a leaky judge overfits wording instead of capability.",
+    "references": [
+      "langgraph",
+      "temporal"
+    ]
+  },
+  {
+    "id": "temporal",
+    "category": "Orchestration Frameworks",
+    "name": "Temporal",
+    "summary": "Temporal persists workflow history and replays deterministic workflow code around durable activities.",
+    "tradeoff": "It provides robust retries and long-running execution but requires deterministic workflow discipline.",
+    "pitfall": "Reading wall-clock time or random state directly in replayed code causes nondeterminism.",
+    "references": [
+      "langgraph",
+      "temporal"
+    ]
+  },
+  {
+    "id": "airflow-dagster-and-prefect",
+    "category": "Orchestration Frameworks",
+    "name": "Airflow, Dagster, and Prefect",
+    "summary": "General-purpose data orchestrators schedule DAGs, assets, or flows with retries, lineage, and operational UIs.",
+    "tradeoff": "They excel at batch pipelines but are not automatically low-latency interactive agent runtimes.",
+    "pitfall": "Running per-token or per-chat-turn work as heavy batch tasks adds unacceptable overhead.",
+    "references": [
+      "langgraph",
+      "temporal"
+    ]
+  },
+  {
+    "id": "opentelemetry",
+    "category": "Observability and Monitoring",
+    "name": "OpenTelemetry",
+    "summary": "OpenTelemetry provides vendor-neutral APIs, SDKs, collectors, and semantic conventions for traces, metrics, logs, and profiles.",
+    "tradeoff": "Portability improves, while instrumentation quality and backend cost remain engineering work.",
+    "pitfall": "High-cardinality prompt or user attributes can overwhelm telemetry systems.",
+    "references": [
+      "otel",
+      "mlflow",
+      "evidently"
+    ]
+  },
+  {
+    "id": "distributed-tracing",
+    "category": "Observability and Monitoring",
+    "name": "Distributed tracing",
+    "summary": "Traces connect request spans across gateways, retrievers, models, tools, queues, and databases.",
+    "tradeoff": "They reveal critical paths but sampling can hide rare quality failures.",
+    "pitfall": "Reusing trace identifiers across independent user requests breaks isolation.",
+    "references": [
+      "otel",
+      "mlflow",
+      "evidently"
+    ]
+  },
+  {
+    "id": "llm-tracing",
+    "category": "Observability and Monitoring",
+    "name": "LLM tracing",
+    "summary": "LLM traces capture prompts, outputs, model settings, token usage, latency, tool calls, retrieval, and evaluations.",
+    "tradeoff": "Debugging improves, while content capture raises privacy and retention risk.",
+    "pitfall": "Logging secrets or personal data by default creates a second sensitive datastore.",
+    "references": [
+      "otel",
+      "mlflow",
+      "evidently"
+    ]
+  },
+  {
+    "id": "metrics-and-slos",
+    "category": "Observability and Monitoring",
+    "name": "Metrics and SLOs",
+    "summary": "Counters, histograms, gauges, service-level indicators, and objectives quantify reliability and performance.",
+    "tradeoff": "Aggregate signals scale well but cannot explain individual semantic failures.",
+    "pitfall": "Averaging latency hides long-tail p95 and p99 user pain.",
+    "references": [
+      "otel",
+      "mlflow",
+      "evidently"
+    ]
+  },
+  {
+    "id": "structured-logging",
+    "category": "Observability and Monitoring",
+    "name": "Structured logging",
+    "summary": "Structured events use stable fields, severity, timestamps, correlation IDs, and redaction.",
+    "tradeoff": "Search and aggregation improve, while schemas must evolve consistently.",
+    "pitfall": "Placing unbounded model output in one log field causes cost and ingestion failures.",
+    "references": [
+      "otel",
+      "mlflow",
+      "evidently"
+    ]
+  },
+  {
+    "id": "langsmith",
+    "category": "Observability and Monitoring",
+    "name": "LangSmith",
+    "summary": "LangSmith provides tracing, datasets, evaluation, prompt management, and deployment-oriented tooling for LLM applications.",
+    "tradeoff": "Tight LangChain integration accelerates work but requires portability planning.",
+    "pitfall": "Depending only on vendor UI annotations leaves evaluation logic unreproducible.",
+    "references": [
+      "otel",
+      "mlflow",
+      "evidently"
+    ]
+  },
+  {
+    "id": "langfuse",
+    "category": "Observability and Monitoring",
+    "name": "Langfuse",
+    "summary": "Langfuse is an open-source platform for LLM traces, sessions, prompts, scores, datasets, and cost analytics.",
+    "tradeoff": "Self-hosting offers control but shifts scaling, upgrades, and security to the team.",
+    "pitfall": "Capturing every token forever creates expensive sensitive retention.",
+    "references": [
+      "otel",
+      "mlflow",
+      "evidently"
+    ]
+  },
+  {
+    "id": "arize-phoenix",
+    "category": "Observability and Monitoring",
+    "name": "Arize Phoenix",
+    "summary": "Phoenix provides open-source tracing and evaluation for LLM, retrieval, and agent applications with OpenTelemetry support.",
+    "tradeoff": "It unifies qualitative traces and quantitative evals, while production operations still need design.",
+    "pitfall": "Judge scores without slice analysis can mask failures for important cohorts.",
+    "references": [
+      "otel",
+      "mlflow",
+      "evidently"
+    ]
+  },
+  {
+    "id": "mlflow-tracing",
+    "category": "Observability and Monitoring",
+    "name": "MLflow tracing",
+    "summary": "MLflow connects traces, evaluation datasets, scorers, experiments, and production monitoring.",
+    "tradeoff": "A common ML platform improves lineage but may be heavier than a focused tracing tool.",
+    "pitfall": "Mixing incomparable scorer versions in one trend chart produces false regressions.",
+    "references": [
+      "otel",
+      "mlflow",
+      "evidently"
+    ]
+  },
+  {
+    "id": "w-b-weave",
+    "category": "Observability and Monitoring",
+    "name": "W&B Weave",
+    "summary": "Weave tracks calls, objects, datasets, evaluations, and model application experiments.",
+    "tradeoff": "Rich experiment lineage helps collaboration but introduces another governance surface.",
+    "pitfall": "Saving mutable datasets without immutable versions undermines reproducibility.",
+    "references": [
+      "otel",
+      "mlflow",
+      "evidently"
+    ]
+  },
+  {
+    "id": "prompt-and-model-drift",
+    "category": "Observability and Monitoring",
+    "name": "Prompt and model drift",
+    "summary": "Drift monitoring detects changes in inputs, retrieved evidence, outputs, model versions, and user behavior.",
+    "tradeoff": "Alerts catch regressions but thresholds must distinguish seasonality from harm.",
+    "pitfall": "Measuring embedding distribution shift alone does not prove answer quality changed.",
+    "references": [
+      "otel",
+      "mlflow",
+      "evidently"
+    ]
+  },
+  {
+    "id": "cost-observability",
+    "category": "Observability and Monitoring",
+    "name": "Cost observability",
+    "summary": "Cost telemetry attributes input, output, cache, retrieval, tool, and infrastructure spend to requests and tenants.",
+    "tradeoff": "Unit economics become actionable, while provider pricing and caching rules evolve.",
+    "pitfall": "Tracking only average cost hides pathological long-running agents.",
+    "references": [
+      "otel",
+      "mlflow",
+      "evidently"
+    ]
+  },
+  {
+    "id": "evaluation-in-production",
+    "category": "Observability and Monitoring",
+    "name": "Evaluation in production",
+    "summary": "Online evaluators combine sampled judges, deterministic checks, human feedback, and business outcomes.",
+    "tradeoff": "Live coverage improves realism but evaluations must not expose or delay users.",
+    "pitfall": "Treating implicit clicks as unambiguous quality labels creates bias.",
+    "references": [
+      "otel",
+      "mlflow",
+      "evidently"
+    ]
+  },
+  {
+    "id": "vllm",
+    "category": "Serving, Deployment, and LLMOps",
+    "name": "vLLM",
+    "summary": "vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs.",
+    "tradeoff": "Throughput and memory utilization improve, while model and kernel compatibility must be verified.",
+    "pitfall": "Benchmarking only one concurrency level hides latency-throughput collapse points.",
+    "references": [
+      "paged",
+      "vllm",
+      "ray"
+    ]
+  },
+  {
+    "id": "sglang",
+    "category": "Serving, Deployment, and LLMOps",
+    "name": "SGLang",
+    "summary": "SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism.",
+    "tradeoff": "Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions.",
+    "pitfall": "Assuming every structured program benefits equally from cache reuse leads to poor capacity models.",
+    "references": [
+      "paged",
+      "vllm",
+      "ray"
+    ]
+  },
+  {
+    "id": "text-generation-inference",
+    "category": "Serving, Deployment, and LLMOps",
+    "name": "Text Generation Inference",
+    "summary": "TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support.",
+    "tradeoff": "Ecosystem integration is strong, while supported optimization paths vary by model and hardware.",
+    "pitfall": "Enabling quantization without quality and kernel tests can reduce both accuracy and speed.",
+    "references": [
+      "paged",
+      "vllm",
+      "ray"
+    ]
+  },
+  {
+    "id": "tensorrt-llm",
+    "category": "Serving, Deployment, and LLMOps",
+    "name": "TensorRT-LLM",
+    "summary": "TensorRT-LLM compiles and serves NVIDIA-optimized LLM graphs and kernels across GPUs.",
+    "tradeoff": "Maximum NVIDIA performance comes with build complexity and hardware coupling.",
+    "pitfall": "Rebuilding engines for every shape without a deployment cache slows releases.",
+    "references": [
+      "paged",
+      "vllm",
+      "ray"
+    ]
+  },
+  {
+    "id": "nvidia-triton",
+    "category": "Serving, Deployment, and LLMOps",
+    "name": "NVIDIA Triton",
+    "summary": "Triton serves multiple model frameworks with dynamic batching, ensembles, metrics, and model repositories.",
+    "tradeoff": "It standardizes diverse serving, though LLM-specific scheduling may require specialized backends.",
+    "pitfall": "Using dynamic batching without queue-delay limits breaks interactive latency.",
+    "references": [
+      "paged",
+      "vllm",
+      "ray"
+    ]
+  },
+  {
+    "id": "llama-cpp",
+    "category": "Serving, Deployment, and LLMOps",
+    "name": "llama.cpp",
+    "summary": "llama.cpp runs quantized models efficiently on CPUs and varied local accelerators through a portable C++ stack.",
+    "tradeoff": "Edge privacy and low dependency count trade off against datacenter throughput and model size.",
+    "pitfall": "Selecting a quantization by file size alone ignores accuracy and hardware kernels.",
+    "references": [
+      "paged",
+      "vllm",
+      "ray"
+    ]
+  },
+  {
+    "id": "kserve",
+    "category": "Serving, Deployment, and LLMOps",
+    "name": "KServe",
+    "summary": "KServe provides Kubernetes-native inference services, autoscaling, revisions, traffic splitting, and model runtimes.",
+    "tradeoff": "Platform consistency improves, with Kubernetes operational overhead and cold-start concerns.",
+    "pitfall": "Scaling only on CPU misses token queue pressure in GPU workloads.",
+    "references": [
+      "paged",
+      "vllm",
+      "ray"
+    ]
+  },
+  {
+    "id": "ray-serve",
+    "category": "Serving, Deployment, and LLMOps",
+    "name": "Ray Serve",
+    "summary": "Ray Serve composes Python model deployments and scales replicas across a Ray cluster.",
+    "tradeoff": "Flexible distributed Python pipelines fit multi-model systems but require cluster and object-store discipline.",
+    "pitfall": "Passing large tensors repeatedly through serialization paths wastes memory and latency.",
+    "references": [
+      "paged",
+      "vllm",
+      "ray"
+    ]
+  },
+  {
+    "id": "bentoml",
+    "category": "Serving, Deployment, and LLMOps",
+    "name": "BentoML",
+    "summary": "BentoML packages model services, dependencies, APIs, and deployment configuration with adaptive batching.",
+    "tradeoff": "Developer workflow is streamlined, while platform integration and runtime tuning still matter.",
+    "pitfall": "Treating packaging success as load readiness skips concurrency tests.",
+    "references": [
+      "paged",
+      "vllm",
+      "ray"
+    ]
+  },
+  {
+    "id": "kubernetes-and-gpus",
+    "category": "Serving, Deployment, and LLMOps",
+    "name": "Kubernetes and GPUs",
+    "summary": "Kubernetes schedules containers and device resources while operators add GPU sharing, queues, and autoscaling.",
+    "tradeoff": "A common control plane helps governance but default scheduling is not token-aware.",
+    "pitfall": "Requesting whole GPUs for tiny models can strand capacity.",
+    "references": [
+      "paged",
+      "vllm",
+      "ray"
+    ]
+  },
+  {
+    "id": "llm-gateways",
+    "category": "Serving, Deployment, and LLMOps",
+    "name": "LLM gateways",
+    "summary": "Gateways normalize provider APIs and add routing, budgets, rate limits, fallbacks, caching, and audit policy.",
+    "tradeoff": "Central control improves governance but becomes a high-impact availability and security dependency.",
+    "pitfall": "Automatic fallback across non-equivalent models can silently change behavior.",
+    "references": [
+      "paged",
+      "vllm",
+      "ray"
+    ]
+  },
+  {
+    "id": "canary-and-shadow-releases",
+    "category": "Serving, Deployment, and LLMOps",
+    "name": "Canary and shadow releases",
+    "summary": "Canary traffic exposes a new version to a small cohort; shadowing duplicates requests without serving the new output.",
+    "tradeoff": "Risk falls, while cost, comparison logic, and privacy obligations grow.",
+    "pitfall": "Comparing canaries with different traffic mixes confounds the result.",
+    "references": [
+      "paged",
+      "vllm",
+      "ray"
+    ]
+  },
+  {
+    "id": "model-registry",
+    "category": "Serving, Deployment, and LLMOps",
+    "name": "Model registry",
+    "summary": "A registry versions model artifacts, lineage, signatures, evaluation evidence, aliases, and promotion state.",
+    "tradeoff": "Governance and rollback improve but approval gates can slow iteration.",
+    "pitfall": "Using mutable stage names without immutable digests makes rollbacks uncertain.",
+    "references": [
+      "paged",
+      "vllm",
+      "ray"
+    ]
+  },
+  {
+    "id": "autoscaling-for-llms",
+    "category": "Serving, Deployment, and LLMOps",
+    "name": "Autoscaling for LLMs",
+    "summary": "LLM autoscaling should consider queue depth, time-to-first-token, tokens per second, memory, and startup time.",
+    "tradeoff": "Extra replicas reduce latency but GPUs are costly and slow to warm.",
+    "pitfall": "CPU-based autoscaling reacts late or incorrectly to GPU saturation.",
+    "references": [
+      "paged",
+      "vllm",
+      "ray"
+    ]
+  },
+  {
+    "id": "dvc",
+    "category": "Data and ML Lifecycle",
+    "name": "DVC",
+    "summary": "DVC versions large data and model pointers with Git and defines reproducible pipeline stages and experiments.",
+    "tradeoff": "Familiar Git workflows improve reproducibility, while remote storage and cache discipline are required.",
+    "pitfall": "Committing only code while silently replacing remote data breaks lineage.",
+    "references": [
+      "dvc",
+      "feast",
+      "mlflow"
+    ]
+  },
+  {
+    "id": "lakefs",
+    "category": "Data and ML Lifecycle",
+    "name": "lakeFS",
+    "summary": "lakeFS adds Git-like branches, commits, merges, and hooks over object-storage data lakes.",
+    "tradeoff": "Atomic data-lake changes enable testing, with server and metadata operations to manage.",
+    "pitfall": "Treating object versioning alone as branch-level data semantics is insufficient.",
+    "references": [
+      "dvc",
+      "feast",
+      "mlflow"
+    ]
+  },
+  {
+    "id": "delta-lake-and-iceberg",
+    "category": "Data and ML Lifecycle",
+    "name": "Delta Lake and Iceberg",
+    "summary": "Open table formats add schemas, snapshots, partition evolution, and transactional metadata over object storage.",
+    "tradeoff": "Reliable analytics improve, while compaction and catalog operations become essential.",
+    "pitfall": "Excess small files destroy scan performance despite correct table semantics.",
+    "references": [
+      "dvc",
+      "feast",
+      "mlflow"
+    ]
+  },
+  {
+    "id": "feature-stores",
+    "category": "Data and ML Lifecycle",
+    "name": "Feature stores",
+    "summary": "Feature stores define reusable features and connect historical offline data with low-latency online serving.",
+    "tradeoff": "Training-serving consistency improves but adds infrastructure and ownership requirements.",
+    "pitfall": "Recomputing features differently online creates skew.",
+    "references": [
+      "dvc",
+      "feast",
+      "mlflow"
+    ]
+  },
+  {
+    "id": "point-in-time-correctness",
+    "category": "Data and ML Lifecycle",
+    "name": "Point-in-time correctness",
+    "summary": "Historical joins select only feature values known at each label timestamp.",
+    "tradeoff": "Leakage is prevented at the cost of temporal keys and more expensive joins.",
+    "pitfall": "Joining the latest feature value into old examples creates unrealistically strong training results.",
+    "references": [
+      "dvc",
+      "feast",
+      "mlflow"
+    ]
+  },
+  {
+    "id": "experiment-tracking",
+    "category": "Data and ML Lifecycle",
+    "name": "Experiment tracking",
+    "summary": "Runs capture code, parameters, data, metrics, artifacts, environment, and parent relationships.",
+    "tradeoff": "Comparison and reproducibility improve but inconsistent naming creates a junk drawer.",
+    "pitfall": "Logging a metric without dataset and code versions makes it uninterpretable.",
+    "references": [
+      "dvc",
+      "feast",
+      "mlflow"
+    ]
+  },
+  {
+    "id": "data-contracts",
+    "category": "Data and ML Lifecycle",
+    "name": "Data contracts",
+    "summary": "Contracts specify schema, semantics, freshness, ownership, quality, and compatibility expectations between producers and consumers.",
+    "tradeoff": "Clear boundaries reduce silent breakage but require governance and enforcement.",
+    "pitfall": "Validating shape without semantic definitions misses unit and meaning changes.",
+    "references": [
+      "dvc",
+      "feast",
+      "mlflow"
+    ]
+  },
+  {
+    "id": "data-quality-testing",
+    "category": "Data and ML Lifecycle",
+    "name": "Data quality testing",
+    "summary": "Tests cover schema, nulls, ranges, uniqueness, distribution, freshness, and cross-table invariants.",
+    "tradeoff": "Early detection prevents downstream damage, while brittle thresholds create alert fatigue.",
+    "pitfall": "Checking only aggregate distributions misses failures in important slices.",
+    "references": [
+      "dvc",
+      "feast",
+      "mlflow"
+    ]
+  },
+  {
+    "id": "data-lineage",
+    "category": "Data and ML Lifecycle",
+    "name": "Data lineage",
+    "summary": "Lineage links sources, transformations, datasets, features, prompts, models, evaluations, and deployments.",
+    "tradeoff": "Impact analysis and auditability improve, while automated lineage can miss dynamic behavior.",
+    "pitfall": "Lineage without immutable identifiers gives a false sense of reproducibility.",
+    "references": [
+      "dvc",
+      "feast",
+      "mlflow"
+    ]
+  },
+  {
+    "id": "reproducible-environments",
+    "category": "Data and ML Lifecycle",
+    "name": "Reproducible environments",
+    "summary": "Lockfiles, containers, hardware metadata, seeds, and deterministic settings constrain run variability.",
+    "tradeoff": "Reproducibility improves at the expense of build maintenance and sometimes performance.",
+    "pitfall": "A random seed alone cannot guarantee deterministic GPU execution.",
+    "references": [
+      "dvc",
+      "feast",
+      "mlflow"
+    ]
+  },
+  {
+    "id": "tokenization",
+    "category": "Transformer Theory and Training",
+    "name": "Tokenization",
+    "summary": "Tokenizers map text or bytes into model vocabulary IDs using algorithms such as BPE, WordPiece, or unigram models.",
+    "tradeoff": "Larger vocabularies shorten sequences but increase embedding parameters and sparse coverage.",
+    "pitfall": "Comparing context lengths across tokenizers as if tokens were equal misstates capacity and cost.",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "embedding-layer",
+    "category": "Transformer Theory and Training",
+    "name": "Embedding layer",
+    "summary": "Learned token vectors map discrete IDs into continuous model space and are often tied to output weights.",
+    "tradeoff": "Weight tying saves parameters but constrains input-output geometry.",
+    "pitfall": "Forgetting vocabulary changes invalidates checkpoint embedding shapes.",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "self-attention-math",
+    "category": "Transformer Theory and Training",
+    "name": "Self-attention math",
+    "summary": "Attention computes scaled query-key scores, applies masking and softmax, then mixes value vectors.",
+    "tradeoff": "Every token can interact directly, while standard sequence cost grows quadratically.",
+    "pitfall": "Omitting the square-root head-dimension scale saturates softmax gradients.",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "multi-head-attention",
+    "category": "Transformer Theory and Training",
+    "name": "Multi-head attention",
+    "summary": "Multiple heads project attention into separate subspaces before concatenation and output projection.",
+    "tradeoff": "Diverse interactions improve capacity but add projections and KV memory.",
+    "pitfall": "Assuming heads are independently interpretable can overstate mechanistic conclusions.",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "positional-encoding",
+    "category": "Transformer Theory and Training",
+    "name": "Positional encoding",
+    "summary": "Position signals break permutation invariance using absolute, relative, rotary, or bias-based schemes.",
+    "tradeoff": "Relative methods extrapolate differently, while implementation and scaling choices affect long context.",
+    "pitfall": "Extending context without validating the position scheme can collapse quality.",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "rope",
+    "category": "Transformer Theory and Training",
+    "name": "RoPE",
+    "summary": "Rotary position embeddings rotate query and key coordinates so dot products encode relative offsets.",
+    "tradeoff": "RoPE integrates cleanly with attention but long-context scaling needs careful frequency treatment.",
+    "pitfall": "Naively increasing the maximum length does not preserve trained frequency behavior.",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "feed-forward-networks",
+    "category": "Transformer Theory and Training",
+    "name": "Feed-forward networks",
+    "summary": "Transformer MLP blocks expand hidden dimensions, apply nonlinear gates, and project back per token.",
+    "tradeoff": "They hold substantial parameters and compute while offering parallel token processing.",
+    "pitfall": "Ignoring activation memory underestimates training capacity.",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "layer-normalization-and-rmsnorm",
+    "category": "Transformer Theory and Training",
+    "name": "Layer normalization and RMSNorm",
+    "summary": "Normalization stabilizes activations; RMSNorm removes mean centering and normalizes by root-mean-square magnitude.",
+    "tradeoff": "Simpler normalization can be faster but architecture placement changes optimization dynamics.",
+    "pitfall": "Moving pre-norm to post-norm without retuning can destabilize deep training.",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "residual-connections",
+    "category": "Transformer Theory and Training",
+    "name": "Residual connections",
+    "summary": "Residual paths add transformed activations back to the stream to improve gradient flow and feature reuse.",
+    "tradeoff": "Deep optimization becomes feasible, while residual scale can grow and require controls.",
+    "pitfall": "In-place mutation of residual tensors can break autograd or checkpointing.",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "mixture-of-experts",
+    "category": "Transformer Theory and Training",
+    "name": "Mixture of Experts",
+    "summary": "MoE routes each token to a subset of expert networks, increasing parameters without proportional per-token compute.",
+    "tradeoff": "Capacity scales efficiently but routing balance, communication, and memory are hard.",
+    "pitfall": "Expert collapse and uneven routing create stragglers and weak specialization.",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "causal-language-modeling",
+    "category": "Transformer Theory and Training",
+    "name": "Causal language modeling",
+    "summary": "Next-token training factorizes sequence likelihood from left to right under a causal mask.",
+    "tradeoff": "It provides a simple scalable objective but does not directly optimize instruction usefulness or truth.",
+    "pitfall": "Interpreting low perplexity as safe task performance is invalid.",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "cross-entropy-and-perplexity",
+    "category": "Transformer Theory and Training",
+    "name": "Cross-entropy and perplexity",
+    "summary": "Cross-entropy is negative log likelihood; perplexity exponentiates average token loss.",
+    "tradeoff": "It is stable for model comparison on the same tokenization and data, not across arbitrary setups.",
+    "pitfall": "Comparing perplexity across vocabularies or tokenizers is misleading.",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "sft",
+    "category": "Transformer Theory and Training",
+    "name": "SFT",
+    "summary": "Supervised fine-tuning teaches instruction-response behavior from curated demonstrations.",
+    "tradeoff": "It is direct and stable but can overfit style and inherit annotation errors.",
+    "pitfall": "Training on conflicting instructions without provenance makes behavior unstable.",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "rlhf-and-ppo",
+    "category": "Transformer Theory and Training",
+    "name": "RLHF and PPO",
+    "summary": "A preference model supplies rewards while PPO constrains policy updates relative to a reference model.",
+    "tradeoff": "It can optimize human preferences but adds reward hacking and training complexity.",
+    "pitfall": "A biased reward model can produce confidently optimized failure modes.",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "dpo",
+    "category": "Transformer Theory and Training",
+    "name": "DPO",
+    "summary": "Direct Preference Optimization fits preferred over rejected responses through a classification-style objective relative to a reference policy.",
+    "tradeoff": "It simplifies preference training but still depends on pair quality and distribution coverage.",
+    "pitfall": "Treating implicit user choices as clean preferences introduces confounding.",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "lora",
+    "category": "Transformer Theory and Training",
+    "name": "LoRA",
+    "summary": "LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation.",
+    "tradeoff": "Memory and storage fall, while rank and target-module choices limit expressiveness.",
+    "pitfall": "Merging incompatible adapters without evaluation creates interference.",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "qlora",
+    "category": "Transformer Theory and Training",
+    "name": "QLoRA",
+    "summary": "QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques.",
+    "tradeoff": "Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability.",
+    "pitfall": "Confusing training quantization with final serving quantization produces wrong expectations.",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "knowledge-distillation",
+    "category": "Transformer Theory and Training",
+    "name": "Knowledge distillation",
+    "summary": "A student learns from teacher probabilities, generated data, rationales, or intermediate representations.",
+    "tradeoff": "Serving cost falls but rare capabilities and calibration may be lost.",
+    "pitfall": "Distilling only easy teacher outputs creates a deceptively strong narrow model.",
+    "references": [
+      "transformer",
+      "lora",
+      "qlora"
+    ]
+  },
+  {
+    "id": "kv-caching",
+    "category": "Inference Optimization",
+    "name": "KV caching",
+    "summary": "Autoregressive decoding stores prior keys and values so each new token avoids recomputing attention over the entire prefix.",
+    "tradeoff": "Decode speed improves while cache memory grows with layers, sequence, batch, and KV heads.",
+    "pitfall": "Capacity planning only model weights causes out-of-memory failures at long context.",
+    "references": [
+      "flash",
+      "paged",
+      "gqa"
+    ]
+  },
+  {
+    "id": "pagedattention",
+    "category": "Inference Optimization",
+    "name": "PagedAttention",
+    "summary": "PagedAttention manages KV cache in non-contiguous blocks using paging-inspired allocation to reduce fragmentation and enable sharing.",
+    "tradeoff": "Utilization and batching improve, while block tables and kernels add runtime complexity.",
+    "pitfall": "Oversized blocks waste tail space; tiny blocks add metadata overhead.",
+    "references": [
+      "flash",
+      "paged",
+      "gqa"
+    ]
+  },
+  {
+    "id": "continuous-batching",
+    "category": "Inference Optimization",
+    "name": "Continuous batching",
+    "summary": "Requests join and leave a running decode batch at iteration boundaries rather than waiting for a fixed batch.",
+    "tradeoff": "Throughput and utilization rise, while scheduling fairness and latency isolation become harder.",
+    "pitfall": "Optimizing total tokens per second alone can starve short requests.",
+    "references": [
+      "flash",
+      "paged",
+      "gqa"
+    ]
+  },
+  {
+    "id": "prefix-caching",
+    "category": "Inference Optimization",
+    "name": "Prefix caching",
+    "summary": "Shared prompt prefixes reuse precomputed KV blocks across requests with matching tokens and model state.",
+    "tradeoff": "Repeated system prompts become cheaper, but hit rate, invalidation, and tenant isolation matter.",
+    "pitfall": "Cache keys that omit adapters or model revision return incorrect state.",
+    "references": [
+      "flash",
+      "paged",
+      "gqa"
+    ]
+  },
+  {
+    "id": "flashattention",
+    "category": "Inference Optimization",
+    "name": "FlashAttention",
+    "summary": "FlashAttention tiles exact attention to reduce high-bandwidth-memory traffic and materialization of the score matrix.",
+    "tradeoff": "Wall-clock speed and memory improve without approximate attention, but kernels depend on shapes and hardware.",
+    "pitfall": "Calling it subquadratic compute confuses IO optimization with arithmetic complexity.",
+    "references": [
+      "flash",
+      "paged",
+      "gqa"
+    ]
+  },
+  {
+    "id": "gqa-and-mqa",
+    "category": "Inference Optimization",
+    "name": "GQA and MQA",
+    "summary": "Grouped-query and multi-query attention share key-value heads across query heads to shrink KV cache and memory bandwidth.",
+    "tradeoff": "Decode efficiency improves, with possible quality loss relative to full multi-head KV.",
+    "pitfall": "Converting weights naively after training does not reproduce a model trained for shared KV heads.",
+    "references": [
+      "flash",
+      "paged",
+      "gqa"
+    ]
+  },
+  {
+    "id": "speculative-decoding",
+    "category": "Inference Optimization",
+    "name": "Speculative decoding",
+    "summary": "A cheaper draft proposes tokens and a target model verifies them while preserving the target distribution.",
+    "tradeoff": "Latency falls when acceptance is high, but drafting and verification overhead can dominate.",
+    "pitfall": "Measuring draft speed without acceptance rate gives meaningless projections.",
+    "references": [
+      "flash",
+      "paged",
+      "gqa"
+    ]
+  },
+  {
+    "id": "quantization",
+    "category": "Inference Optimization",
+    "name": "Quantization",
+    "summary": "Quantization maps weights or activations to lower precision using scales, groups, calibration, or quantization-aware training.",
+    "tradeoff": "Memory and bandwidth fall, while accuracy and kernel support can degrade.",
+    "pitfall": "A smaller model file may run slower if hardware lacks optimized kernels.",
+    "references": [
+      "flash",
+      "paged",
+      "gqa"
+    ]
+  },
+  {
+    "id": "tensor-parallelism",
+    "category": "Inference Optimization",
+    "name": "Tensor parallelism",
+    "summary": "Tensor parallelism shards matrix operations across devices and communicates partial results within layers.",
+    "tradeoff": "It enables large models and lower per-request latency but requires high-bandwidth interconnects.",
+    "pitfall": "Spanning slow network links can make communication dominate compute.",
+    "references": [
+      "flash",
+      "paged",
+      "gqa"
+    ]
+  },
+  {
+    "id": "pipeline-parallelism",
+    "category": "Inference Optimization",
+    "name": "Pipeline parallelism",
+    "summary": "Pipeline parallelism assigns layer stages to devices and streams microbatches through them.",
+    "tradeoff": "It scales model depth but creates bubbles and per-request latency.",
+    "pitfall": "Too few microbatches leave stages idle.",
+    "references": [
+      "flash",
+      "paged",
+      "gqa"
+    ]
+  },
+  {
+    "id": "data-parallel-inference",
+    "category": "Inference Optimization",
+    "name": "Data parallel inference",
+    "summary": "Replicas serve independent requests and scale throughput with routing and load balancing.",
+    "tradeoff": "It is operationally simple but duplicates model weights on every replica.",
+    "pitfall": "Random routing ignores prefix-cache locality and uneven sequence lengths.",
+    "references": [
+      "flash",
+      "paged",
+      "gqa"
+    ]
+  },
+  {
+    "id": "expert-parallelism",
+    "category": "Inference Optimization",
+    "name": "Expert parallelism",
+    "summary": "MoE experts are distributed across devices and tokens are routed with all-to-all communication.",
+    "tradeoff": "Parameter capacity scales, while communication and load balance determine performance.",
+    "pitfall": "Average expert load hides hot experts that gate step time.",
+    "references": [
+      "flash",
+      "paged",
+      "gqa"
+    ]
+  },
+  {
+    "id": "dynamic-batching",
+    "category": "Inference Optimization",
+    "name": "Dynamic batching",
+    "summary": "A server waits briefly to combine compatible requests into a batch.",
+    "tradeoff": "GPU efficiency improves while queue delay harms time-to-first-token.",
+    "pitfall": "One global maximum delay cannot serve both interactive and batch workloads well.",
+    "references": [
+      "flash",
+      "paged",
+      "gqa"
+    ]
+  },
+  {
+    "id": "streaming-generation",
+    "category": "Inference Optimization",
+    "name": "Streaming generation",
+    "summary": "Servers emit tokens incrementally with backpressure, disconnect handling, and final usage accounting.",
+    "tradeoff": "Perceived latency improves, but partial outputs complicate moderation and retries.",
+    "pitfall": "Retrying after visible partial output can duplicate text or side effects.",
+    "references": [
+      "flash",
+      "paged",
+      "gqa"
+    ]
+  },
+  {
+    "id": "fastapi",
+    "category": "Backend, APIs, and Microservices",
+    "name": "FastAPI",
+    "summary": "FastAPI builds typed ASGI APIs from Python hints with validation, dependency injection, and OpenAPI generation.",
+    "tradeoff": "Development is fast, while blocking work must be isolated from the event loop.",
+    "pitfall": "Declaring a blocking database or model call inside async code stalls all requests.",
+    "references": [
+      "fastapi",
+      "grpc",
+      "k8s"
+    ]
+  },
+  {
+    "id": "starlette",
+    "category": "Backend, APIs, and Microservices",
+    "name": "Starlette",
+    "summary": "Starlette is a lightweight ASGI toolkit providing routing, middleware, WebSockets, background tasks, and test support.",
+    "tradeoff": "It offers control with fewer batteries than a full API framework.",
+    "pitfall": "Reimplementing validation and dependency patterns inconsistently increases defects.",
+    "references": [
+      "fastapi",
+      "grpc",
+      "k8s"
+    ]
+  },
+  {
+    "id": "litestar",
+    "category": "Backend, APIs, and Microservices",
+    "name": "Litestar",
+    "summary": "Litestar is an ASGI framework with typing, dependency injection, OpenAPI, plugins, and data-transfer objects.",
+    "tradeoff": "Rich framework features reduce boilerplate but introduce conventions and migration cost.",
+    "pitfall": "Choosing by benchmark alone ignores ecosystem and team familiarity.",
+    "references": [
+      "fastapi",
+      "grpc",
+      "k8s"
+    ]
+  },
+  {
+    "id": "flask",
+    "category": "Backend, APIs, and Microservices",
+    "name": "Flask",
+    "summary": "Flask is a minimal WSGI web framework with a large extension ecosystem.",
+    "tradeoff": "Simplicity suits synchronous services, while async-first streaming needs different architecture.",
+    "pitfall": "Assuming an async view converts a WSGI deployment into high-concurrency ASGI is wrong.",
+    "references": [
+      "fastapi",
+      "grpc",
+      "k8s"
+    ]
+  },
+  {
+    "id": "django-and-drf",
+    "category": "Backend, APIs, and Microservices",
+    "name": "Django and DRF",
+    "summary": "Django supplies an ORM, admin, authentication, migrations, and conventions; DRF adds APIs.",
+    "tradeoff": "Batteries accelerate business systems but can be heavy for a narrow inference gateway.",
+    "pitfall": "Performing N+1 ORM queries around an expensive model magnifies tail latency.",
+    "references": [
+      "fastapi",
+      "grpc",
+      "k8s"
+    ]
+  },
+  {
+    "id": "rest-api-design",
+    "category": "Backend, APIs, and Microservices",
+    "name": "REST API design",
+    "summary": "REST uses resource-oriented URLs, HTTP methods, status codes, caching, content negotiation, and idempotency semantics.",
+    "tradeoff": "Broad interoperability is strong, while chatty workflows and schema evolution need care.",
+    "pitfall": "Returning 200 for every failure breaks clients and observability.",
+    "references": [
+      "fastapi",
+      "grpc",
+      "k8s"
+    ]
+  },
+  {
+    "id": "grpc",
+    "category": "Backend, APIs, and Microservices",
+    "name": "gRPC",
+    "summary": "gRPC uses protobuf contracts and HTTP/2 for efficient unary and streaming RPCs with generated clients.",
+    "tradeoff": "Typed internal services perform well, while browser and human debugging are less direct.",
+    "pitfall": "Changing field numbers or incompatible meanings breaks wire compatibility.",
+    "references": [
+      "fastapi",
+      "grpc",
+      "k8s"
+    ]
+  },
+  {
+    "id": "websockets-and-sse",
+    "category": "Backend, APIs, and Microservices",
+    "name": "WebSockets and SSE",
+    "summary": "WebSockets provide bidirectional frames; server-sent events provide simpler one-way HTTP streams.",
+    "tradeoff": "SSE fits token streaming and reconnect semantics; WebSockets fit interactive duplex protocols.",
+    "pitfall": "Using WebSockets when one-way streaming is enough adds state and proxy complexity.",
+    "references": [
+      "fastapi",
+      "grpc",
+      "k8s"
+    ]
+  },
+  {
+    "id": "api-idempotency",
+    "category": "Backend, APIs, and Microservices",
+    "name": "API idempotency",
+    "summary": "Idempotency keys let retried mutation requests resolve to the same business operation and stored outcome.",
+    "tradeoff": "Duplicate effects are prevented at the cost of durable deduplication state.",
+    "pitfall": "Expiring keys before upstream retry windows can reintroduce duplicates.",
+    "references": [
+      "fastapi",
+      "grpc",
+      "k8s"
+    ]
+  },
+  {
+    "id": "rate-limiting",
+    "category": "Backend, APIs, and Microservices",
+    "name": "Rate limiting",
+    "summary": "Token buckets, leaky buckets, and concurrency limits protect shared resources by identity and cost.",
+    "tradeoff": "Stability and fairness improve but strict limits can reject valuable bursts.",
+    "pitfall": "Limiting requests instead of tokens lets a few long prompts monopolize capacity.",
+    "references": [
+      "fastapi",
+      "grpc",
+      "k8s"
+    ]
+  },
+  {
+    "id": "circuit-breakers",
+    "category": "Backend, APIs, and Microservices",
+    "name": "Circuit breakers",
+    "summary": "Circuit breakers stop calls to a failing dependency, probe recovery, and combine with timeouts and fallbacks.",
+    "tradeoff": "Cascading failure is reduced, while bad thresholds can create synchronized outages.",
+    "pitfall": "A breaker without bounded timeouts reacts only after resources are already exhausted.",
+    "references": [
+      "fastapi",
+      "grpc",
+      "k8s"
+    ]
+  },
+  {
+    "id": "microservice-boundaries",
+    "category": "Backend, APIs, and Microservices",
+    "name": "Microservice boundaries",
+    "summary": "Boundaries should follow ownership, data, scaling, failure isolation, and change cadence rather than nouns alone.",
+    "tradeoff": "Independent deployment helps teams but adds networks, consistency, and operations.",
+    "pitfall": "Splitting too early creates a distributed monolith.",
+    "references": [
+      "fastapi",
+      "grpc",
+      "k8s"
+    ]
+  },
+  {
+    "id": "event-driven-architecture",
+    "category": "Backend, APIs, and Microservices",
+    "name": "Event-driven architecture",
+    "summary": "Producers publish immutable events to brokers while consumers process independently with delivery semantics.",
+    "tradeoff": "Decoupling and replay improve, while ordering, duplication, schemas, and lag must be managed.",
+    "pitfall": "Assuming exactly-once business effects from at-least-once delivery causes duplicates.",
+    "references": [
+      "fastapi",
+      "grpc",
+      "k8s"
+    ]
+  },
+  {
+    "id": "object-oriented-design",
+    "category": "Backend, APIs, and Microservices",
+    "name": "Object-oriented design",
+    "summary": "Encapsulation, composition, interfaces, and explicit invariants organize stateful behavior.",
+    "tradeoff": "Abstraction improves changeability, while deep inheritance hides coupling.",
+    "pitfall": "Modeling every data record as a behavior-heavy class adds ceremony without invariants.",
+    "references": [
+      "fastapi",
+      "grpc",
+      "k8s"
+    ]
+  },
+  {
+    "id": "python-threading-and-the-gil",
+    "category": "Python Engineering",
+    "name": "Python threading and the GIL",
+    "summary": "CPython threads share memory; the GIL limits simultaneous Python bytecode but releases around many blocking operations.",
+    "tradeoff": "Threads suit I/O-bound work and shared state, not pure Python CPU scaling.",
+    "pitfall": "Claiming threads are always useless ignores network and native-extension concurrency.",
+    "references": [
+      "python"
+    ]
+  },
+  {
+    "id": "multiprocessing",
+    "category": "Python Engineering",
+    "name": "Multiprocessing",
+    "summary": "Separate processes bypass the GIL and isolate memory while communicating through serialization or shared memory.",
+    "tradeoff": "CPU parallelism improves at startup, memory, and coordination cost.",
+    "pitfall": "Passing large models to spawned workers duplicates memory unexpectedly.",
+    "references": [
+      "python"
+    ]
+  },
+  {
+    "id": "asyncio",
+    "category": "Python Engineering",
+    "name": "Asyncio",
+    "summary": "Asyncio cooperatively schedules coroutines on an event loop around awaitable I/O.",
+    "tradeoff": "High connection concurrency is efficient, while blocking functions freeze the loop.",
+    "pitfall": "Creating coroutines without awaiting them silently drops work.",
+    "references": [
+      "python"
+    ]
+  },
+  {
+    "id": "concurrent-futures",
+    "category": "Python Engineering",
+    "name": "Concurrent futures",
+    "summary": "ThreadPoolExecutor and ProcessPoolExecutor expose a common future-based API for concurrent callables.",
+    "tradeoff": "Integration is simple, but cancellation and process serialization have limits.",
+    "pitfall": "Submitting unbounded tasks creates memory pressure and queue latency.",
+    "references": [
+      "python"
+    ]
+  },
+  {
+    "id": "decorators",
+    "category": "Python Engineering",
+    "name": "Decorators",
+    "summary": "Decorators wrap or replace functions or classes to add behavior while preserving a callable interface.",
+    "tradeoff": "Cross-cutting concerns become reusable, but hidden control flow complicates debugging.",
+    "pitfall": "Omitting functools.wraps breaks metadata and framework introspection.",
+    "references": [
+      "python"
+    ]
+  },
+  {
+    "id": "context-managers",
+    "category": "Python Engineering",
+    "name": "Context managers",
+    "summary": "Context managers guarantee paired setup and cleanup through with, __enter__/__exit__, or contextlib.",
+    "tradeoff": "Resource safety improves and exceptions are localized.",
+    "pitfall": "Swallowing exceptions unintentionally in __exit__ hides failures.",
+    "references": [
+      "python"
+    ]
+  },
+  {
+    "id": "generators",
+    "category": "Python Engineering",
+    "name": "Generators",
+    "summary": "Generators suspend and resume execution around yield, enabling lazy iteration and streaming pipelines.",
+    "tradeoff": "Memory use falls, while one-shot iteration and cleanup require care.",
+    "pitfall": "Reusing an exhausted generator returns no data without warning.",
+    "references": [
+      "python"
+    ]
+  },
+  {
+    "id": "descriptors-and-properties",
+    "category": "Python Engineering",
+    "name": "Descriptors and properties",
+    "summary": "Descriptors define attribute access; properties provide managed getter, setter, and deleter behavior.",
+    "tradeoff": "Validation and lazy access fit attribute syntax but may hide expensive operations.",
+    "pitfall": "Performing network I/O in a property surprises callers and tooling.",
+    "references": [
+      "python"
+    ]
+  },
+  {
+    "id": "dataclasses-and-pydantic",
+    "category": "Python Engineering",
+    "name": "Dataclasses and Pydantic",
+    "summary": "Dataclasses reduce class boilerplate; Pydantic adds parsing, validation, serialization, and schema generation.",
+    "tradeoff": "Typed models improve boundaries but validation can add runtime cost.",
+    "pitfall": "Treating parsed external input as semantically authorized is unsafe.",
+    "references": [
+      "python"
+    ]
+  },
+  {
+    "id": "type-hints-and-protocols",
+    "category": "Python Engineering",
+    "name": "Type hints and protocols",
+    "summary": "Type hints support static analysis; Protocol defines structural interfaces without inheritance.",
+    "tradeoff": "Refactoring and contracts improve, while runtime behavior is unchanged unless validated.",
+    "pitfall": "Assuming type annotations enforce production inputs creates vulnerabilities.",
+    "references": [
+      "python"
+    ]
+  },
+  {
+    "id": "exceptions",
+    "category": "Python Engineering",
+    "name": "Exceptions",
+    "summary": "Exceptions separate error propagation from normal return values and can preserve causal chains.",
+    "tradeoff": "Central handling simplifies APIs, while overly broad catches erase actionable context.",
+    "pitfall": "Catching Exception and returning None turns failures into corrupt state.",
+    "references": [
+      "python"
+    ]
+  },
+  {
+    "id": "memory-management",
+    "category": "Python Engineering",
+    "name": "Memory management",
+    "summary": "CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory.",
+    "tradeoff": "Automatic cleanup is convenient, while cycles and caches can retain large objects.",
+    "pitfall": "Watching only Python heap misses tensors allocated in native or GPU memory.",
+    "references": [
+      "python"
+    ]
+  },
+  {
+    "id": "testing-and-mocking",
+    "category": "Python Engineering",
+    "name": "Testing and mocking",
+    "summary": "Unit, integration, property, contract, and load tests cover different risks; mocks isolate only well-understood boundaries.",
+    "tradeoff": "Fast tests aid iteration, while excessive mocking tests implementation rather than behavior.",
+    "pitfall": "Mocking the model, database, and network in the same test proves little about integration.",
+    "references": [
+      "python"
+    ]
+  },
+  {
+    "id": "packaging-and-environments",
+    "category": "Python Engineering",
+    "name": "Packaging and environments",
+    "summary": "pyproject.toml, lockfiles, wheels, virtual environments, and reproducible builds define deliverable Python software.",
+    "tradeoff": "Isolation prevents dependency drift but needs platform and supply-chain controls.",
+    "pitfall": "Loose version ranges in production make rebuilds non-reproducible.",
+    "references": [
+      "python"
+    ]
+  },
+  {
+    "id": "prompt-injection",
+    "category": "Security, Safety, and Governance",
+    "name": "Prompt injection",
+    "summary": "Untrusted content attempts to override instructions, exfiltrate data, or induce tool actions.",
+    "tradeoff": "Content isolation and least privilege reduce impact but cannot make untrusted text authoritative.",
+    "pitfall": "Telling the model to ignore attacks is not a security boundary.",
+    "references": [
+      "owasp",
+      "nist",
+      "mcp"
+    ]
+  },
+  {
+    "id": "tool-authorization",
+    "category": "Security, Safety, and Governance",
+    "name": "Tool authorization",
+    "summary": "The host checks identity, scope, resource, action, policy, and user intent before every tool execution.",
+    "tradeoff": "Fine-grained authorization limits blast radius but adds policy complexity.",
+    "pitfall": "Authorizing the agent once at session start enables confused-deputy attacks.",
+    "references": [
+      "owasp",
+      "nist",
+      "mcp"
+    ]
+  },
+  {
+    "id": "secrets-management",
+    "category": "Security, Safety, and Governance",
+    "name": "Secrets management",
+    "summary": "Credentials are issued narrowly, stored outside prompts and code, rotated, audited, and redacted from telemetry.",
+    "tradeoff": "Short-lived credentials reduce exposure but require reliable identity infrastructure.",
+    "pitfall": "Environment variables copied into sandboxes or crash logs leak broad authority.",
+    "references": [
+      "owasp",
+      "nist",
+      "mcp"
+    ]
+  },
+  {
+    "id": "sandboxing",
+    "category": "Security, Safety, and Governance",
+    "name": "Sandboxing",
+    "summary": "Defense in depth combines process, filesystem, network, syscall, credential, resource, and time boundaries.",
+    "tradeoff": "Strong isolation raises operational cost and may restrict legitimate tools.",
+    "pitfall": "Running as non-root inside an otherwise privileged container is insufficient.",
+    "references": [
+      "owasp",
+      "nist",
+      "mcp"
+    ]
+  },
+  {
+    "id": "data-privacy",
+    "category": "Security, Safety, and Governance",
+    "name": "Data privacy",
+    "summary": "Data minimization, purpose limitation, access control, retention, deletion, and regional handling apply to prompts and traces.",
+    "tradeoff": "Privacy protection can reduce debugging data and personalization.",
+    "pitfall": "Redacting only user messages while retaining retrieved documents leaves exposure.",
+    "references": [
+      "owasp",
+      "nist",
+      "mcp"
+    ]
+  },
+  {
+    "id": "output-validation",
+    "category": "Security, Safety, and Governance",
+    "name": "Output validation",
+    "summary": "Structured schema, semantic checks, policy filters, allowlists, and deterministic verification gate model output.",
+    "tradeoff": "Fail-closed validation improves safety but may lower completion rate.",
+    "pitfall": "A valid JSON schema does not prove safe SQL, URLs, or business intent.",
+    "references": [
+      "owasp",
+      "nist",
+      "mcp"
+    ]
+  },
+  {
+    "id": "model-supply-chain",
+    "category": "Security, Safety, and Governance",
+    "name": "Model supply chain",
+    "summary": "Weights, datasets, containers, packages, adapters, and prompts require provenance, scanning, signing, and review.",
+    "tradeoff": "Assurance improves while promotion pipelines become more deliberate.",
+    "pitfall": "Loading arbitrary pickle-based artifacts can execute code.",
+    "references": [
+      "owasp",
+      "nist",
+      "mcp"
+    ]
+  },
+  {
+    "id": "ai-risk-management",
+    "category": "Security, Safety, and Governance",
+    "name": "AI risk management",
+    "summary": "Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk.",
+    "tradeoff": "Governance improves accountability but can become checkbox compliance without technical signals.",
+    "pitfall": "A model card without deployment-specific threat modeling is incomplete.",
+    "references": [
+      "owasp",
+      "nist",
+      "mcp"
+    ]
+  },
+  {
+    "id": "red-teaming",
+    "category": "Security, Safety, and Governance",
+    "name": "Red teaming",
+    "summary": "Adversarial testing explores misuse, prompt injection, privacy, bias, jailbreaks, tool abuse, and failure recovery.",
+    "tradeoff": "It reveals unknown weaknesses but provides samples, not a guarantee of safety.",
+    "pitfall": "Running one generic jailbreak list misses application-specific assets and actions.",
+    "references": [
+      "owasp",
+      "nist",
+      "mcp"
+    ]
+  },
+  {
+    "id": "auditability",
+    "category": "Security, Safety, and Governance",
+    "name": "Auditability",
+    "summary": "Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes.",
+    "tradeoff": "Investigations and compliance improve, while logs themselves become sensitive assets.",
+    "pitfall": "Logging reasoning text instead of decisive actions and evidence can reduce clarity.",
+    "references": [
+      "owasp",
+      "nist",
+      "mcp"
+    ]
+  },
+  {
+    "id": "cap-and-consistency",
+    "category": "Distributed Systems and Reliability",
+    "name": "CAP and consistency",
+    "summary": "Under a network partition, a distributed system must trade availability against consistent reads and writes.",
+    "tradeoff": "Stronger guarantees simplify application invariants but increase latency and unavailability.",
+    "pitfall": "Quoting CAP without identifying partitions and operations does not guide design.",
+    "references": [
+      "temporal",
+      "k8s",
+      "otel"
+    ]
+  },
+  {
+    "id": "consensus",
+    "category": "Distributed Systems and Reliability",
+    "name": "Consensus",
+    "summary": "Protocols such as Raft replicate an ordered log so nodes agree despite failures.",
+    "tradeoff": "Coordination provides a consistent control plane but costs extra messages and quorum latency.",
+    "pitfall": "Deploying a quorum across unreliable links can reduce availability.",
+    "references": [
+      "temporal",
+      "k8s",
+      "otel"
+    ]
+  },
+  {
+    "id": "queues-and-backpressure",
+    "category": "Distributed Systems and Reliability",
+    "name": "Queues and backpressure",
+    "summary": "Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers.",
+    "tradeoff": "Smoothing improves utilization, while waiting increases latency and stale work.",
+    "pitfall": "An unbounded queue converts overload into memory exhaustion.",
+    "references": [
+      "temporal",
+      "k8s",
+      "otel"
+    ]
+  },
+  {
+    "id": "retries-and-timeouts",
+    "category": "Distributed Systems and Reliability",
+    "name": "Retries and timeouts",
+    "summary": "Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures.",
+    "tradeoff": "Success rate improves, while retries amplify overload and tail latency.",
+    "pitfall": "Layered automatic retries create multiplicative request storms.",
+    "references": [
+      "temporal",
+      "k8s",
+      "otel"
+    ]
+  },
+  {
+    "id": "caching",
+    "category": "Distributed Systems and Reliability",
+    "name": "Caching",
+    "summary": "Caches trade staleness and invalidation complexity for lower latency and load.",
+    "tradeoff": "Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation.",
+    "pitfall": "Omitting tenant, model, prompt version, or authorization from a cache key leaks data.",
+    "references": [
+      "temporal",
+      "k8s",
+      "otel"
+    ]
+  },
+  {
+    "id": "load-balancing",
+    "category": "Distributed Systems and Reliability",
+    "name": "Load balancing",
+    "summary": "Balancers route by health, load, locality, affinity, or capacity across replicas.",
+    "tradeoff": "Distribution improves availability but generic least-connections may ignore token workload size.",
+    "pitfall": "Sending a long-context request to the least-busy replica can still cause head-of-line blocking.",
+    "references": [
+      "temporal",
+      "k8s",
+      "otel"
+    ]
+  },
+  {
+    "id": "fault-isolation",
+    "category": "Distributed Systems and Reliability",
+    "name": "Fault isolation",
+    "summary": "Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources.",
+    "tradeoff": "Blast radius shrinks at some efficiency cost.",
+    "pitfall": "A single global vector index or queue can defeat otherwise isolated services.",
+    "references": [
+      "temporal",
+      "k8s",
+      "otel"
+    ]
+  },
+  {
+    "id": "exactly-once-effects",
+    "category": "Distributed Systems and Reliability",
+    "name": "Exactly-once effects",
+    "summary": "Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes.",
+    "tradeoff": "Business effects can be effectively once, but state and retention are needed.",
+    "pitfall": "Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.",
+    "references": [
+      "temporal",
+      "k8s",
+      "otel"
+    ]
+  },
+  {
+    "id": "multi-region-design",
+    "category": "Distributed Systems and Reliability",
+    "name": "Multi-region design",
+    "summary": "Regions trade user latency, residency, failover speed, replication lag, and operational complexity.",
+    "tradeoff": "Active-active improves availability and latency but makes writes and conflict resolution harder.",
+    "pitfall": "A standby region that never receives realistic traffic may fail during disaster recovery.",
+    "references": [
+      "temporal",
+      "k8s",
+      "otel"
+    ]
+  },
+  {
+    "id": "capacity-planning",
+    "category": "Distributed Systems and Reliability",
+    "name": "Capacity planning",
+    "summary": "Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets.",
+    "tradeoff": "Headroom handles bursts but idle accelerators are expensive.",
+    "pitfall": "Planning with average sequence length underestimates tail memory and latency.",
+    "references": [
+      "temporal",
+      "k8s",
+      "otel"
+    ]
+  }
+]

@@ -1,0 +1,254 @@
+[
+  {
+    "id": "transformer",
+    "title": "Attention Is All You Need",
+    "url": "https://arxiv.org/abs/1706.03762",
+    "kind": "paper"
+  },
+  {
+    "id": "rag",
+    "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+    "url": "https://arxiv.org/abs/2005.11401",
+    "kind": "paper"
+  },
+  {
+    "id": "dpr",
+    "title": "Dense Passage Retrieval for Open-Domain Question Answering",
+    "url": "https://arxiv.org/abs/2004.04906",
+    "kind": "paper"
+  },
+  {
+    "id": "beir",
+    "title": "BEIR: A Heterogeneous Benchmark for Zero-shot Evaluation of Information Retrieval Models",
+    "url": "https://arxiv.org/abs/2104.08663",
+    "kind": "paper"
+  },
+  {
+    "id": "ragas",
+    "title": "RAGAS: Automated Evaluation of Retrieval Augmented Generation",
+    "url": "https://arxiv.org/abs/2309.15217",
+    "kind": "paper"
+  },
+  {
+    "id": "truthfulqa",
+    "title": "TruthfulQA: Measuring How Models Mimic Human Falsehoods",
+    "url": "https://arxiv.org/abs/2109.07958",
+    "kind": "paper"
+  },
+  {
+    "id": "react",
+    "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+    "url": "https://arxiv.org/abs/2210.03629",
+    "kind": "paper"
+  },
+  {
+    "id": "reflexion",
+    "title": "Reflexion: Language Agents with Verbal Reinforcement Learning",
+    "url": "https://arxiv.org/abs/2303.11366",
+    "kind": "paper"
+  },
+  {
+    "id": "toolformer",
+    "title": "Toolformer: Language Models Can Teach Themselves to Use Tools",
+    "url": "https://arxiv.org/abs/2302.04761",
+    "kind": "paper"
+  },
+  {
+    "id": "graphrag",
+    "title": "A Graph RAG Approach to Query-Focused Summarization",
+    "url": "https://arxiv.org/abs/2404.16130",
+    "kind": "paper"
+  },
+  {
+    "id": "kag",
+    "title": "KAG: Boosting LLMs in Professional Domains via Knowledge Augmented Generation",
+    "url": "https://arxiv.org/abs/2409.13731",
+    "kind": "paper"
+  },
+  {
+    "id": "mcp",
+    "title": "Model Context Protocol Specification (2026-07-28)",
+    "url": "https://modelcontextprotocol.io/specification/2026-07-28",
+    "kind": "specification"
+  },
+  {
+    "id": "flash",
+    "title": "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness",
+    "url": "https://arxiv.org/abs/2205.14135",
+    "kind": "paper"
+  },
+  {
+    "id": "paged",
+    "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+    "url": "https://arxiv.org/abs/2309.06180",
+    "kind": "paper"
+  },
+  {
+    "id": "gqa",
+    "title": "GQA: Training Generalized Multi-Query Transformer Models",
+    "url": "https://arxiv.org/abs/2305.13245",
+    "kind": "paper"
+  },
+  {
+    "id": "speculative",
+    "title": "Fast Inference from Transformers via Speculative Decoding",
+    "url": "https://arxiv.org/abs/2211.17192",
+    "kind": "paper"
+  },
+  {
+    "id": "lora",
+    "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+    "url": "https://arxiv.org/abs/2106.09685",
+    "kind": "paper"
+  },
+  {
+    "id": "qlora",
+    "title": "QLoRA: Efficient Finetuning of Quantized LLMs",
+    "url": "https://arxiv.org/abs/2305.14314",
+    "kind": "paper"
+  },
+  {
+    "id": "dpo",
+    "title": "Direct Preference Optimization",
+    "url": "https://arxiv.org/abs/2305.18290",
+    "kind": "paper"
+  },
+  {
+    "id": "pgvector",
+    "title": "pgvector Documentation",
+    "url": "https://github.com/pgvector/pgvector",
+    "kind": "official docs"
+  },
+  {
+    "id": "pinecone",
+    "title": "Pinecone Hybrid Search",
+    "url": "https://docs.pinecone.io/guides/search/hybrid-search",
+    "kind": "official docs"
+  },
+  {
+    "id": "qdrant",
+    "title": "Qdrant Documentation",
+    "url": "https://qdrant.tech/documentation/",
+    "kind": "official docs"
+  },
+  {
+    "id": "weaviate",
+    "title": "Weaviate Documentation",
+    "url": "https://docs.weaviate.io/weaviate",
+    "kind": "official docs"
+  },
+  {
+    "id": "milvus",
+    "title": "Milvus Documentation",
+    "url": "https://milvus.io/docs",
+    "kind": "official docs"
+  },
+  {
+    "id": "elastic",
+    "title": "Elasticsearch kNN Search",
+    "url": "https://www.elastic.co/docs/solutions/search/vector/knn",
+    "kind": "official docs"
+  },
+  {
+    "id": "neo4j",
+    "title": "Neo4j Vector Indexes",
+    "url": "https://neo4j.com/docs/cypher-manual/current/indexes/semantic-indexes/vector-indexes/",
+    "kind": "official docs"
+  },
+  {
+    "id": "langgraph",
+    "title": "LangGraph Overview",
+    "url": "https://docs.langchain.com/oss/python/langgraph/overview",
+    "kind": "official docs"
+  },
+  {
+    "id": "temporal",
+    "title": "Temporal Durable Execution",
+    "url": "https://docs.temporal.io/",
+    "kind": "official docs"
+  },
+  {
+    "id": "otel",
+    "title": "OpenTelemetry Semantic Conventions",
+    "url": "https://opentelemetry.io/docs/specs/semconv/",
+    "kind": "standard"
+  },
+  {
+    "id": "mlflow",
+    "title": "MLflow for LLMs and Agents",
+    "url": "https://mlflow.org/docs/latest/genai/",
+    "kind": "official docs"
+  },
+  {
+    "id": "evidently",
+    "title": "Evidently Documentation",
+    "url": "https://docs.evidentlyai.com/",
+    "kind": "official docs"
+  },
+  {
+    "id": "dvc",
+    "title": "DVC Data Pipelines and Versioning",
+    "url": "https://doc.dvc.org/start/data-pipelines/data-pipelines",
+    "kind": "official docs"
+  },
+  {
+    "id": "feast",
+    "title": "Feast Feature Store Documentation",
+    "url": "https://docs.feast.dev/",
+    "kind": "official docs"
+  },
+  {
+    "id": "vllm",
+    "title": "vLLM Documentation",
+    "url": "https://docs.vllm.ai/",
+    "kind": "official docs"
+  },
+  {
+    "id": "ray",
+    "title": "Ray Serve LLM Serving",
+    "url": "https://docs.ray.io/en/latest/serve/llm/",
+    "kind": "official docs"
+  },
+  {
+    "id": "kserve",
+    "title": "KServe Documentation",
+    "url": "https://kserve.github.io/website/",
+    "kind": "official docs"
+  },
+  {
+    "id": "k8s",
+    "title": "Kubernetes Horizontal Pod Autoscaling",
+    "url": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/",
+    "kind": "official docs"
+  },
+  {
+    "id": "fastapi",
+    "title": "FastAPI Documentation",
+    "url": "https://fastapi.tiangolo.com/",
+    "kind": "official docs"
+  },
+  {
+    "id": "grpc",
+    "title": "gRPC Documentation",
+    "url": "https://grpc.io/docs/",
+    "kind": "official docs"
+  },
+  {
+    "id": "python",
+    "title": "Python 3 Documentation",
+    "url": "https://docs.python.org/3/",
+    "kind": "official docs"
+  },
+  {
+    "id": "owasp",
+    "title": "OWASP Top 10 for LLM Applications",
+    "url": "https://genai.owasp.org/llm-top-10/",
+    "kind": "standard"
+  },
+  {
+    "id": "nist",
+    "title": "NIST AI Risk Management Framework",
+    "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+    "kind": "standard"
+  }
+]
