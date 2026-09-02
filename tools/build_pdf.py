@@ -39,6 +39,9 @@ questions = sum((load(f"questions_{i}.json") for i in range(1, 5)), [])
 core = load("core_questions.json")
 designs = load("designs.json")
 refs = load("references.json")
+tutorials = load("tutorials.json")
+formulas = load("formulas.json")
+roadmap = load("roadmap.json")
 
 
 def safe(text):
@@ -55,6 +58,7 @@ styles.add(ParagraphStyle(name="AtlasQuestion", fontName="Helvetica-Bold", fontS
 styles.add(ParagraphStyle(name="AtlasOption", fontName="Helvetica", fontSize=7.4, leading=9.6, leftIndent=8, firstLineIndent=-8, textColor=colors.HexColor("#263445"), spaceAfter=1.5))
 styles.add(ParagraphStyle(name="AtlasAnswer", fontName="Helvetica", fontSize=7.35, leading=9.7, textColor=GREEN, leftIndent=8, borderColor=CYAN, borderWidth=0, borderPadding=0, spaceBefore=2))
 styles.add(ParagraphStyle(name="AtlasCenter", parent=styles["AtlasBody"], alignment=TA_CENTER))
+styles.add(ParagraphStyle(name="AtlasFormula", fontName="Courier", fontSize=6.35, leading=8.5, textColor=NAVY, backColor=colors.HexColor("#EFF9FA"), borderColor=CYAN, borderWidth=.5, borderPadding=6, spaceBefore=3, spaceAfter=5))
 
 
 class AtlasDoc(BaseDocTemplate):
@@ -97,8 +101,8 @@ class Cover(Flowable):
         c.drawString(0, h-82*mm, "AI Engineering")
         c.drawString(0, h-96*mm, "Interview Atlas")
         c.setFont("Helvetica", 13); c.setFillColor(colors.HexColor("#BFD2E6"))
-        c.drawString(0, h-116*mm, "Systems, theory, and 1,000+ questions")
-        stats=[("192","topics"),("1,970","questions"),("12","design drills"),("42","primary sources")]
+        c.drawString(0, h-116*mm, "Mathematical tutorials, systems, and 1,000+ questions")
+        stats=[(str(len(tutorials)),"deep tutorials"),(f"{len(questions)+len(core):,}","questions"),(str(len(formulas)),"derivations"),(str(len(roadmap)),"roadmap phases")]
         x=0
         for number,label in stats:
             c.setFillColor(colors.HexColor("#173D64")); c.roundRect(x, h-165*mm, 38*mm, 25*mm, 3*mm, stroke=0, fill=1)
@@ -127,6 +131,34 @@ class LandscapeFlow(Flowable):
         c.setFont("Helvetica",7); c.setFillColor(MUTED); c.drawString(0,5*mm,"Production readiness comes from the connections: evidence, control, telemetry, policy, and rollback.")
 
 
+class RoadmapFlow(Flowable):
+    def __init__(self, phases):
+        super().__init__(); self.phases=phases; self.width=170*mm; self.height=92*mm
+    def wrap(self, aw, ah): return min(self.width,aw), self.height
+    def draw(self):
+        c=self.canv; bw=51*mm; bh=15*mm; gx=6*mm; gy=7*mm
+        for i,p in enumerate(self.phases):
+            row=i//3; slot=i%3; col=slot if row%2==0 else 2-slot; x=col*(bw+gx); y=self.height-(row+1)*(bh+gy)+gy
+            c.setFillColor(PAPER); c.setStrokeColor(BLUE if i==0 else CYAN); c.roundRect(x,y,bw,bh,2*mm,stroke=1,fill=1)
+            c.setFont("Helvetica-Bold",6.4); c.setFillColor(BLUE); c.drawString(x+3*mm,y+10.2*mm,f"{p['order']:02d}  |  {p['hours']} HOURS")
+            c.setFont("Helvetica-Bold",5.9); c.setFillColor(NAVY)
+            words=p['title'].split(); title_lines=[""]
+            for word in words:
+                candidate=(title_lines[-1]+" "+word).strip()
+                if pdfmetrics.stringWidth(candidate,"Helvetica-Bold",5.9) > bw-6*mm and len(title_lines)<2:
+                    title_lines.append(word)
+                else: title_lines[-1]=candidate
+            for line_no,title_line in enumerate(title_lines[:2]):
+                c.drawString(x+3*mm,y+(6.1-2.8*line_no)*mm,title_line)
+            if i<len(self.phases)-1:
+                if slot<2:
+                    direction=1 if row%2==0 else -1
+                    x1=x+bw if direction==1 else x; y1=y+bh/2; x2=x1+direction*(gx-1*mm); y2=y1
+                else:
+                    x1=x+bw/2; y1=y; x2=x1; y2=y-gy+1*mm
+                c.setStrokeColor(BLUE); c.setLineWidth(1); c.line(x1,y1,x2,y2)
+
+
 class DesignFlow(Flowable):
     def __init__(self, diagram):
         self.labels=[m.group(1) for m in re.finditer(r"\[([^\]]+)\]",diagram)]
@@ -147,20 +179,37 @@ def subsection(title): return Paragraph(safe(title), styles["AtlasH2"])
 def body(text): return Paragraph(safe(text), styles["AtlasBody"])
 
 
-story=[Cover(),PageBreak(),section("How to use this handbook"),body(f"This handbook contains {len(topics)} topic notes, {len(questions)} generated practice questions, 50 core interview questions, and {len(designs)} progressive system-design challenges. Build answers in five moves: mechanism, workload, tradeoff, measurement, and failure recovery."),Spacer(1,3*mm),LandscapeFlow(),subsection("Study loop"),body("1. Read the mechanism and say it back without product slogans. 2. Name the cost or accuracy tradeoff. 3. Solve medium questions from memory. 4. Use hard questions to explain measurement and rollback. 5. Practice each system design aloud, accepting every twist before reading the rubric."),subsection("Curriculum index")]
+story=[Cover(),PageBreak(),section("How to use this handbook"),body(f"This handbook contains {len(tutorials)} deep topic tutorials, {len(formulas)} mathematical derivations, {len(questions)} generated practice questions, 50 core interview questions, and {len(designs)} progressive system-design challenges. Build answers in seven moves: mechanism, assumptions, quantitative model, alternatives, experiment, operations, and failure recovery."),Spacer(1,3*mm),LandscapeFlow(),subsection("Study loop"),body("1. Follow the roadmap in order. 2. Derive equations without looking and check assumptions. 3. Read the mechanism and teach it back. 4. Solve medium questions from memory. 5. Use hard questions to explain measurement and rollback. 6. Practice each system design aloud, accepting every twist before reading the rubric."),subsection("Curriculum index")]
 
 counts={}
 for t in topics: counts[t["category"]]=counts.get(t["category"],0)+1
 toc_data=[[Paragraph("Domain",styles["AtlasQuestion"]),Paragraph("Topics",styles["AtlasQuestion"])]]+[[Paragraph(safe(k),styles["AtlasSmall"]),str(v)] for k,v in counts.items()]
 toc=Table(toc_data,colWidths=[145*mm,20*mm],repeatRows=1)
 toc.setStyle(TableStyle([("BACKGROUND",(0,0),(-1,0),NAVY),("TEXTCOLOR",(0,0),(-1,0),colors.white),("GRID",(0,0),(-1,-1),.35,LINE),("VALIGN",(0,0),(-1,-1),"TOP"),("ROWBACKGROUNDS",(0,1),(-1,-1),[colors.white,PAPER]),("FONTNAME",(1,1),(1,-1),"Helvetica-Bold"),("FONTSIZE",(0,0),(-1,-1),7)]))
-story += [toc,PageBreak()]
+story += [toc,PageBreak(),section("Ordered study roadmap"),body("Mark a phase complete only after its milestone can be performed without notes. The first incomplete phase is the current study position. Dependencies are intentional: serving depends on transformer and systems foundations; safe agents depend on retrieval, orchestration, and observability."),RoadmapFlow(roadmap)]
+for p in roadmap:
+    prereq=", ".join(p["prerequisites"]) or "none"
+    story += [subsection(f"{p['order']:02d}. {p['title']} · {p['hours']} hours"),body(f"Prerequisites: {prereq}. Milestone: {p['milestone']} Practice: {p['practice']}"),Paragraph("<b>Outcomes.</b> "+safe(" · ".join(p["outcomes"])),styles["AtlasSmall"])]
 
+story += [PageBreak(),section("Mathematical formula and derivation reference"),body("Every module gives a compilable LaTeX equation, its variables, the derivation logic, and a worked engineering interpretation. Read each backslash expression as source notation here; the canonical LaTeX handbook renders it as mathematics during the Pages build.")]
+for f in formulas:
+    story += [subsection(f["title"]),Paragraph(safe(f["latex"]),styles["AtlasFormula"]),Paragraph("<b>Variables.</b> "+safe(" · ".join(f["variables"])),styles["AtlasSmall"])]
+    for i,s in enumerate(f["derivation"],1):
+        story += [Paragraph(f"<b>Step {i}.</b> "+safe(s["text"]),styles["AtlasBody"]),Paragraph(safe(s["latex"]),styles["AtlasFormula"])]
+    story += [Paragraph("<b>Worked interpretation.</b> "+safe(f["example"]),styles["AtlasSmall"])]
+
+story += [PageBreak(),section("Deep tutorials: first principles to production"),body("These lessons are the teaching source for the full generated bank. Each one covers the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric used by all seven MCQs, both flashcards, and the long-answer prompt for its topic.")]
+formula_map={f["id"]:f for f in formulas}
 current=None
-for t in topics:
+for t in tutorials:
     if t["category"] != current:
-        current=t["category"]; story += [section(current)]
-    story += [KeepTogether([subsection(t["name"]),body(t["summary"]),Paragraph("<b>Tradeoff.</b> "+safe(t["tradeoff"]),styles["AtlasSmall"]),Paragraph("<b>Production failure.</b> "+safe(t["pitfall"]),styles["AtlasSmall"])])]
+        current=t["category"]; story += [PageBreak(),section(current)]
+    story += [subsection(t["name"]),Paragraph("<b>Objective.</b> "+safe(t["objective"]),styles["AtlasBody"]),body(t["first_principles"]),body(t["mental_model"]),Paragraph("<b>Quantitative reasoning.</b> "+safe(t["quantitative_reasoning"]),styles["AtlasBody"])]
+    for fid in t["formula_ids"]:
+        f=formula_map[fid]; story += [Paragraph("<b>"+safe(f["title"])+".</b>",styles["AtlasSmall"]),Paragraph(safe(f["latex"]),styles["AtlasFormula"])]
+    story += [Paragraph("<b>Decision.</b> "+safe(t["decision_reasoning"]),styles["AtlasBody"]),Paragraph("<b>Failure reasoning.</b> "+safe(t["failure_reasoning"]),styles["AtlasBody"]),Paragraph("<b>Worked production method.</b>",styles["AtlasQuestion"])]
+    for i,x in enumerate(t["worked_reasoning"],1): story.append(Paragraph(f"{i}. "+safe(x),styles["AtlasSmall"]))
+    story += [Paragraph("<b>Evaluate.</b> "+safe(" · ".join(t["evaluation"])),styles["AtlasSmall"]),Paragraph("<b>Operate.</b> "+safe(" · ".join(t["operations"])),styles["AtlasSmall"]),Paragraph("<b>Answer blueprint.</b> "+safe(" ".join(t["answer_blueprint"].values())),styles["AtlasSmall"]),Paragraph("<b>Question coverage.</b> "+safe(t["question_coverage"]),styles["AtlasAnswer"])]
 
 story += [PageBreak(),section("Core 50 interview questions")]
 for q in core:

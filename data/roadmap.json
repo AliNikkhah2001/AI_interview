@@ -1,0 +1,234 @@
+[
+  {
+    "id": "phase-00",
+    "order": 0,
+    "title": "Diagnostic and study system",
+    "hours": 3,
+    "prerequisites": [],
+    "categories": [],
+    "outcomes": [
+      "Benchmark current recall across all domains",
+      "Set a weekly active-recall cadence",
+      "Create an error log organized by mechanism, tradeoff, metric, and failure"
+    ],
+    "milestone": "Complete 50 mixed questions and label every miss by cause.",
+    "practice": "50 mixed questions; do not study before the diagnostic."
+  },
+  {
+    "id": "phase-01",
+    "order": 1,
+    "title": "Python, APIs, and distributed foundations",
+    "hours": 22,
+    "prerequisites": [
+      "phase-00"
+    ],
+    "categories": [
+      "Python Engineering",
+      "Backend, APIs, and Microservices",
+      "Distributed Systems and Reliability"
+    ],
+    "outcomes": [
+      "Explain Python execution and concurrency",
+      "Design typed streaming APIs",
+      "Reason about queues, retries, caching, consensus, and capacity"
+    ],
+    "milestone": "Design a backpressured streaming API and defend its failure semantics.",
+    "practice": "180 questions plus system designs 8 and 12."
+  },
+  {
+    "id": "phase-02",
+    "order": 2,
+    "title": "Transformer mathematics and training",
+    "hours": 26,
+    "prerequisites": [
+      "phase-01"
+    ],
+    "categories": [
+      "Transformer Theory and Training"
+    ],
+    "outcomes": [
+      "Derive scaled dot-product attention",
+      "Explain normalization, residuals, objectives, and preference tuning",
+      "Estimate training and adaptation memory"
+    ],
+    "milestone": "Derive attention, cross-entropy, LoRA, and DPO without notes.",
+    "practice": "120 questions and one whiteboard derivation session."
+  },
+  {
+    "id": "phase-03",
+    "order": 3,
+    "title": "Retrieval theory and vector systems",
+    "hours": 28,
+    "prerequisites": [
+      "phase-02"
+    ],
+    "categories": [
+      "Retrieval and Search Theory",
+      "Vector Databases and Search Engines"
+    ],
+    "outcomes": [
+      "Compare lexical, dense, sparse, and hybrid retrieval",
+      "Derive ranking metrics and fusion",
+      "Select and tune exact, HNSW, IVF, and PQ indexes"
+    ],
+    "milestone": "Choose pgvector or a dedicated vector service from a stated workload and prove the choice with filtered recall tests.",
+    "practice": "260 questions plus a retrieval benchmark design."
+  },
+  {
+    "id": "phase-04",
+    "order": 4,
+    "title": "RAG construction, graphs, and evaluation",
+    "hours": 30,
+    "prerequisites": [
+      "phase-03"
+    ],
+    "categories": [
+      "RAG Architecture and Evaluation",
+      "Knowledge Graphs and GraphRAG"
+    ],
+    "outcomes": [
+      "Build traceable ingestion-to-answer pipelines",
+      "Separate retrieval, generation, citation, and business evaluation",
+      "Know when graphs add value over vector retrieval"
+    ],
+    "milestone": "Localize a RAG regression to ingestion, retrieval, packing, generation, or judging.",
+    "practice": "270 questions plus system designs 1, 2, and 3."
+  },
+  {
+    "id": "phase-05",
+    "order": 5,
+    "title": "Agents, MCP, orchestration, and sandbox control",
+    "hours": 28,
+    "prerequisites": [
+      "phase-04"
+    ],
+    "categories": [
+      "Agents, MCP, and Control",
+      "Orchestration Frameworks"
+    ],
+    "outcomes": [
+      "Separate agentic decisions from deterministic workflow boundaries",
+      "Design durable state, retries, approvals, and compensation",
+      "Apply least privilege to tools, sandboxes, and MCP servers"
+    ],
+    "milestone": "Design a resumable agent that cannot duplicate a high-impact side effect.",
+    "practice": "230 questions plus system designs 4 and 5."
+  },
+  {
+    "id": "phase-06",
+    "order": 6,
+    "title": "Serving and inference optimization",
+    "hours": 28,
+    "prerequisites": [
+      "phase-02",
+      "phase-01"
+    ],
+    "categories": [
+      "Inference Optimization",
+      "Serving, Deployment, and LLMOps"
+    ],
+    "outcomes": [
+      "Calculate KV-cache and batching capacity",
+      "Explain quantization, FlashAttention, GQA, and speculative decoding",
+      "Design model routing, rollout, autoscaling, and fallback"
+    ],
+    "milestone": "Meet a p95 TTFT target under a token-distribution workload and explain the cost model.",
+    "practice": "250 questions plus system designs 7 and 10."
+  },
+  {
+    "id": "phase-07",
+    "order": 7,
+    "title": "Observability, evaluation, and quality monitoring",
+    "hours": 20,
+    "prerequisites": [
+      "phase-04",
+      "phase-05",
+      "phase-06"
+    ],
+    "categories": [
+      "Observability and Monitoring"
+    ],
+    "outcomes": [
+      "Instrument traces across retrieval, model, and tool spans",
+      "Define semantic SLOs and calibrated evaluators",
+      "Detect cost, latency, and quality drift by cohort"
+    ],
+    "milestone": "Write an incident runbook that ties alerts to traces, evaluation slices, and rollback.",
+    "practice": "130 questions plus system design 6."
+  },
+  {
+    "id": "phase-08",
+    "order": 8,
+    "title": "Data, experiments, and ML lifecycle",
+    "hours": 18,
+    "prerequisites": [
+      "phase-07"
+    ],
+    "categories": [
+      "Data and ML Lifecycle"
+    ],
+    "outcomes": [
+      "Version code, data, prompts, models, and environments together",
+      "Prevent leakage with point-in-time joins",
+      "Promote artifacts using reproducible evaluation evidence"
+    ],
+    "milestone": "Reproduce an evaluation run from immutable lineage and promote or roll back its artifacts.",
+    "practice": "120 questions plus system design 11."
+  },
+  {
+    "id": "phase-09",
+    "order": 9,
+    "title": "Security, safety, and governance",
+    "hours": 18,
+    "prerequisites": [
+      "phase-05",
+      "phase-07"
+    ],
+    "categories": [
+      "Security, Safety, and Governance"
+    ],
+    "outcomes": [
+      "Threat-model prompt, retrieval, tool, and model supply chains",
+      "Design tenant isolation and auditable policy enforcement",
+      "Connect evaluations to release gates and incident response"
+    ],
+    "milestone": "Threat-model one agentic RAG architecture and close its three highest-risk paths.",
+    "practice": "120 questions plus system design 9."
+  },
+  {
+    "id": "phase-10",
+    "order": 10,
+    "title": "Integrated AI system design",
+    "hours": 26,
+    "prerequisites": [
+      "phase-06",
+      "phase-08",
+      "phase-09"
+    ],
+    "categories": [],
+    "outcomes": [
+      "Translate ambiguous requirements into SLOs and workload models",
+      "Build multi-stage architectures with explicit data and control planes",
+      "Defend tradeoffs, degradation, migration, and rollback"
+    ],
+    "milestone": "Complete all 12 designs aloud in 45 minutes each, including every twist.",
+    "practice": "All 12 system designs; repeat the weakest four after 72 hours."
+  },
+  {
+    "id": "phase-11",
+    "order": 11,
+    "title": "Interview simulation and targeted repair",
+    "hours": 18,
+    "prerequisites": [
+      "phase-10"
+    ],
+    "categories": [],
+    "outcomes": [
+      "Answer at medium and hard depth under time pressure",
+      "Use clarifying questions and quantitative estimates",
+      "Convert misses into a short repair loop"
+    ],
+    "milestone": "Score at least 80% on 200 unseen mixed questions and pass three timed mock loops.",
+    "practice": "200 mixed questions, 3 mocks, and spaced repetition of every miss."
+  }
+]

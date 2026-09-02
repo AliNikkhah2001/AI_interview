@@ -6,9 +6,9 @@ A research-grounded practice repository for AI engineering, LLM systems, RAG, ag
 
 ## Use the atlas
 
-- Open `index.html` through GitHub Pages for search, filters, flashcards, and design drills.
+- Open `index.html` through GitHub Pages for the ordered roadmap, progress tracking, mathematical tutorials, search, flashcards, and design drills.
 - Read `output/pdf/ai_engineering_interview_handbook.pdf` for the complete printable handbook.
-- Use `data/questions.json` and `data/topics.json` for custom study tools.
+- Use `data/tutorials.json`, `data/formulas.json`, `data/roadmap.json`, and the sharded question files for custom study tools.
 
 ## Curriculum map
 
@@ -72,19 +72,28 @@ Prompt injection · Tool authorization · Secrets management · Sandboxing · Da
 
 CAP and consistency · Consensus · Queues and backpressure · Retries and timeouts · Caching · Load balancing · Fault isolation · Exactly-once effects · Multi-region design · Capacity planning
 
-## Architecture map
+## Ordered study roadmap
 
 ```mermaid
 flowchart TD
-  F[Foundations] --> R[Retrieval and RAG]
-  F --> T[Transformers and optimization]
-  R --> A[Agents and orchestration]
-  T --> D[Serving and deployment]
-  A --> O[Observability and evaluation]
-  D --> O
-  O --> G[Security and governance]
-  G --> P[Production reliability]
+  D[Diagnostic] --> P[Python + APIs + reliability]
+  P --> T[Transformer math]
+  T --> R[Retrieval + vector systems]
+  R --> G[RAG + graphs]
+  G --> A[Agents + orchestration]
+  T --> I[Serving + inference]
+  A --> O[Observability]
+  I --> O
+  O --> L[Data lifecycle + security]
+  L --> S[Integrated system design]
+  S --> M[Mock interviews]
 ```
+
+The browser records roadmap phases, mastered tutorials, and reviewed questions locally on the device. It always highlights the first incomplete phase as the current study position.
+
+## Mathematical coverage
+
+The handbook and site include 33 formula modules with assumptions, variable definitions, derivations, and worked interpretations. Browser equations use MathJax; the source handbook uses native LaTeX with `amsmath`, `amssymb`, and `mathtools`.
 
 ## Source policy
 
@@ -94,8 +103,10 @@ Explanations are original synthesis grounded in primary papers, official documen
 
 ```bash
 python3 tools/build_content.py
-latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=handbook handbook/ai_engineering_interview_handbook.tex
+latexmk -pdf -interaction=nonstopmode -halt-on-error handbook/ai_engineering_interview_handbook.tex
 ```
+
+The Pages workflow performs the LaTeX compilation before publishing, so a broken derivation or command blocks deployment.
 
 ## License
 

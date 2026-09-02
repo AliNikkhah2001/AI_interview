@@ -1,5 +1,8 @@
 {
   "topics": 192,
+  "tutorials": 192,
+  "formulas": 33,
+  "roadmap_phases": 12,
   "generated_questions": 1920,
   "question_files": [
     "questions_1.json",

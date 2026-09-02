@@ -1,7 +1,9 @@
 \documentclass[10pt]{article}
 \usepackage[margin=0.68in]{geometry}
 \usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
 \usepackage{lmodern}
+\usepackage{amsmath,amssymb,mathtools}
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{fancyhdr}
@@ -9,24 +11,36 @@
 \usepackage{enumitem}
 \usepackage{longtable}
 \usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{adjustbox}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc}
 \definecolor{navy}{HTML}{0C2744}
 \definecolor{blue}{HTML}{1E63E9}
 \definecolor{cyan}{HTML}{1DB6C7}
 \definecolor{paper}{HTML}{F4F7FB}
+\definecolor{green}{HTML}{167A5B}
+\definecolor{amber}{HTML}{B77700}
 \hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,pdftitle={AI Engineering Interview Atlas}}
 \pagestyle{fancy}\fancyhf{}\fancyhead[L]{\textcolor{navy}{AI Engineering Interview Atlas}}\fancyhead[R]{\textcolor{gray}{\leftmark}}\fancyfoot[C]{\thepage}
 \titleformat{\section}{\Large\bfseries\color{navy}}{\thesection}{.7em}{}
 \titleformat{\subsection}{\large\bfseries\color{blue}}{\thesubsection}{.7em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{navy}}{\thesubsubsection}{.7em}{}
 \setlist{nosep,leftmargin=*}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
 \newcommand{\tradeoff}[1]{\par\smallskip\noindent\textbf{Tradeoff.} #1}
 \newcommand{\pitfall}[1]{\par\smallskip\noindent\textbf{Production failure.} #1}
 \newcommand{\badge}[1]{\colorbox{paper}{\textcolor{blue}{\textbf{#1}}}}
+\newcommand{\mathblock}[1]{\begin{center}\begin{adjustbox}{max width=\linewidth}$\displaystyle #1$\end{adjustbox}\end{center}}
+\newenvironment{derivation}{\begin{quote}\small\color{navy}}{\end{quote}}
 \begin{document}
 \input{handbook/parts/part_01.tex}
 \input{handbook/parts/part_02.tex}
 \input{handbook/parts/part_03.tex}
 \input{handbook/parts/part_04.tex}
 \input{handbook/parts/part_05.tex}
+\input{handbook/parts/part_06.tex}
+\input{handbook/parts/part_07.tex}
+\input{handbook/parts/part_08.tex}
 \end{document}
