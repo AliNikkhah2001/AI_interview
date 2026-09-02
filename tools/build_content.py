@@ -718,12 +718,12 @@ jobs:
           root_file: handbook/ai_engineering_interview_handbook.tex
           args: -pdf -interaction=nonstopmode -halt-on-error -file-line-error
       - name: Publish compiled handbook
-        run: cp handbook/ai_engineering_interview_handbook.pdf output/pdf/ai_engineering_interview_handbook.pdf
+        run: cp ai_engineering_interview_handbook.pdf output/pdf/ai_engineering_interview_handbook.pdf
       - name: Upload compiled handbook artifact
         uses: actions/upload-artifact@v4
         with:
           name: ai-engineering-interview-handbook
-          path: handbook/ai_engineering_interview_handbook.pdf
+          path: ai_engineering_interview_handbook.pdf
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
