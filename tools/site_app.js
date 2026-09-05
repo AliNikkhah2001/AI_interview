@@ -99,6 +99,13 @@ function showView(id, topicId = null) {
   typeset($(`#${id}`) || document.body);
   window.scrollTo({top: $(".command").offsetHeight, behavior: "smooth"});
 }
+function resumeLesson(topicId) {
+  if (!topicId) return;
+  showView("tutorial", topicId);
+  const firstUnread = READ_PARTS.find(part => !readSet(topicId).has(part));
+  const selector = firstUnread ? `[data-read-section="${firstUnread}"]` : "#chapterExam";
+  window.setTimeout(() => $(selector)?.scrollIntoView({behavior: "smooth", block: "start"}), 180);
+}
 function restoreRoute() {
   const [view, topicId] = location.hash.replace(/^#/, "").split("/");
   if (view && $(`#${view}`)) showView(view, topicId || null);
@@ -125,7 +132,7 @@ function renderLearn() {
       <button id="resumeLearning">${read ? "Resume lesson" : "Start lesson"} →</button>
     </article>
     <article class="course-overview"><p class="eyebrow">COURSE PROGRESS</p><div class="course-number">${percent}%</div><h3>${complete.toLocaleString()} chapters passed</h3><div class="roadmap-bar"><i style="width:${percent}%"></i></div><dl><dt>Reading checkpoints</dt><dd>${Object.values(state.reading).reduce((sum, parts) => sum + new Set(parts).size, 0).toLocaleString()}</dd><dt>Passed exams</dt><dd>${state.mastered.size.toLocaleString()}</dd><dt>Next phase</dt><dd>${esc(phase ? String(phase.order).padStart(2, "0") : "Done")}</dd></dl></article>` : `<article class="resume-card"><h3>Course complete</h3><p>Maintain recall with mixed questions and system-design rehearsals.</p><button id="resumeLearning">Review the last chapter →</button></article>`;
-  $("#resumeLearning").onclick = () => showView("tutorial", next?.topic_id || state.courseOrder.at(-1)?.topic_id);
+  $("#resumeLearning").onclick = () => resumeLesson(next?.topic_id || state.courseOrder.at(-1)?.topic_id);
 
   const guidedPhases = state.roadmap.filter(phaseItem => phaseTutorials(phaseItem).length);
   const current = guidedPhases.find(phaseItem => phaseTutorials(phaseItem).some(tutorial => !state.mastered.has(tutorial.topic_id)));
@@ -136,7 +143,7 @@ function renderLearn() {
     const first = lessons.find(tutorial => !state.mastered.has(tutorial.topic_id)) || lessons.at(-1);
     return `<article class="course-phase ${done === lessons.length ? "done" : ""} ${current?.id === phaseItem.id ? "current" : ""}" data-start-topic="${esc(first.topic_id)}"><span class="badge">PHASE ${String(phaseItem.order).padStart(2, "0")}</span><h3>${esc(phaseItem.title)}</h3><div class="mini-progress"><i style="width:${phasePercent}%"></i></div><p>${done}/${lessons.length} chapters passed · ${phasePercent}%</p><button class="course-action">${done === lessons.length ? "Review phase" : current?.id === phaseItem.id ? "Continue phase" : "Open phase"}</button></article>`;
   }).join("");
-  $$("#coursePath [data-start-topic]").forEach(card => { card.querySelector("button").onclick = () => showView("tutorial", card.dataset.startTopic); });
+  $$("#coursePath [data-start-topic]").forEach(card => { card.querySelector("button").onclick = () => resumeLesson(card.dataset.startTopic); });
 }
 
 function renderMap() {
@@ -195,7 +202,7 @@ function renderRoadmap() {
     const status = lessons.length ? (done ? "Completed automatically" : `${doneCount}/${lessons.length} chapter exams passed`) : "Hands-on checkpoint";
     return `<article class="phase-card ${done ? "done" : ""} ${isCurrent ? "current" : ""}"><div class="phase-number">${String(phase.order).padStart(2, "0")}</div><div><h3>${esc(phase.title)}</h3><div class="phase-meta"><span class="badge">${phase.hours} hours</span><span class="badge">${lessons.length || "integrated"} chapters</span>${missing.length ? `<span class="badge">after ${missing.map(esc).join(", ")}</span>` : ""}</div><p><strong>Milestone.</strong> ${esc(phase.milestone)}</p><ul>${phase.outcomes.map(outcome => `<li>${esc(outcome)}</li>`).join("")}</ul><p><strong>Practice.</strong> ${esc(phase.practice)}</p></div><div class="phase-actions"><span class="auto-state">${esc(status)}</span>${lessons.length ? `<button data-phase-topic="${esc((lessons.find(tutorial => !state.mastered.has(tutorial.topic_id)) || lessons.at(-1)).topic_id)}">${done ? "Review" : "Continue"}</button>` : ""}</div></article>`;
   }).join("");
-  $$("#roadmapList [data-phase-topic]").forEach(button => { button.onclick = () => showView("tutorial", button.dataset.phaseTopic); });
+  $$("#roadmapList [data-phase-topic]").forEach(button => { button.onclick = () => resumeLesson(button.dataset.phaseTopic); });
 }
 
 function filteredTutorials() {
