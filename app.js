@@ -7,6 +7,7 @@ const safeStored = (key, fallback) => {
 
 const state = {
   topics: [], questions: [], core: [], designs: [], refs: [], tutorials: [], formulas: [], roadmap: [], visuals: [],
+  technologies: [], technologyCategories: [], technologyQuestions: [],
   courseOrder: [], pool: [], index: 0, activeTutorial: null, activeExam: null, readingObserver: null,
   seen: new Set(safeStored("atlas-seen", [])),
   mastered: new Set(safeStored("atlas-mastered", [])),
@@ -21,13 +22,22 @@ const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
 const esc = value => String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
 const questionFiles = ["data/questions_1.json", "data/questions_2.json", "data/questions_3.json", "data/questions_4.json"];
-const dataFiles = ["data/topics.json", "data/core_questions.json", "data/designs.json", "data/references.json", "data/tutorials.json", "data/formulas.json", "data/roadmap.json", "data/visuals.json", ...questionFiles];
+const dataFiles = [
+  "data/topics.json", "data/core_questions.json", "data/designs.json", "data/references.json",
+  "data/tutorials.json", "data/formulas.json", "data/roadmap.json", "data/visuals.json",
+  "data/technology_categories.json", "data/technologies.json", "data/technology_questions.json",
+  ...questionFiles,
+];
 
 Promise.all(dataFiles.map(url => fetch(url).then(response => {
   if (!response.ok) throw new Error(`${url}: ${response.status}`);
   return response.json();
-}))).then(([topics, core, designs, refs, tutorials, formulas, roadmap, visuals, ...shards]) => {
-  Object.assign(state, {topics, core, designs, refs, tutorials, formulas, roadmap, visuals, questions: shards.flat()});
+}))).then(([topics, core, designs, refs, tutorials, formulas, roadmap, visuals, technologyCategories, technologies, technologyQuestions, ...shards]) => {
+  Object.assign(state, {
+    topics, core, designs, refs, tutorials, formulas, roadmap, visuals,
+    technologyCategories, technologies, technologyQuestions,
+    questions: shards.flat().concat(technologyQuestions),
+  });
   state.courseOrder = orderedTutorials();
   state.activeTutorial = resumeTutorial()?.topic_id || state.lastTopic || tutorials[0]?.topic_id || null;
   syncPhaseProgress();
@@ -95,6 +105,7 @@ function showView(id, topicId = null) {
   $$(".view").forEach(view => view.classList.toggle("active", view.id === id));
   $$("nav button").forEach(button => button.classList.toggle("active", button.dataset.view === id));
   if (id === "tutorial" && topicId) selectTutorial(topicId, false);
+  if (id === "toolbox" && topicId) selectTechnology(topicId, false);
   history.replaceState(null, "", `#${id}${topicId ? `/${topicId}` : ""}`);
   typeset($(`#${id}`) || document.body);
   window.scrollTo({top: $(".command").offsetHeight, behavior: "smooth"});
@@ -114,7 +125,8 @@ function restoreRoute() {
 $$("nav button").forEach(button => { button.onclick = () => showView(button.dataset.view); });
 
 function renderAll() {
-  renderLearn(); renderMap(); renderRoadmap(); renderTutorialControls(); renderTopics(); renderCore(); renderDesigns(); renderSources();
+  renderLearn(); renderMap(); renderRoadmap(); renderTutorialControls(); renderTechnologies(); renderTopics(); renderCore(); renderDesigns(); renderSources();
+  $("#qTechnology").innerHTML = `<option value="">All technologies</option>${state.technologies.map(technology => `<option value="${esc(technology.id)}">${esc(technology.name)}</option>`).join("")}`;
 }
 
 function renderLearn() {
@@ -365,6 +377,93 @@ function renderTutorialIndexState() {
   });
 }
 
+function technologySearchText(technology) {
+  return [technology.name, technology.category, technology.kind, technology.languages.join(" "), technology.deployment,
+    technology.summary, technology.choose_when, technology.avoid_when, technology.failure_mode,
+    technology.alternatives.join(" "), technology.flow.join(" ")].join(" ").toLowerCase();
+}
+function technologyFlow(technology, compact = false) {
+  return `<div class="tech-flow ${compact ? "compact" : ""}" role="img" aria-label="${esc(technology.name)}: ${esc(technology.flow.join(" to "))}">${technology.flow.map((step, index) => `${index ? '<span class="tech-arrow" aria-hidden="true">→</span>' : ""}<span class="tech-node">${esc(step)}</span>`).join("")}</div>`;
+}
+function technologyDesign(technology) {
+  const candidates = new Set([technology.id.toLowerCase(), technology.name.toLowerCase()]);
+  if (technology.id === "mcp") candidates.add("mcp");
+  if (technology.id === "triton-inference-server") candidates.add("nvidia triton inference server");
+  return state.designs.find(design => (design.tool_choices || []).some(choice => {
+    const normalized = choice.toLowerCase();
+    return candidates.has(normalized) || technology.name.toLowerCase().includes(normalized) || normalized.includes(technology.name.toLowerCase());
+  }));
+}
+function bindTechnologyLogos() {
+  $$(".tech-logo img").forEach(image => {
+    const showFallback = () => {
+      image.hidden = true;
+      const fallback = image.nextElementSibling;
+      if (fallback) fallback.hidden = false;
+    };
+    image.addEventListener("error", showFallback, {once: true});
+    if (image.complete && !image.naturalWidth) showFallback();
+  });
+}
+function renderTechnologyComparison() {
+  const categoryId = $("#comparisonCategory").value || state.technologyCategories[0]?.id;
+  if (!categoryId) return;
+  $("#comparisonCategory").value = categoryId;
+  const category = state.technologyCategories.find(item => item.id === categoryId);
+  const technologies = state.technologies.filter(technology => technology.category_id === categoryId);
+  $("#technologyComparison").innerHTML = `<p class="comparison-question"><strong>Decision question:</strong> ${esc(category.question)}</p><div class="table-scroll"><table><caption>${esc(category.title)} comparison</caption><thead><tr><th>Technology</th><th>Kind</th><th>Languages</th><th>Deployment boundary</th><th>Choose when</th><th>Reject when</th></tr></thead><tbody>${technologies.map(technology => `<tr><th scope="row"><button class="table-tech-link" data-compare-tech="${esc(technology.id)}">${esc(technology.name)}</button></th><td>${esc(technology.kind)}</td><td>${esc(technology.languages.join(", "))}</td><td>${esc(technology.deployment)}</td><td>${esc(technology.choose_when)}</td><td>${esc(technology.avoid_when)}</td></tr>`).join("")}</tbody></table></div>`;
+  $$("[data-compare-tech]").forEach(button => { button.onclick = () => selectTechnology(button.dataset.compareTech); });
+}
+function renderTechnologies() {
+  const categoryId = $("#technologyCategory").value;
+  const kind = $("#technologyKind").value;
+  const query = $("#globalSearch").value.trim().toLowerCase();
+  const technologies = state.technologies.filter(technology => (!categoryId || technology.category_id === categoryId)
+    && (!kind || technology.kind === kind) && (!query || technologySearchText(technology).includes(query)));
+  const categoryCounts = state.technologyCategories.map(category => ({...category, count: state.technologies.filter(technology => technology.category_id === category.id).length}));
+  $("#technologyStats").innerHTML = `<article><strong>${state.technologies.length}</strong><span>technology profiles</span></article><article><strong>${state.technologyCategories.length}</strong><span>stack layers</span></article><article><strong>${state.technologyQuestions.length}</strong><span>tiered questions</span></article><article><strong>${state.designs.filter(design => design.tool_choices?.length).length}</strong><span>tool-centered designs</span></article>`;
+  $("#technologyLandscape").innerHTML = categoryCounts.map(category => `<article class="technology-layer" data-layer="${esc(category.id)}"><header><span>${String(category.order).padStart(2, "0")}</span><div><h3>${esc(category.title)}</h3><p>${category.count} profiles · ${esc(category.question)}</p></div></header><div class="layer-flow"><span>${esc(category.need)}</span><b>→</b><span>${esc(category.mechanism)}</span><b>→</b><span>${esc(category.result)}</span></div></article>`).join("");
+  $$("[data-layer]").forEach(card => { card.onclick = () => { $("#technologyCategory").value = card.dataset.layer; $("#comparisonCategory").value = card.dataset.layer; renderTechnologies(); }; });
+  $("#technologyCount").textContent = `${technologies.length} of ${state.technologies.length} profiles`;
+  $("#technologyGrid").innerHTML = technologies.length ? technologies.map(technology => {
+    const design = technologyDesign(technology);
+    return `<details class="technology-card" id="technology-${esc(technology.id)}" data-technology-card="${esc(technology.id)}"><summary><span class="tech-logo"><img src="${esc(technology.logo_url)}" alt="${esc(technology.name)} logo" loading="lazy"><span hidden aria-hidden="true">${esc(technology.logo_fallback)}</span></span><span class="tech-title"><span class="cat">${esc(technology.category)}</span><strong>${esc(technology.name)}</strong><small>${esc(technology.kind)}</small></span><span class="card-chevron" aria-hidden="true">＋</span></summary><div class="technology-body"><p class="tech-summary">${esc(technology.summary)}</p><div class="tech-badges"><span>${esc(technology.languages.join(" · "))}</span><span>${esc(technology.deployment)}</span></div><h4>Abstract execution path</h4>${technologyFlow(technology)}<div class="selection-grid"><div><strong>Choose when</strong><p>${esc(technology.choose_when)}</p></div><div><strong>Reject when</strong><p>${esc(technology.avoid_when)}</p></div><div><strong>Primary failure</strong><p>${esc(technology.failure_mode)}</p></div><div><strong>Compare with</strong><p>${esc(technology.alternatives.join(" · "))}</p></div></div><details class="tech-quickstart"><summary>Language and minimal use</summary><pre><code>${esc(technology.quickstart)}</code></pre><p>Start with the linked official documentation; APIs and version support change faster than this conceptual guide.</p></details><div class="tech-actions"><a href="${esc(technology.source_url)}" target="_blank" rel="noreferrer">Official documentation ↗</a><button data-tech-practice="${esc(technology.id)}">Practice medium → very hard</button>${design ? `<button data-tech-design="${esc(design.id)}">Open ${esc(design.title)}</button>` : ""}</div></div></details>`;
+  }).join("") : '<p class="empty">No technology matches this layer, kind, and search query.</p>';
+  bindTechnologyLogos();
+  $$("[data-technology-card]").forEach(card => { card.addEventListener("toggle", () => { if (card.open) history.replaceState(null, "", `#toolbox/${card.dataset.technologyCard}`); }); });
+  $$("[data-tech-practice]").forEach(button => { button.onclick = event => {
+    event.preventDefault(); event.stopPropagation();
+    $("#qCategory").value = "Libraries and Technologies"; $("#qTechnology").value = button.dataset.techPractice; $("#qDifficulty").value = ""; $("#qType").value = "";
+    showView("practice"); applyQuestionFilters();
+  }; });
+  $$("[data-tech-design]").forEach(button => { button.onclick = event => {
+    event.preventDefault(); event.stopPropagation();
+    const design = state.designs.find(item => item.id === button.dataset.techDesign);
+    $("#globalSearch").value = design?.title || ""; renderDesigns(); showView("design");
+  }; });
+  renderTechnologyComparison();
+}
+function selectTechnology(id, updateRoute = true) {
+  const technology = state.technologies.find(item => item.id === id);
+  if (!technology) return;
+  $("#technologyCategory").value = technology.category_id;
+  $("#technologyKind").value = "";
+  $("#globalSearch").value = "";
+  renderTechnologies();
+  const card = $(`#technology-${id}`);
+  if (card) {
+    card.open = true;
+    window.setTimeout(() => card.scrollIntoView({behavior: "smooth", block: "start"}), 160);
+  }
+  if (updateRoute) history.replaceState(null, "", `#toolbox/${id}`);
+}
+$("#technologyCategory").onchange = event => {
+  if (event.target.value) $("#comparisonCategory").value = event.target.value;
+  renderTechnologies();
+};
+$("#technologyKind").onchange = renderTechnologies;
+$("#comparisonCategory").onchange = renderTechnologyComparison;
+
 function renderTopics() {
   const category = $("#topicCategory").value, query = $("#globalSearch").value.trim().toLowerCase();
   const topics = state.topics.filter(topic => (!category || topic.category === category) && (!query || (topic.name + " " + topic.summary + " " + topic.tradeoff + " " + topic.pitfall).toLowerCase().includes(query)));
@@ -374,11 +473,21 @@ function renderTopics() {
 $("#topicCategory").onchange = renderTopics;
 
 function applyQuestionFilters() {
-  const type = $("#qType").value, difficulty = $("#qDifficulty").value, category = $("#qCategory").value, query = $("#globalSearch").value.trim().toLowerCase();
-  state.pool = state.questions.filter(question => (!type || question.type === type) && (!difficulty || question.difficulty === difficulty) && (!category || question.category === category) && (!query || (question.prompt + " " + question.topic + " " + question.category).toLowerCase().includes(query)));
+  const type = $("#qType").value, difficulty = $("#qDifficulty").value, category = $("#qCategory").value, technologyId = $("#qTechnology").value, query = $("#globalSearch").value.trim().toLowerCase();
+  state.pool = state.questions.filter(question => (!type || question.type === type) && (!difficulty || question.difficulty === difficulty)
+    && (!category || question.category === category) && (!technologyId || question.technology_id === technologyId)
+    && (!query || (question.prompt + " " + question.topic + " " + question.category + " " + (question.technology_category || "")).toLowerCase().includes(query)));
   state.index = 0; renderQuestion();
 }
-["#qType", "#qDifficulty", "#qCategory"].forEach(selector => { $(selector).onchange = applyQuestionFilters; });
+["#qType", "#qDifficulty"].forEach(selector => { $(selector).onchange = applyQuestionFilters; });
+$("#qCategory").onchange = event => {
+  if (event.target.value !== "Libraries and Technologies") $("#qTechnology").value = "";
+  applyQuestionFilters();
+};
+$("#qTechnology").onchange = event => {
+  if (event.target.value) $("#qCategory").value = "Libraries and Technologies";
+  applyQuestionFilters();
+};
 function renderQuestion() {
   const element = $("#questionCard"); $("#seenCount").textContent = state.seen.size; $("#poolCount").textContent = `${state.pool.length.toLocaleString()} questions in this pool`;
   if (!state.pool.length) { element.innerHTML = "<p class=\"empty\">No questions match this filter.</p>"; return; }
@@ -390,7 +499,13 @@ function renderQuestion() {
   $("#next").onclick = () => { markSeen(question); state.index = (state.index + 1) % state.pool.length; renderQuestion(); };
 }
 function grade(button, question) { $$(".option").forEach(option => { option.disabled = true; option.classList.toggle("correct", option.dataset.value === question.answer); }); if (button.dataset.value !== question.answer) button.classList.add("wrong"); reveal(question); }
-function reveal(question) { $("#answerBox").innerHTML = `<div class="answer"><strong>Answer</strong><p>${esc(question.answer)}</p><small>${esc(question.explanation || "")}</small><a class="deep-link" href="#tutorial/${esc(question.tutorial_id)}">Study the full lesson and derivation →</a></div>`; $("#answerBox .deep-link").onclick = event => { event.preventDefault(); showView("tutorial", question.tutorial_id); }; markSeen(question); }
+function reveal(question) {
+  const target = question.technology_id ? `#toolbox/${question.technology_id}` : `#tutorial/${question.tutorial_id}`;
+  const label = question.technology_id ? "Open the technology profile and comparison" : "Study the full lesson and derivation";
+  $("#answerBox").innerHTML = `<div class="answer"><strong>Answer</strong><p>${esc(question.answer)}</p><small>${esc(question.explanation || "")}</small><a class="deep-link" href="${esc(target)}">${label} →</a></div>`;
+  $("#answerBox .deep-link").onclick = event => { event.preventDefault(); showView(question.technology_id ? "toolbox" : "tutorial", question.technology_id || question.tutorial_id); };
+  markSeen(question);
+}
 function markSeen(question) { state.seen.add(question.id); persistSet("atlas-seen", state.seen); $("#seenCount").textContent = state.seen.size; }
 $("#shuffleBtn").onclick = () => { state.pool.sort(() => Math.random() - .5); state.index = 0; renderQuestion(); };
 $("#resetBtn").onclick = () => { state.seen.clear(); localStorage.removeItem("atlas-seen"); renderQuestion(); };
@@ -400,12 +515,63 @@ function renderCore() {
   const items = state.core.filter(item => !query || (item.prompt + " " + item.answer + " " + item.category).toLowerCase().includes(query));
   $("#coreList").innerHTML = items.map(item => `<details class="qa"><summary><span class="badge">${esc(item.id)} · ${esc(item.difficulty)}</span><strong>${esc(item.prompt)}</strong><span class="badge">${esc(item.origin)}</span></summary><div class="qa-answer"><p>${esc(item.answer)}</p><small>${esc(item.category)}</small></div></details>`).join("");
 }
+function wrapSvgLabel(label, limit = 22) {
+  const words = label.split(/\s+/), lines = [];
+  words.forEach(word => {
+    const current = lines.at(-1) || "";
+    if (!current || `${current} ${word}`.length > limit) lines.push(word);
+    else lines[lines.length - 1] = `${current} ${word}`;
+  });
+  return lines.slice(0, 3);
+}
+function renderDesignDiagram(design) {
+  const labels = new Map();
+  for (const match of design.diagram.matchAll(/([A-Za-z0-9_]+)\[([^\]]+)\]/g)) if (!labels.has(match[1])) labels.set(match[1], match[2]);
+  for (const match of design.diagram.matchAll(/([A-Za-z0-9_]+)\{([^}]+)\}/g)) if (!labels.has(match[1])) labels.set(match[1], match[2]);
+  const edges = [...design.diagram.matchAll(/([A-Za-z0-9_]+)(?:\[[^\]]+\]|\{[^}]+\})?\s*-->(?:\|[^|]*\|)?\s*([A-Za-z0-9_]+)/g)]
+    .map(match => [match[1], match[2]]).filter(([left, right]) => labels.has(left) && labels.has(right));
+  if (!labels.size) return '<div class="case-diagram"><div class="node">Architecture sketch unavailable</div></div>';
+  const incoming = new Map([...labels.keys()].map(id => [id, 0]));
+  const children = new Map([...labels.keys()].map(id => [id, []]));
+  edges.forEach(([left, right]) => { incoming.set(right, incoming.get(right) + 1); children.get(left).push(right); });
+  const depth = new Map([...labels.keys()].map(id => [id, 0]));
+  const queue = [...labels.keys()].filter(id => incoming.get(id) === 0), visited = new Set();
+  while (queue.length) {
+    const id = queue.shift(); visited.add(id);
+    children.get(id).forEach(child => {
+      depth.set(child, Math.max(depth.get(child), depth.get(id) + 1));
+      incoming.set(child, incoming.get(child) - 1);
+      if (incoming.get(child) === 0) queue.push(child);
+    });
+  }
+  [...labels.keys()].filter(id => !visited.has(id)).forEach(id => depth.set(id, Math.max(...depth.values()) + 1));
+  const layers = new Map();
+  [...labels.keys()].forEach(id => { const layer = depth.get(id); if (!layers.has(layer)) layers.set(layer, []); layers.get(layer).push(id); });
+  const width = 760, top = 36, layerHeight = 112, boxHeight = 58;
+  const height = top * 2 + (Math.max(...layers.keys()) + 1) * layerHeight;
+  const positions = new Map();
+  [...layers.entries()].forEach(([layer, ids]) => ids.forEach((id, index) => positions.set(id, {x: (index + 1) * width / (ids.length + 1), y: top + layer * layerHeight})));
+  const maxInLayer = Math.max(...[...layers.values()].map(ids => ids.length));
+  const boxWidth = Math.min(190, Math.max(105, width / (maxInLayer + 1) - 18));
+  const markerId = `arrow-${design.id.replace(/[^a-z0-9]/gi, "")}`;
+  const edgeSvg = edges.map(([left, right]) => {
+    const from = positions.get(left), to = positions.get(right);
+    return `<path d="M ${from.x} ${from.y + boxHeight / 2} C ${from.x} ${from.y + 78}, ${to.x} ${to.y - 48}, ${to.x} ${to.y - boxHeight / 2}" marker-end="url(#${markerId})"/>`;
+  }).join("");
+  const nodeSvg = [...labels.entries()].map(([id, label]) => {
+    const point = positions.get(id), lines = wrapSvgLabel(label);
+    const firstY = point.y - (lines.length - 1) * 8;
+    return `<g><rect x="${point.x - boxWidth / 2}" y="${point.y - boxHeight / 2}" width="${boxWidth}" height="${boxHeight}" rx="9"/>` +
+      `<text x="${point.x}" y="${firstY}" text-anchor="middle">${lines.map((line, index) => `<tspan x="${point.x}" dy="${index ? 17 : 0}">${esc(line)}</tspan>`).join("")}</text></g>`;
+  }).join("");
+  return `<div class="case-diagram-svg"><svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Architecture for ${esc(design.title)}"><defs><marker id="${markerId}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z"/></marker></defs>${edgeSvg}${nodeSvg}</svg></div>`;
+}
 function renderDesigns() {
   const query = $("#globalSearch").value.trim().toLowerCase();
-  const items = state.designs.filter(item => !query || (item.title + " " + item.brief + " " + JSON.stringify(item.stages)).toLowerCase().includes(query));
+  const items = state.designs.filter(item => !query || (item.title + " " + item.brief + " " + JSON.stringify(item.stages) + " " + (item.tool_choices || []).join(" ")).toLowerCase().includes(query));
   $("#designList").innerHTML = items.map((design, index) => {
-    const nodes = design.diagram.split("\n").filter(line => line.includes("[")).map(line => line.match(/\[([^\]]+)\]/)?.[1]).filter(Boolean);
-    return `<article class="design-case"><header><div><span class="badge">DESIGN ${String(index + 1).padStart(2, "0")}</span><h3>${esc(design.title)}</h3><p>${esc(design.brief)}</p></div><span class="badge">4-stage interview</span></header><div class="case-body"><div class="case-diagram">${nodes.map((node, nodeIndex) => `${nodeIndex ? "<div class=\"arrow\">↓</div>" : ""}<div class="node">${esc(node)}</div>`).join("")}</div><div class="stages">${design.stages.map((stage, stageIndex) => `<div class="stage"><h4>${stageIndex + 1}. ${esc(stage.q)}</h4><p>${esc(stage.a)}</p></div>`).join("")}</div></div></article>`;
+    const toolChoices = design.tool_choices?.length ? `<div class="tool-choice-strip"><strong>Explicit tool choices</strong>${design.tool_choices.map(tool => `<span>${esc(tool)}</span>`).join("")}</div>` : "";
+    return `<article class="design-case"><header><div><span class="badge">DESIGN ${String(index + 1).padStart(2, "0")}</span><h3>${esc(design.title)}</h3><p>${esc(design.brief)}</p>${toolChoices}</div><span class="badge">4-stage interview</span></header><div class="case-body">${renderDesignDiagram(design)}<div class="stages">${design.stages.map((stage, stageIndex) => `<div class="stage"><h4>${stageIndex + 1}. ${esc(stage.q)}</h4><p>${esc(stage.a)}</p></div>`).join("")}</div></div></article>`;
   }).join("");
 }
 function renderSources() {
@@ -417,7 +583,7 @@ let searchTimer;
 $("#globalSearch").oninput = () => {
   clearTimeout(searchTimer);
   searchTimer = setTimeout(() => {
-    renderTopics(); renderTutorialControls(); renderCore(); renderDesigns(); renderSources(); applyQuestionFilters();
+    renderTechnologies(); renderTopics(); renderTutorialControls(); renderCore(); renderDesigns(); renderSources(); applyQuestionFilters();
     const query = $("#globalSearch").value.trim().toLowerCase();
     $$("#mindmap li").forEach(item => { item.hidden = Boolean(query && !item.dataset.search.includes(query)); });
   }, 120);

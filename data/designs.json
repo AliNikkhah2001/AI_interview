@@ -286,5 +286,447 @@
         "a": "Graph views help investigators follow relationships but extraction error must be visible. Human review costs time but protects high-impact decisions. Online learning from investigator outcomes needs controls for reviewer bias."
       }
     ]
+  },
+  {
+    "id": "tool-deep-research-agent",
+    "title": "Deep research agent with durable delegation",
+    "brief": "Design a multi-tenant research agent that reads private corpora, delegates subproblems, pauses for approval, and produces an auditable report.",
+    "diagram": "flowchart TD\n U[User and tenant policy] --> D[Deep Agents harness]\n D --> G[LangGraph checkpoints]\n G --> M[MCP tool gateway]\n M --> S[E2B sandbox]\n G --> L[LangSmith traces and evals]\n L --> R[Report plus evidence]",
+    "tool_choices": [
+      "Deep Agents",
+      "LangGraph",
+      "MCP",
+      "E2B",
+      "LangSmith"
+    ],
+    "stages": [
+      {
+        "q": "Initial design and tool placement",
+        "a": "Use Deep Agents for planning, filesystem context, and subagents; LangGraph checkpoints for resumable state and approvals; a policy-enforcing MCP gateway for capabilities; E2B for untrusted code; and LangSmith for traces, datasets, and regression evaluation. Keep tenant identity and source ACLs outside model text."
+      },
+      {
+        "q": "Why not CrewAI or plain LangChain?",
+        "a": "CrewAI is attractive when role/task collaboration is the primary metaphor; plain LangChain is sufficient for short compositions. This workload earns Deep Agents and LangGraph because long-horizon files, delegation, interrupts, and recovery are first-class requirements. Validate the extra abstraction against a simpler graph baseline."
+      },
+      {
+        "q": "Challenge: a subagent repeats an external side effect after recovery",
+        "a": "Checkpoint intent before execution, issue an idempotency key from durable state, authorize the exact action at execution time, persist the returned result, and reconcile ambiguous timeouts. Replaying a graph node must return the recorded result rather than invent a new operation."
+      },
+      {
+        "q": "Failure and migration proof",
+        "a": "Kill workers at every transition, revoke MCP credentials mid-run, inject malicious documents, and saturate the sandbox pool. Export state and traces using owned schemas so the harness can be replaced by raw LangGraph or Temporal without losing audit history."
+      }
+    ]
+  },
+  {
+    "id": "tool-enterprise-graphrag",
+    "title": "Enterprise hybrid GraphRAG platform",
+    "brief": "Choose and combine relational, vector, lexical, and graph technologies for private policy questions with citations and multi-hop reasoning.",
+    "diagram": "flowchart LR\n D[Versioned documents] --> P[Dagster ingestion]\n P --> E[Elasticsearch hybrid]\n P --> N[Neo4j graph]\n P --> V[pgvector]\n E --> F[Rank fusion]\n N --> F\n V --> F\n F --> A[Grounded answer]",
+    "tool_choices": [
+      "Dagster",
+      "Elasticsearch",
+      "Neo4j",
+      "pgvector",
+      "Ragas"
+    ],
+    "stages": [
+      {
+        "q": "Initial design and query routing",
+        "a": "Use Dagster assets for versioned ingestion, Elasticsearch for BM25 and broad hybrid candidates, Neo4j for entity/path questions, and pgvector when ACL joins and transactional document state dominate. Route by query shape, fuse ranks, rerank, and preserve source spans through answer generation."
+      },
+      {
+        "q": "Why Neo4j rather than only a vector database?",
+        "a": "Neo4j earns its cost only for relationship-heavy, provenance, conflict, path, and multi-hop slices. Pinecone or Qdrant is simpler for independently scaled similarity search; pgvector is simpler when relational joins dominate. Measure graph-specific quality lift against those baselines."
+      },
+      {
+        "q": "Challenge: graph edges are stale after a policy revision",
+        "a": "Version nodes, edges, extraction code, and validity intervals; attach every edge to source spans; build parallel graph and search snapshots; and atomically promote aliases only after temporal and citation tests pass."
+      },
+      {
+        "q": "Evaluation",
+        "a": "Use Ragas-style programmable metrics plus human-calibrated claim support, path validity, entity resolution, retrieval recall, citation entailment, latency, and cost. Report vector, lexical, and graph slices separately so fusion cannot hide a weak channel."
+      }
+    ]
+  },
+  {
+    "id": "tool-serving-control-plane",
+    "title": "Multi-runtime LLM serving control plane",
+    "brief": "Serve rapidly changing open models across NVIDIA GPUs while preserving a stable API, canaries, and workload-aware autoscaling.",
+    "diagram": "flowchart TD\n C[OpenAI-compatible clients] --> K[KServe routing]\n K --> V[vLLM general pool]\n K --> S[SGLang prefix pool]\n K --> T[TensorRT-LLM tuned pool]\n V --> O[OpenTelemetry]\n S --> O\n T --> O",
+    "tool_choices": [
+      "KServe",
+      "vLLM",
+      "SGLang",
+      "TensorRT-LLM",
+      "OpenTelemetry"
+    ],
+    "stages": [
+      {
+        "q": "Assign each serving tool",
+        "a": "Use KServe for revisions, rollout, and Kubernetes policy; vLLM as the broad default runtime; SGLang for measured shared-prefix or structured-generation workloads; and TensorRT-LLM for stable high-volume NVIDIA models whose compiled-engine work pays back. Normalize only the portable API subset."
+      },
+      {
+        "q": "Why not one universal runtime?",
+        "a": "Model support, prefix reuse, structured decoding, GPU architecture, quantization, and release velocity create different frontiers. A universal choice reduces operations but can waste capacity or block models. Require the same trace-replay benchmark before adding a runtime."
+      },
+      {
+        "q": "Challenge: p99 rises while GPU utilization looks low",
+        "a": "Measure queued tokens, prefill and decode separately, active KV bytes, batch composition, prefix-cache hit by tenant, and admission rejects. Generic GPU utilization misses head-of-line blocking and memory fragmentation."
+      },
+      {
+        "q": "Rollout and rollback",
+        "a": "Treat model, tokenizer, runtime, engine, driver, GPU type, and quantization as one release identity. Shadow then canary by workload slice; retain pinned previous images and engines; drain token-aware queues before rollback."
+      }
+    ]
+  },
+  {
+    "id": "tool-mcp-enterprise-gateway",
+    "title": "Enterprise MCP capability gateway",
+    "brief": "Expose hundreds of internal and SaaS actions to several agent frameworks without turning discovery into ambient authority.",
+    "diagram": "flowchart LR\n A[Agent clients] --> G[Docker MCP Gateway]\n G --> P[Identity and policy]\n P --> F[FastMCP internal servers]\n P --> C[Composio or Arcade SaaS tools]\n G --> O[Audit and OpenTelemetry]",
+    "tool_choices": [
+      "MCP",
+      "Docker MCP Toolkit",
+      "FastMCP",
+      "Composio",
+      "Arcade"
+    ],
+    "stages": [
+      {
+        "q": "Initial design",
+        "a": "Terminate authenticated remote MCP at a gateway, bind every session to user and tenant identity, advertise only policy-eligible capabilities, and authorize typed arguments again at execution. Use FastMCP for owned services and a managed connector only where OAuth breadth justifies it."
+      },
+      {
+        "q": "Docker Toolkit versus Smithery",
+        "a": "Docker Toolkit fits curated containerized catalogs and local or enterprise Docker operations; Smithery emphasizes discovery and hosted connection workflows. Neither registry membership is a security review. Choose by execution location, catalog governance, update control, and secret boundary."
+      },
+      {
+        "q": "Challenge: a retrieved document instructs the agent to send data",
+        "a": "Treat content as untrusted evidence, keep it out of authority-bearing fields, deny tools not required by the user task, validate destination and payload from trusted state, and require approval for external disclosure."
+      },
+      {
+        "q": "Protocol evolution",
+        "a": "Pin and negotiate protocol versions, test SDK/server matrices with MCP Inspector and conformance suites, tolerate unknown optional capabilities, and maintain a direct internal API behind each MCP adapter so the protocol edge can be replaced."
+      }
+    ]
+  },
+  {
+    "id": "tool-code-agent-sandbox",
+    "title": "High-scale coding-agent sandbox fleet",
+    "brief": "Run untrusted repositories and generated code for thousands of concurrent tasks with fast startup and strong tenant isolation.",
+    "diagram": "flowchart TD\n Q[Task queue] --> W[Daytona workspace layer]\n W --> K[Kubernetes Jobs]\n K --> I[Kata or gVisor runtime]\n K --> E[Egress and secret broker]\n I --> A[Patch and artifacts]",
+    "tool_choices": [
+      "Daytona",
+      "Kubernetes Jobs",
+      "Kata Containers",
+      "gVisor",
+      "Firecracker"
+    ],
+    "stages": [
+      {
+        "q": "Select the abstraction layers",
+        "a": "Use Daytona or E2B when workspace/repository APIs accelerate product delivery; use Kubernetes Jobs for finite scheduling; select gVisor for a user-space kernel tradeoff or Kata for a VM boundary. Firecracker is a lower-level platform building block when you own the full microVM control plane."
+      },
+      {
+        "q": "Challenge: tests require private packages",
+        "a": "Issue task-scoped short-lived credentials to an allowlisted proxy, pin artifact hashes, deny general egress, redact logs, and revoke on completion. Do not place organization-wide package or Git credentials in the guest environment."
+      },
+      {
+        "q": "Warm-pool threat",
+        "a": "Reset filesystem, processes, network namespace, kernel or VM state, caches, and credentials between tenants. Continuously run cross-tenant canaries; discard rather than recycle any worker whose reset proof is incomplete."
+      },
+      {
+        "q": "Capacity and failure",
+        "a": "Model arrival bursts, startup distribution, CPU/memory/disk envelopes, longest test duration, artifact bandwidth, and retry budgets. Backpressure before the queue invalidates user deadlines, and distinguish platform failures from test failures."
+      }
+    ]
+  },
+  {
+    "id": "tool-evaluation-plane",
+    "title": "Unified AI evaluation and observability plane",
+    "brief": "Build reproducible offline experiments and production monitoring across RAG, agents, and several application teams.",
+    "diagram": "flowchart LR\n T[OpenTelemetry traces] --> P[Phoenix or Langfuse]\n D[Versioned datasets] --> B[Braintrust experiments]\n B --> R[Ragas and DeepEval scorers]\n P --> G[Release gate]\n B --> G",
+    "tool_choices": [
+      "OpenTelemetry",
+      "Phoenix",
+      "Langfuse",
+      "Braintrust",
+      "Ragas",
+      "DeepEval"
+    ],
+    "stages": [
+      {
+        "q": "Separate standards, platforms, and libraries",
+        "a": "Use OpenTelemetry for portable transport and context; Phoenix or Langfuse for trace exploration; Braintrust, LangSmith, Weave, or MLflow for versioned experiments depending on the existing lifecycle; and Ragas or DeepEval as programmable scorer libraries. Avoid assuming one product must own every layer."
+      },
+      {
+        "q": "Challenge: two judges disagree",
+        "a": "Retain per-case outputs, blind candidate order, calibrate both against adjudicated human labels by slice, measure consistency and bias, and gate critical deterministic invariants independently. Disagreement is evidence, not an average to hide."
+      },
+      {
+        "q": "Privacy design",
+        "a": "Redact or tokenize sensitive content before export, separate tenant projects and encryption keys, restrict raw trace access, set retention by field, and keep metric labels low-cardinality and non-sensitive."
+      },
+      {
+        "q": "Migration proof",
+        "a": "Own trace schemas, dataset exports, scorer code, and release decisions in source control. Replay a frozen evaluation through an alternative backend and verify per-case identity rather than comparing only aggregate charts."
+      }
+    ]
+  },
+  {
+    "id": "tool-ml-data-release",
+    "title": "Reproducible ML and RAG data release pipeline",
+    "brief": "Version raw data, features, embeddings, prompts, models, and evaluations and promote them as one auditable release.",
+    "diagram": "flowchart LR\n G[Git and DVC] --> L[lakeFS data branch]\n L --> D[Dagster assets]\n D --> F[Feast features]\n D --> M[MLflow registry]\n M --> K[Kubeflow deployment gate]",
+    "tool_choices": [
+      "DVC",
+      "lakeFS",
+      "Dagster",
+      "Feast",
+      "MLflow",
+      "Kubeflow Pipelines"
+    ],
+    "stages": [
+      {
+        "q": "Define ownership",
+        "a": "Use lakeFS for atomic lake snapshots, DVC for repository-adjacent local artifacts, Dagster for asset lineage and partitions, Feast for point-in-time features, MLflow for run/model/prompt records, and Kubeflow only when Kubernetes container pipelines are an operational standard."
+      },
+      {
+        "q": "Airflow, Prefect, or Dagster?",
+        "a": "Airflow is strong for scheduled batch DAGs and backfills; Prefect favors dynamic Python workflows and flexible workers; Dagster centers the data asset and partition. Decide from ownership, lineage, scheduling, backfill scale, and operator ecosystem, not UI preference."
+      },
+      {
+        "q": "Challenge: embeddings were built with the wrong tokenizer",
+        "a": "Make tokenizer, embedding model, parser, chunker, source snapshot, and index parameters immutable release inputs. Build a parallel index from the last good lakeFS commit, compare retrieval slices, and atomically repoint the serving alias."
+      },
+      {
+        "q": "Audit question",
+        "a": "Given any production answer, resolve the exact source versions, feature data, prompt, model, index, evaluator, code, and approval that produced it. If any edge is mutable or missing, the release is not reproducible."
+      }
+    ]
+  },
+  {
+    "id": "tool-private-local-ai",
+    "title": "Private local AI workstation and edge fleet",
+    "brief": "Support offline assistants across developer laptops and edge appliances while maintaining model provenance and predictable quality.",
+    "diagram": "flowchart TD\n R[Signed GGUF registry] --> O[Ollama developer UX]\n R --> L[llama.cpp embedded runtime]\n R --> A[LocalAI multimodal API]\n O --> E[Local evaluation]\n L --> E\n A --> E",
+    "tool_choices": [
+      "llama.cpp",
+      "Ollama",
+      "LocalAI",
+      "Promptfoo"
+    ],
+    "stages": [
+      {
+        "q": "Choose each local serving tool",
+        "a": "Use llama.cpp where embedding and hardware control matter, Ollama for the simplest developer model lifecycle, and LocalAI when one local OpenAI-compatible endpoint must cover several modalities or backends. Standardize signed model manifests and quantization metadata above them."
+      },
+      {
+        "q": "Challenge: different laptops produce different answers",
+        "a": "Record model hash, tokenizer, prompt template, runtime version, backend, quantization, sampling seed where meaningful, and hardware. Run Promptfoo or a similar offline conformance set per supported profile and bound acceptable variance."
+      },
+      {
+        "q": "Security",
+        "a": "Bind APIs to intended interfaces, require local authentication where other users exist, disable unneeded model galleries and remote downloads, verify artifacts, and prevent local documents or prompts from entering crash telemetry."
+      },
+      {
+        "q": "When not to use local inference",
+        "a": "Central serving wins when models are too large, utilization pooling is valuable, policy requires centralized updates, or quality cannot be met on edge hardware. Quantify privacy benefit against patching, support, and fleet heterogeneity."
+      }
+    ]
+  },
+  {
+    "id": "tool-vector-platform-choice",
+    "title": "Choose a multi-tenant vector search platform",
+    "brief": "Select among pgvector, Pinecone, Qdrant, Weaviate, Milvus, and Vespa for a rapidly growing SaaS corpus.",
+    "diagram": "flowchart TD\n W[Workload and SLO] --> R{Dominant constraint}\n R -->|SQL and ACL joins| P[pgvector]\n R -->|Managed vector ops| N[Pinecone]\n R -->|Filtering and OSS| Q[Qdrant or Weaviate]\n R -->|Billion scale| M[Milvus]\n R -->|Custom ranking| V[Vespa]",
+    "tool_choices": [
+      "pgvector",
+      "Pinecone",
+      "Qdrant",
+      "Weaviate",
+      "Milvus",
+      "Vespa"
+    ],
+    "stages": [
+      {
+        "q": "Build the decision benchmark",
+        "a": "Replay real query vectors, metadata-filter selectivity, tenant sizes, updates, deletes, bursts, and failure scenarios. Measure exact or judged recall, p95/p99 latency, build and compaction time, recovery, operational staffing, and three-year cost."
+      },
+      {
+        "q": "Explain the likely choices",
+        "a": "pgvector minimizes systems and supports relational ACLs; Pinecone outsources operations; Qdrant emphasizes filtering and control; Weaviate integrates hybrid/schema features; Milvus targets distributed scale; Vespa earns its complexity for custom multi-stage ranking."
+      },
+      {
+        "q": "Challenge: one tenant is 70 percent of the corpus",
+        "a": "Test physical and logical tenancy, noisy-neighbor quotas, partition routing, index-build impact, backup/restore, and deletion. A namespace label without resource isolation may not protect smaller tenants."
+      },
+      {
+        "q": "Migration plan",
+        "a": "Own canonical embeddings and metadata outside the database, use stable ids and versioned change events, dual-write through an outbox, backfill and compare sampled queries, then move reads by tenant with rollback."
+      }
+    ]
+  },
+  {
+    "id": "tool-realtime-graph-investigation",
+    "title": "Real-time graph investigation system",
+    "brief": "Choose a graph database and streaming architecture for fraud investigators following rapidly changing entity relationships.",
+    "diagram": "flowchart LR\n E[Transaction events] --> M[Memgraph stream graph]\n E --> N[Neptune durable graph]\n M --> C[Candidate paths]\n N --> C\n C --> H[Human investigation]\n H --> O[Outcomes and evaluation]",
+    "tool_choices": [
+      "Memgraph",
+      "Neo4j",
+      "Amazon Neptune",
+      "FalkorDB",
+      "Kuzu"
+    ],
+    "stages": [
+      {
+        "q": "Choose the graph engine",
+        "a": "Memgraph is compelling for high-rate in-memory operational updates; Neo4j for broad Cypher tooling and Graph Data Science; Neptune for managed AWS and RDF/Gremlin/openCypher requirements; FalkorDB for a lightweight low-latency service; Kuzu for embedded analyst workflows. Benchmark the actual traversals."
+      },
+      {
+        "q": "Challenge: the graph exceeds memory",
+        "a": "Separate hot operational neighborhoods from durable history, bound traversal depth and fan-out, precompute defensible features, and test recovery with persistence enabled. Do not preserve an in-memory choice by hiding data."
+      },
+      {
+        "q": "Safety and provenance",
+        "a": "Every edge carries source event, timestamp, extraction or rule version, confidence, and tenant scope. The model may summarize paths but cannot create authoritative fraud relationships or account actions."
+      },
+      {
+        "q": "Evaluation",
+        "a": "Measure path precision, investigator time saved, missed-ring recall, false-positive burden, freshness, query tails by graph motif, and outcome disparity by appropriate cohort. Include adversarial high-degree hubs and identity-resolution errors."
+      }
+    ]
+  },
+  {
+    "id": "tool-regulated-agent-safety",
+    "title": "Layered safety and authorization for a regulated agent",
+    "brief": "Design an assistant that handles private records, calls high-impact tools, and must distinguish content safety from deterministic authorization.",
+    "diagram": "flowchart TD\n U[User identity and request] --> P[Presidio redaction]\n P --> L[Lakera or LLM Guard]\n L --> N[NeMo conversation rails]\n N --> O[OPA or Cedar authorization]\n O --> T[Bounded tool call]\n T --> G[Llama Guard output signal]",
+    "tool_choices": [
+      "Microsoft Presidio",
+      "Lakera Guard",
+      "Protect AI LLM Guard",
+      "NVIDIA NeMo Guardrails",
+      "Open Policy Agent",
+      "Cedar",
+      "Llama Guard"
+    ],
+    "stages": [
+      {
+        "q": "Place each control and define what it cannot prove",
+        "a": "Use Presidio for PII detection or tokenization, Lakera or LLM Guard for prompt-risk signals, NeMo Guardrails for dialog and topical flows, OPA or Cedar for deterministic principal-action-resource authorization, and Llama Guard as one calibrated content-safety signal. None alone proves factuality, consent, or business correctness."
+      },
+      {
+        "q": "Why not one universal guardrail model?",
+        "a": "Model classifiers handle fuzzy language but have false positives and negatives; authorization must derive from trusted identity, resource, and policy; schema and PII validation have different error costs. Layer controls by mechanism and fail closed only where the product can tolerate it."
+      },
+      {
+        "q": "Challenge: the user embeds an account id and approval phrase in a retrieved document",
+        "a": "Retrieved content stays untrusted. Resolve account, tenant, role, and approval from authenticated state; validate arguments against owned records; authorize at execution; require fresh human confirmation for irreversible actions; and log a redacted decision record."
+      },
+      {
+        "q": "Prove safety without making the product unusable",
+        "a": "Build multilingual benign, malicious, ambiguous, and distribution-shift suites; report each detector by slice; measure bypass, over-refusal, added latency, and downstream harm; run shadow mode before enforcement; and retain a deterministic kill switch plus policy rollback."
+      }
+    ]
+  },
+  {
+    "id": "tool-multicloud-model-gateway",
+    "title": "Multi-cloud model gateway and managed endpoint portfolio",
+    "brief": "Route several teams across hosted APIs and private cloud endpoints while controlling cost, residency, fallbacks, and provider-specific behavior.",
+    "diagram": "flowchart LR\n C[Application clients] --> K[Kong or Envoy AI Gateway]\n K --> L[LiteLLM or Portkey routing]\n L --> A[SageMaker endpoints]\n L --> V[Vertex AI endpoints]\n L --> Z[Azure ML endpoints]\n K --> O[OpenTelemetry evidence]",
+    "tool_choices": [
+      "Kong AI Gateway",
+      "Envoy AI Gateway",
+      "LiteLLM",
+      "Portkey AI Gateway",
+      "Amazon SageMaker AI Endpoints",
+      "Vertex AI Endpoints",
+      "Azure Machine Learning Managed Online Endpoints",
+      "OpenTelemetry"
+    ],
+    "stages": [
+      {
+        "q": "Separate edge gateway, model router, and inference fleet",
+        "a": "Use Kong or Envoy for identity, network, and organization API policy; LiteLLM or Portkey for model-aware routing, budgets, and provider normalization; and cloud endpoints for region-bound custom models. Avoid duplicating retries and rate limits at all three layers."
+      },
+      {
+        "q": "Choose LiteLLM versus Portkey and Kong versus Envoy",
+        "a": "LiteLLM favors an open Python proxy and wide provider adapter surface; Portkey provides a managed or hybrid AI control plane; Kong fits an existing Kong estate and plugin model; Envoy AI Gateway fits Kubernetes Gateway API and open infrastructure ownership. Prototype the smallest pair that meets the boundary."
+      },
+      {
+        "q": "Challenge: the fallback provider changes tool-call semantics",
+        "a": "Define a portable capability contract, validate structured requests and responses, classify provider errors, and fall back only among models proven equivalent for that route. Never retry a side-effecting agent turn as an opaque model request."
+      },
+      {
+        "q": "Migration and capacity proof",
+        "a": "Replay frozen traces by workload class, shadow responses, verify residency and identity propagation, measure queue and cost tails, export route policy, and keep direct provider paths for emergency rollback. Treat prompts, adapters, endpoint revisions, and policy as one release."
+      }
+    ]
+  },
+  {
+    "id": "tool-embedding-platform",
+    "title": "Multilingual embedding and reranking platform",
+    "brief": "Build a versioned embedding service and migration path for a multilingual corpus without silently mixing vector spaces.",
+    "diagram": "flowchart TD\n D[Versioned corpus] --> S[Sentence Transformers or FlagEmbedding]\n S --> T[Text Embeddings Inference]\n T --> V[Vector index by model version]\n V --> R[Cross-encoder reranker]\n R --> E[Retrieval evaluation]",
+    "tool_choices": [
+      "Sentence Transformers",
+      "FlagEmbedding",
+      "Hugging Face Text Embeddings Inference",
+      "Cohere Rerank",
+      "pgvector",
+      "Ragas"
+    ],
+    "stages": [
+      {
+        "q": "Define the offline and online contract",
+        "a": "Pin model revision, query/document instruction, tokenizer, pooling, normalization, dimension, distance metric, and maximum length. Train or evaluate with Sentence Transformers or FlagEmbedding, serve supported artifacts through TEI, and keep index namespaces immutable by embedding identity."
+      },
+      {
+        "q": "Why a reranker after vector retrieval?",
+        "a": "A bi-encoder makes corpus search cheap because documents are encoded once; a cross-encoder or managed Cohere Rerank call jointly scores query-document pairs with better interaction at higher per-candidate cost. Tune candidate count against recall, latency, and cost."
+      },
+      {
+        "q": "Challenge: a new model changes dimension and improves English but hurts Persian",
+        "a": "Build a parallel index, replay language and query-intent slices, preserve the old query path, calibrate fusion and reranking separately, and route canary tenants only after per-language recall and relevance pass. Never insert incompatible vectors into the old index."
+      },
+      {
+        "q": "Operations",
+        "a": "Monitor tokenizer rejects, batch queue, truncated-token rate, vector norms, empty or duplicate content, per-language retrieval drift, reranker tails, index coverage, and model-version skew. Roll back the serving alias and query router atomically."
+      }
+    ]
+  },
+  {
+    "id": "tool-long-term-agent-memory",
+    "title": "Governed long-term memory for a personal agent",
+    "brief": "Give an assistant cross-session memory while preserving provenance, correction, expiration, privacy, and a path away from any memory vendor.",
+    "diagram": "flowchart LR\n E[Conversation events] --> X[Mem0 or Zep extraction]\n X --> P[Policy and provenance]\n P --> G[Temporal memory graph]\n G --> C[Context selector]\n C --> A[Agent response]\n A --> F[User correction loop]",
+    "tool_choices": [
+      "Mem0",
+      "Zep",
+      "Neo4j",
+      "PostgreSQL",
+      "LangGraph"
+    ],
+    "stages": [
+      {
+        "q": "Choose the memory abstraction",
+        "a": "Use Mem0 when an embeddable extraction and retrieval layer fits the product; use Zep when temporal knowledge and context assembly are central; keep canonical events, identity, consent, and deletion in application-owned storage. A graph database is optional and must be justified by relationship queries."
+      },
+      {
+        "q": "Separate memory from conversation history and authority",
+        "a": "Conversation history is a bounded record of turns; memory is a selected derived claim; authorization comes only from trusted identity and policy. The model may propose a memory but cannot turn it into permission or an immutable user fact."
+      },
+      {
+        "q": "Challenge: two memories conflict after a life change",
+        "a": "Store source event, observation time, validity interval, confidence, and supersession links; retrieve current and relevant claims; expose them for user correction; and prefer explicit recent user statements over inferred summaries under a documented rule."
+      },
+      {
+        "q": "Deletion and migration",
+        "a": "Maintain stable memory ids and reverse provenance indexes, delete raw and derived copies plus caches, verify tombstones across backups under policy, export canonical events and claims, and shadow a replacement retriever before switching context assembly."
+      }
+    ]
   }
 ]

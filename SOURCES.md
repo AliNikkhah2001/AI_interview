@@ -1,6 +1,6 @@
 # Primary sources
 
-Research snapshot: 2026-09-02. Sources are primary papers, official project documentation, specifications, and standards.
+Research snapshot: 2026-09-05. Sources are primary papers, official project documentation, specifications, and standards.
 
 - **Attention Is All You Need** (paper): https://arxiv.org/abs/1706.03762
 - **Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks** (paper): https://arxiv.org/abs/2005.11401
@@ -44,6 +44,105 @@ Research snapshot: 2026-09-02. Sources are primary papers, official project docu
 - **Python 3 Documentation** (official docs): https://docs.python.org/3/
 - **OWASP Top 10 for LLM Applications** (standard): https://genai.owasp.org/llm-top-10/
 - **NIST AI Risk Management Framework** (standard): https://www.nist.gov/itl/ai-risk-management-framework
+- **LangChain official documentation** (official technology documentation): https://docs.langchain.com/oss/python/langchain/overview
+- **Deep Agents official documentation** (official technology documentation): https://docs.langchain.com/oss/python/deepagents/overview
+- **LlamaIndex official documentation** (official technology documentation): https://docs.llamaindex.ai/en/stable/
+- **Haystack official documentation** (official technology documentation): https://docs.haystack.deepset.ai/docs/intro
+- **Semantic Kernel official documentation** (official technology documentation): https://learn.microsoft.com/en-us/semantic-kernel/overview/
+- **AutoGen official documentation** (official technology documentation): https://microsoft.github.io/autogen/stable/
+- **CrewAI official documentation** (official technology documentation): https://docs.crewai.com/
+- **PydanticAI official documentation** (official technology documentation): https://ai.pydantic.dev/
+- **DSPy official documentation** (official technology documentation): https://dspy.ai/
+- **OpenAI Agents SDK official documentation** (official technology documentation): https://openai.github.io/openai-agents-python/
+- **Google Agent Development Kit official documentation** (official technology documentation): https://google.github.io/adk-docs/
+- **Mastra official documentation** (official technology documentation): https://mastra.ai/docs
+- **SGLang official documentation** (official technology documentation): https://docs.sglang.ai/
+- **Hugging Face Text Generation Inference official documentation** (official technology documentation): https://huggingface.co/docs/text-generation-inference/index
+- **TensorRT-LLM official documentation** (official technology documentation): https://nvidia.github.io/TensorRT-LLM/
+- **NVIDIA Triton Inference Server official documentation** (official technology documentation): https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/
+- **llama.cpp official documentation** (official technology documentation): https://github.com/ggml-org/llama.cpp
+- **Ollama official documentation** (official technology documentation): https://docs.ollama.com/
+- **Ray Serve official documentation** (official technology documentation): https://docs.ray.io/en/latest/serve/
+- **BentoML official documentation** (official technology documentation): https://docs.bentoml.com/
+- **LocalAI official documentation** (official technology documentation): https://localai.io/
+- **Modal official documentation** (official technology documentation): https://modal.com/docs/guide
+- **Baseten official documentation** (official technology documentation): https://docs.baseten.co/
+- **Hugging Face Inference Endpoints official documentation** (official technology documentation): https://huggingface.co/docs/inference-endpoints/index
+- **Pinecone official documentation** (official technology documentation): https://docs.pinecone.io/
+- **Chroma official documentation** (official technology documentation): https://docs.trychroma.com/
+- **LanceDB official documentation** (official technology documentation): https://docs.lancedb.com/
+- **FAISS official documentation** (official technology documentation): https://github.com/facebookresearch/faiss
+- **Elasticsearch official documentation** (official technology documentation): https://www.elastic.co/docs/solutions/search
+- **OpenSearch official documentation** (official technology documentation): https://docs.opensearch.org/latest/vector-search/
+- **Vespa official documentation** (official technology documentation): https://docs.vespa.ai/
+- **Redis Search and Vector Sets official documentation** (official technology documentation): https://redis.io/docs/latest/develop/ai/
+- **Neo4j official documentation** (official technology documentation): https://neo4j.com/docs/
+- **Memgraph official documentation** (official technology documentation): https://memgraph.com/docs
+- **FalkorDB official documentation** (official technology documentation): https://docs.falkordb.com/
+- **Amazon Neptune official documentation** (official technology documentation): https://docs.aws.amazon.com/neptune/
+- **Kuzu official documentation** (official technology documentation): https://docs.kuzudb.com/
+- **LangSmith official documentation** (official technology documentation): https://docs.langchain.com/langsmith/home
+- **Langfuse official documentation** (official technology documentation): https://langfuse.com/docs
+- **Arize Phoenix official documentation** (official technology documentation): https://arize.com/docs/phoenix
+- **Helicone official documentation** (official technology documentation): https://docs.helicone.ai/
+- **OpenTelemetry official documentation** (official technology documentation): https://opentelemetry.io/docs/
+- **Weights & Biases Weave official documentation** (official technology documentation): https://weave-docs.wandb.ai/
+- **Braintrust official documentation** (official technology documentation): https://www.braintrust.dev/docs
+- **Ragas official documentation** (official technology documentation): https://docs.ragas.io/
+- **DeepEval official documentation** (official technology documentation): https://deepeval.com/docs/
+- **TruLens official documentation** (official technology documentation): https://www.trulens.org/
+- **Promptfoo official documentation** (official technology documentation): https://www.promptfoo.dev/docs/
+- **Official MCP SDKs official documentation** (official technology documentation): https://modelcontextprotocol.io/docs/sdk
+- **FastMCP official documentation** (official technology documentation): https://gofastmcp.com/getting-started/welcome
+- **MCP Inspector official documentation** (official technology documentation): https://github.com/modelcontextprotocol/inspector
+- **Docker MCP Toolkit and Gateway official documentation** (official technology documentation): https://docs.docker.com/ai/mcp-catalog-and-toolkit/
+- **Smithery official documentation** (official technology documentation): https://smithery.ai/docs
+- **Composio official documentation** (official technology documentation): https://docs.composio.dev/
+- **Arcade official documentation** (official technology documentation): https://docs.arcade.dev/
+- **E2B official documentation** (official technology documentation): https://e2b.dev/docs
+- **Daytona official documentation** (official technology documentation): https://www.daytona.io/docs/
+- **Modal Sandboxes official documentation** (official technology documentation): https://modal.com/docs/guide/sandbox
+- **Docker official documentation** (official technology documentation): https://docs.docker.com/engine/security/
+- **gVisor official documentation** (official technology documentation): https://gvisor.dev/docs/
+- **Firecracker official documentation** (official technology documentation): https://github.com/firecracker-microvm/firecracker
+- **Kata Containers official documentation** (official technology documentation): https://katacontainers.io/docs/
+- **Kubernetes Jobs official documentation** (official technology documentation): https://kubernetes.io/docs/concepts/workloads/controllers/job/
+- **Apache Airflow official documentation** (official technology documentation): https://airflow.apache.org/docs/
+- **Prefect official documentation** (official technology documentation): https://docs.prefect.io/
+- **Dagster official documentation** (official technology documentation): https://docs.dagster.io/
+- **DVC official documentation** (official technology documentation): https://dvc.org/doc
+- **lakeFS official documentation** (official technology documentation): https://docs.lakefs.io/
+- **Kubeflow Pipelines official documentation** (official technology documentation): https://www.kubeflow.org/docs/components/pipelines/
+- **ZenML official documentation** (official technology documentation): https://docs.zenml.io/
+- **Zep official documentation** (official technology documentation): https://help.getzep.com/
+- **Mem0 official documentation** (official technology documentation): https://docs.mem0.ai/
+- **PyTorch official documentation** (official technology documentation): https://docs.pytorch.org/docs/stable/index.html
+- **JAX official documentation** (official technology documentation): https://docs.jax.dev/en/latest/
+- **Hugging Face Transformers official documentation** (official technology documentation): https://huggingface.co/docs/transformers/index
+- **Sentence Transformers official documentation** (official technology documentation): https://sbert.net/
+- **Hugging Face PEFT official documentation** (official technology documentation): https://huggingface.co/docs/peft/index
+- **bitsandbytes official documentation** (official technology documentation): https://huggingface.co/docs/bitsandbytes/main/en/index
+- **ONNX Runtime official documentation** (official technology documentation): https://onnxruntime.ai/docs/
+- **OpenVINO official documentation** (official technology documentation): https://docs.openvino.ai/
+- **FlagEmbedding official documentation** (official technology documentation): https://bge-model.com/
+- **Instructor official documentation** (official technology documentation): https://python.useinstructor.com/
+- **Cohere Rerank official documentation** (official technology documentation): https://docs.cohere.com/docs/rerank-overview
+- **Hugging Face Text Embeddings Inference official documentation** (official technology documentation): https://huggingface.co/docs/text-embeddings-inference/index
+- **LiteLLM official documentation** (official technology documentation): https://docs.litellm.ai/
+- **Portkey AI Gateway official documentation** (official technology documentation): https://portkey.ai/docs/
+- **Kong AI Gateway official documentation** (official technology documentation): https://developer.konghq.com/ai-gateway/
+- **Envoy AI Gateway official documentation** (official technology documentation): https://aigateway.envoyproxy.io/docs/
+- **Amazon SageMaker AI Endpoints official documentation** (official technology documentation): https://docs.aws.amazon.com/sagemaker/latest/dg/deploy-model.html
+- **Vertex AI Endpoints official documentation** (official technology documentation): https://cloud.google.com/vertex-ai/docs/predictions/overview
+- **Azure Machine Learning Managed Online Endpoints official documentation** (official technology documentation): https://learn.microsoft.com/en-us/azure/machine-learning/concept-endpoints-online
+- **NVIDIA NeMo Guardrails official documentation** (official technology documentation): https://docs.nvidia.com/nemo/guardrails/latest/
+- **Guardrails AI official documentation** (official technology documentation): https://www.guardrailsai.com/docs
+- **Llama Guard official documentation** (official technology documentation): https://www.llama.com/docs/model-cards-and-prompt-formats/llama-guard-4/
+- **Protect AI LLM Guard official documentation** (official technology documentation): https://protectai.github.io/llm-guard/
+- **Microsoft Presidio official documentation** (official technology documentation): https://microsoft.github.io/presidio/
+- **Open Policy Agent official documentation** (official technology documentation): https://www.openpolicyagent.org/docs/latest/
+- **Cedar official documentation** (official technology documentation): https://docs.cedarpolicy.com/
+- **Lakera Guard official documentation** (official technology documentation): https://docs.lakera.ai/docs
 
 ## Method
 

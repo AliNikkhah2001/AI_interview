@@ -1,0 +1,83 @@
+[
+  {
+    "id": "agent-frameworks",
+    "title": "Agent and application frameworks",
+    "order": 1,
+    "need": "Intent + context",
+    "mechanism": "State, tools, control",
+    "result": "Agent or RAG application",
+    "question": "Who owns state, retries, and side effects?"
+  },
+  {
+    "id": "model-development",
+    "title": "Model, embedding, and optimization libraries",
+    "order": 2,
+    "need": "Data + model objective",
+    "mechanism": "Train, adapt, embed, compile",
+    "result": "Versioned model artifact",
+    "question": "Which representation and runtime boundary does the workload require?"
+  },
+  {
+    "id": "model-serving",
+    "title": "Model serving, gateways, and inference",
+    "order": 3,
+    "need": "Model + token workload",
+    "mechanism": "Route, batch, schedule, execute",
+    "result": "Tokens under an SLO",
+    "question": "What is the latency-throughput-memory-reliability frontier?"
+  },
+  {
+    "id": "retrieval-graph",
+    "title": "Retrieval, vector, and graph data",
+    "order": 4,
+    "need": "Query + governed corpus",
+    "mechanism": "Index, filter, traverse, rank",
+    "result": "Traceable evidence",
+    "question": "Which query shape earns which index?"
+  },
+  {
+    "id": "observability-evaluation",
+    "title": "Observability and evaluation",
+    "order": 5,
+    "need": "Runs + expected behavior",
+    "mechanism": "Trace, score, slice, compare",
+    "result": "Release and incident evidence",
+    "question": "Can a regression be localized, not merely noticed?"
+  },
+  {
+    "id": "safety-guardrails",
+    "title": "Safety, validation, and policy guardrails",
+    "order": 6,
+    "need": "Untrusted input + proposed action",
+    "mechanism": "Detect, validate, authorize",
+    "result": "Bounded output or denial",
+    "question": "Which control is deterministic, model-based, or policy-based?"
+  },
+  {
+    "id": "mcp-connectivity",
+    "title": "MCP and tool connectivity",
+    "order": 7,
+    "need": "Model intent + capability",
+    "mechanism": "Discover, authorize, invoke",
+    "result": "Typed tool result",
+    "question": "Where is authority enforced?"
+  },
+  {
+    "id": "sandbox-execution",
+    "title": "Sandbox and code execution",
+    "order": 8,
+    "need": "Untrusted program",
+    "mechanism": "Isolate + constrain",
+    "result": "Result + audit trail",
+    "question": "What survives a guest escape attempt?"
+  },
+  {
+    "id": "data-lifecycle",
+    "title": "Data, workflow, and ML lifecycle",
+    "order": 9,
+    "need": "Versioned inputs + event",
+    "mechanism": "Schedule, execute, lineage",
+    "result": "Reproducible artifact",
+    "question": "Can every effect be replayed or reconciled?"
+  }
+]

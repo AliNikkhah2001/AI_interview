@@ -1,14 +1,54 @@
 # AI Engineering Interview Atlas
 
-> 192 topics, 1920 generated practice questions, 50 core interview questions, and 12 system-design challenges.
+> 192 topics, 111 technology profiles, 2253 generated practice questions, 50 core interview questions, and 26 system-design challenges.
 
 A research-grounded practice repository for AI engineering, LLM systems, RAG, agents, deployment, data, observability, theory, and backend engineering.
 
 ## Use the atlas
 
-- Open `index.html` through GitHub Pages for the guided resume -> read -> exam -> advance course, ordered roadmap, mathematical tutorials, search, flashcards, and design drills.
+- Open `index.html` through GitHub Pages for the guided resume -> read -> exam -> advance course, ordered roadmap, technology field guide, mathematical tutorials, search, flashcards, and design drills.
 - Read `output/pdf/ai_engineering_interview_handbook.pdf` for the complete printable handbook.
-- Use `data/tutorials.json`, `data/formulas.json`, `data/visuals.json`, `data/roadmap.json`, and the sharded question files for custom study tools.
+- Use `data/technologies.json`, `data/technology_questions.json`, `data/tutorials.json`, `data/formulas.json`, `data/visuals.json`, `data/roadmap.json`, and the sharded curriculum-question files for custom study tools.
+
+## Technology field guide
+
+The dedicated catalog contains 111 current libraries, protocols, databases, runtimes, and platforms across 9 layers. Every profile includes its role, execution flow, languages, deployment shape, quick start, selection and rejection criteria, alternatives, failure mode, official documentation, logo or labeled fallback, and medium/hard/very-hard interview prompts.
+
+### Agent and application frameworks
+
+LangChain · LangGraph · Deep Agents · LlamaIndex · Haystack · Semantic Kernel · AutoGen · CrewAI · PydanticAI · DSPy · OpenAI Agents SDK · Google Agent Development Kit · Mastra · Zep · Mem0
+
+### Model, embedding, and optimization libraries
+
+PyTorch · JAX · Hugging Face Transformers · Sentence Transformers · Hugging Face PEFT · bitsandbytes · ONNX Runtime · OpenVINO · FlagEmbedding · Instructor · Cohere Rerank
+
+### Model serving, gateways, and inference
+
+vLLM · SGLang · Hugging Face Text Generation Inference · TensorRT-LLM · NVIDIA Triton Inference Server · llama.cpp · Ollama · KServe · Ray Serve · BentoML · LocalAI · Modal · Baseten · Hugging Face Inference Endpoints · Hugging Face Text Embeddings Inference · LiteLLM · Portkey AI Gateway · Kong AI Gateway · Envoy AI Gateway · Amazon SageMaker AI Endpoints · Vertex AI Endpoints · Azure Machine Learning Managed Online Endpoints
+
+### Retrieval, vector, and graph data
+
+pgvector · Pinecone · Qdrant · Weaviate · Milvus and Zilliz · Chroma · LanceDB · FAISS · Elasticsearch · OpenSearch · Vespa · Redis Search and Vector Sets · Neo4j · Memgraph · FalkorDB · Amazon Neptune · Kuzu
+
+### Observability and evaluation
+
+LangSmith · Langfuse · Arize Phoenix · Helicone · OpenTelemetry · MLflow · Weights & Biases Weave · Braintrust · Ragas · DeepEval · TruLens · Evidently · Promptfoo
+
+### Safety, validation, and policy guardrails
+
+NVIDIA NeMo Guardrails · Guardrails AI · Llama Guard · Protect AI LLM Guard · Microsoft Presidio · Open Policy Agent · Cedar · Lakera Guard
+
+### MCP and tool connectivity
+
+Model Context Protocol · Official MCP SDKs · FastMCP · MCP Inspector · Docker MCP Toolkit and Gateway · Smithery · Composio · Arcade
+
+### Sandbox and code execution
+
+E2B · Daytona · Modal Sandboxes · Docker · gVisor · Firecracker · Kata Containers · Kubernetes Jobs
+
+### Data, workflow, and ML lifecycle
+
+Temporal · Apache Airflow · Prefect · Dagster · DVC · lakeFS · Feast · Kubeflow Pipelines · ZenML
 
 ## Curriculum map
 
@@ -93,11 +133,11 @@ The browser resumes the last unfinished lesson, records five reading checkpoints
 
 ## Visual and mathematical coverage
 
-The handbook and site include 15 instructional diagrams and plots plus 33 formula modules with assumptions, variable definitions, derivations, and worked interpretations. Browser equations use MathJax; the source handbook uses native LaTeX with `amsmath`, `amssymb`, `mathtools`, and TikZ.
+The handbook and site include 15 core instructional diagrams and plots, 111 technology-specific flow diagrams, 9 comparison maps, and 33 formula modules with assumptions, variable definitions, derivations, and worked interpretations. Browser equations use MathJax; the source handbook uses native LaTeX with `amsmath`, `amssymb`, `mathtools`, and TikZ.
 
 ## Source policy
 
-Explanations are original synthesis grounded in primary papers, official documentation, specifications, and standards. The question bank does not copy proprietary interview banks. See [SOURCES.md](SOURCES.md).
+Explanations are original synthesis grounded in primary papers, official documentation, specifications, and standards. The question bank does not copy proprietary interview banks. Technology logos are identification marks loaded from the Simple Icons CDN when available, with clearly labeled local fallbacks. See [SOURCES.md](SOURCES.md).
 
 ## Rebuild
 
@@ -110,4 +150,4 @@ The Pages workflow performs the LaTeX compilation before publishing, so a broken
 
 ## License
 
-Educational content and code are released under the MIT License. Third-party names belong to their respective owners.
+Educational content and code are released under the MIT License. Third-party names and marks belong to their respective owners.

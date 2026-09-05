@@ -1,0 +1,1271 @@
+\par\textit{Data minimization, purpose limitation, access control, retention, deletion, and regional handling apply to prompts and traces. Tradeoff: Privacy protection can reduce debugging data and personalization. Watch for: Redacting only user messages while retaining retrieved documents leaves exposure.}
+\paragraph{MCQ-1764 [medium]} A design review is specifically concerned with this risk: Redacting only user messages while retaining retrieved documents leaves exposure. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Data privacy
+\item Output validation
+\item Model supply chain
+\item Tool authorization
+\end{enumerate}
+\noindent\textbf{Answer.} Data privacy
+\par\textit{Data minimization, purpose limitation, access control, retention, deletion, and regional handling apply to prompts and traces. Tradeoff: Privacy protection can reduce debugging data and personalization. Watch for: Redacting only user messages while retaining retrieved documents leaves exposure.}
+\paragraph{MCQ-1765 [hard]} Which design note most accurately balances the benefits and costs of Data privacy?
+\begin{enumerate}[label=\Alph*.]
+\item Privacy protection can reduce debugging data and personalization.
+\item Fine-grained authorization limits blast radius but adds policy complexity.
+\item Fail-closed validation improves safety but may lower completion rate.
+\item Assurance improves while promotion pipelines become more deliberate.
+\end{enumerate}
+\noindent\textbf{Answer.} Privacy protection can reduce debugging data and personalization.
+\par\textit{Data minimization, purpose limitation, access control, retention, deletion, and regional handling apply to prompts and traces. Tradeoff: Privacy protection can reduce debugging data and personalization. Watch for: Redacting only user messages while retaining retrieved documents leaves exposure.}
+\paragraph{MCQ-1766 [medium]} Which explanation would be strongest in a system-design interview about Data privacy?
+\begin{enumerate}[label=\Alph*.]
+\item Data minimization, purpose limitation, access control, retention, deletion, and regional handling apply to prompts and traces.
+\item The host checks identity, scope, resource, action, policy, and user intent before every tool execution.
+\item Weights, datasets, containers, packages, adapters, and prompts require provenance, scanning, signing, and review.
+\item Structured schema, semantic checks, policy filters, allowlists, and deterministic verification gate model output.
+\end{enumerate}
+\noindent\textbf{Answer.} Data minimization, purpose limitation, access control, retention, deletion, and regional handling apply to prompts and traces.
+\par\textit{Data minimization, purpose limitation, access control, retention, deletion, and regional handling apply to prompts and traces. Tradeoff: Privacy protection can reduce debugging data and personalization. Watch for: Redacting only user messages while retaining retrieved documents leaves exposure.}
+\paragraph{MCQ-1767 [hard]} Which production warning is most directly associated with Data privacy?
+\begin{enumerate}[label=\Alph*.]
+\item Loading arbitrary pickle-based artifacts can execute code.
+\item A valid JSON schema does not prove safe SQL, URLs, or business intent.
+\item Authorizing the agent once at session start enables confused-deputy attacks.
+\item Redacting only user messages while retaining retrieved documents leaves exposure.
+\end{enumerate}
+\noindent\textbf{Answer.} Redacting only user messages while retaining retrieved documents leaves exposure.
+\par\textit{Data minimization, purpose limitation, access control, retention, deletion, and regional handling apply to prompts and traces. Tradeoff: Privacy protection can reduce debugging data and personalization. Watch for: Redacting only user messages while retaining retrieved documents leaves exposure.}
+\paragraph{FC-1768 [medium]} Define Data privacy in interview-ready language.
+\noindent\textbf{Answer.} Data minimization, purpose limitation, access control, retention, deletion, and regional handling apply to prompts and traces.
+\par\textit{Data minimization, purpose limitation, access control, retention, deletion, and regional handling apply to prompts and traces.}
+\paragraph{FC-1769 [hard]} State the main tradeoff and production pitfall for Data privacy.
+\noindent\textbf{Answer.} Tradeoff: Privacy protection can reduce debugging data and personalization. Pitfall: Redacting only user messages while retaining retrieved documents leaves exposure.
+\par\textit{Tradeoff: Privacy protection can reduce debugging data and personalization. Pitfall: Redacting only user messages while retaining retrieved documents leaves exposure.}
+\paragraph{LA-1770 [hard]} Explain Data privacy from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Data minimization, purpose limitation, access control, retention, deletion, and regional handling apply to prompts and traces. Make the tradeoff explicit: Privacy protection can reduce debugging data and personalization. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Redacting only user messages while retaining retrieved documents leaves exposure.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1771 [medium]} Which statement best describes Output validation?
+\begin{enumerate}[label=\Alph*.]
+\item Defense in depth combines process, filesystem, network, syscall, credential, resource, and time boundaries.
+\item Weights, datasets, containers, packages, adapters, and prompts require provenance, scanning, signing, and review.
+\item Structured schema, semantic checks, policy filters, allowlists, and deterministic verification gate model output.
+\item Adversarial testing explores misuse, prompt injection, privacy, bias, jailbreaks, tool abuse, and failure recovery.
+\end{enumerate}
+\noindent\textbf{Answer.} Structured schema, semantic checks, policy filters, allowlists, and deterministic verification gate model output.
+\par\textit{Structured schema, semantic checks, policy filters, allowlists, and deterministic verification gate model output. Tradeoff: Fail-closed validation improves safety but may lower completion rate. Watch for: A valid JSON schema does not prove safe SQL, URLs, or business intent.}
+\paragraph{MCQ-1772 [hard]} What is the central engineering tradeoff of Output validation?
+\begin{enumerate}[label=\Alph*.]
+\item Strong isolation raises operational cost and may restrict legitimate tools.
+\item It reveals unknown weaknesses but provides samples, not a guarantee of safety.
+\item Fail-closed validation improves safety but may lower completion rate.
+\item Assurance improves while promotion pipelines become more deliberate.
+\end{enumerate}
+\noindent\textbf{Answer.} Fail-closed validation improves safety but may lower completion rate.
+\par\textit{Structured schema, semantic checks, policy filters, allowlists, and deterministic verification gate model output. Tradeoff: Fail-closed validation improves safety but may lower completion rate. Watch for: A valid JSON schema does not prove safe SQL, URLs, or business intent.}
+\paragraph{MCQ-1773 [hard]} Which failure mode should an interviewer expect you to identify for Output validation?
+\begin{enumerate}[label=\Alph*.]
+\item A valid JSON schema does not prove safe SQL, URLs, or business intent.
+\item Running one generic jailbreak list misses application-specific assets and actions.
+\item Loading arbitrary pickle-based artifacts can execute code.
+\item Running as non-root inside an otherwise privileged container is insufficient.
+\end{enumerate}
+\noindent\textbf{Answer.} A valid JSON schema does not prove safe SQL, URLs, or business intent.
+\par\textit{Structured schema, semantic checks, policy filters, allowlists, and deterministic verification gate model output. Tradeoff: Fail-closed validation improves safety but may lower completion rate. Watch for: A valid JSON schema does not prove safe SQL, URLs, or business intent.}
+\paragraph{MCQ-1774 [medium]} A design review is specifically concerned with this risk: A valid JSON schema does not prove safe SQL, URLs, or business intent. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Model supply chain
+\item Red teaming
+\item Sandboxing
+\item Output validation
+\end{enumerate}
+\noindent\textbf{Answer.} Output validation
+\par\textit{Structured schema, semantic checks, policy filters, allowlists, and deterministic verification gate model output. Tradeoff: Fail-closed validation improves safety but may lower completion rate. Watch for: A valid JSON schema does not prove safe SQL, URLs, or business intent.}
+\paragraph{MCQ-1775 [hard]} Which design note most accurately balances the benefits and costs of Output validation?
+\begin{enumerate}[label=\Alph*.]
+\item Strong isolation raises operational cost and may restrict legitimate tools.
+\item Fail-closed validation improves safety but may lower completion rate.
+\item Assurance improves while promotion pipelines become more deliberate.
+\item It reveals unknown weaknesses but provides samples, not a guarantee of safety.
+\end{enumerate}
+\noindent\textbf{Answer.} Fail-closed validation improves safety but may lower completion rate.
+\par\textit{Structured schema, semantic checks, policy filters, allowlists, and deterministic verification gate model output. Tradeoff: Fail-closed validation improves safety but may lower completion rate. Watch for: A valid JSON schema does not prove safe SQL, URLs, or business intent.}
+\paragraph{MCQ-1776 [medium]} Which explanation would be strongest in a system-design interview about Output validation?
+\begin{enumerate}[label=\Alph*.]
+\item Weights, datasets, containers, packages, adapters, and prompts require provenance, scanning, signing, and review.
+\item Structured schema, semantic checks, policy filters, allowlists, and deterministic verification gate model output.
+\item Adversarial testing explores misuse, prompt injection, privacy, bias, jailbreaks, tool abuse, and failure recovery.
+\item Defense in depth combines process, filesystem, network, syscall, credential, resource, and time boundaries.
+\end{enumerate}
+\noindent\textbf{Answer.} Structured schema, semantic checks, policy filters, allowlists, and deterministic verification gate model output.
+\par\textit{Structured schema, semantic checks, policy filters, allowlists, and deterministic verification gate model output. Tradeoff: Fail-closed validation improves safety but may lower completion rate. Watch for: A valid JSON schema does not prove safe SQL, URLs, or business intent.}
+\paragraph{MCQ-1777 [hard]} Which production warning is most directly associated with Output validation?
+\begin{enumerate}[label=\Alph*.]
+\item Loading arbitrary pickle-based artifacts can execute code.
+\item A valid JSON schema does not prove safe SQL, URLs, or business intent.
+\item Running one generic jailbreak list misses application-specific assets and actions.
+\item Running as non-root inside an otherwise privileged container is insufficient.
+\end{enumerate}
+\noindent\textbf{Answer.} A valid JSON schema does not prove safe SQL, URLs, or business intent.
+\par\textit{Structured schema, semantic checks, policy filters, allowlists, and deterministic verification gate model output. Tradeoff: Fail-closed validation improves safety but may lower completion rate. Watch for: A valid JSON schema does not prove safe SQL, URLs, or business intent.}
+\paragraph{FC-1778 [medium]} Define Output validation in interview-ready language.
+\noindent\textbf{Answer.} Structured schema, semantic checks, policy filters, allowlists, and deterministic verification gate model output.
+\par\textit{Structured schema, semantic checks, policy filters, allowlists, and deterministic verification gate model output.}
+\paragraph{FC-1779 [hard]} State the main tradeoff and production pitfall for Output validation.
+\noindent\textbf{Answer.} Tradeoff: Fail-closed validation improves safety but may lower completion rate. Pitfall: A valid JSON schema does not prove safe SQL, URLs, or business intent.
+\par\textit{Tradeoff: Fail-closed validation improves safety but may lower completion rate. Pitfall: A valid JSON schema does not prove safe SQL, URLs, or business intent.}
+\paragraph{LA-1780 [hard]} Explain Output validation from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Structured schema, semantic checks, policy filters, allowlists, and deterministic verification gate model output. Make the tradeoff explicit: Fail-closed validation improves safety but may lower completion rate. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: A valid JSON schema does not prove safe SQL, URLs, or business intent.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1781 [medium]} Which statement best describes Model supply chain?
+\begin{enumerate}[label=\Alph*.]
+\item The host checks identity, scope, resource, action, policy, and user intent before every tool execution.
+\item Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk.
+\item Credentials are issued narrowly, stored outside prompts and code, rotated, audited, and redacted from telemetry.
+\item Weights, datasets, containers, packages, adapters, and prompts require provenance, scanning, signing, and review.
+\end{enumerate}
+\noindent\textbf{Answer.} Weights, datasets, containers, packages, adapters, and prompts require provenance, scanning, signing, and review.
+\par\textit{Weights, datasets, containers, packages, adapters, and prompts require provenance, scanning, signing, and review. Tradeoff: Assurance improves while promotion pipelines become more deliberate. Watch for: Loading arbitrary pickle-based artifacts can execute code.}
+\paragraph{MCQ-1782 [hard]} What is the central engineering tradeoff of Model supply chain?
+\begin{enumerate}[label=\Alph*.]
+\item Governance improves accountability but can become checkbox compliance without technical signals.
+\item Assurance improves while promotion pipelines become more deliberate.
+\item Short-lived credentials reduce exposure but require reliable identity infrastructure.
+\item Fine-grained authorization limits blast radius but adds policy complexity.
+\end{enumerate}
+\noindent\textbf{Answer.} Assurance improves while promotion pipelines become more deliberate.
+\par\textit{Weights, datasets, containers, packages, adapters, and prompts require provenance, scanning, signing, and review. Tradeoff: Assurance improves while promotion pipelines become more deliberate. Watch for: Loading arbitrary pickle-based artifacts can execute code.}
+\paragraph{MCQ-1783 [hard]} Which failure mode should an interviewer expect you to identify for Model supply chain?
+\begin{enumerate}[label=\Alph*.]
+\item Authorizing the agent once at session start enables confused-deputy attacks.
+\item Environment variables copied into sandboxes or crash logs leak broad authority.
+\item Loading arbitrary pickle-based artifacts can execute code.
+\item A model card without deployment-specific threat modeling is incomplete.
+\end{enumerate}
+\noindent\textbf{Answer.} Loading arbitrary pickle-based artifacts can execute code.
+\par\textit{Weights, datasets, containers, packages, adapters, and prompts require provenance, scanning, signing, and review. Tradeoff: Assurance improves while promotion pipelines become more deliberate. Watch for: Loading arbitrary pickle-based artifacts can execute code.}
+\paragraph{MCQ-1784 [medium]} A design review is specifically concerned with this risk: Loading arbitrary pickle-based artifacts can execute code. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Tool authorization
+\item Model supply chain
+\item Secrets management
+\item AI risk management
+\end{enumerate}
+\noindent\textbf{Answer.} Model supply chain
+\par\textit{Weights, datasets, containers, packages, adapters, and prompts require provenance, scanning, signing, and review. Tradeoff: Assurance improves while promotion pipelines become more deliberate. Watch for: Loading arbitrary pickle-based artifacts can execute code.}
+\paragraph{MCQ-1785 [hard]} Which design note most accurately balances the benefits and costs of Model supply chain?
+\begin{enumerate}[label=\Alph*.]
+\item Short-lived credentials reduce exposure but require reliable identity infrastructure.
+\item Fine-grained authorization limits blast radius but adds policy complexity.
+\item Assurance improves while promotion pipelines become more deliberate.
+\item Governance improves accountability but can become checkbox compliance without technical signals.
+\end{enumerate}
+\noindent\textbf{Answer.} Assurance improves while promotion pipelines become more deliberate.
+\par\textit{Weights, datasets, containers, packages, adapters, and prompts require provenance, scanning, signing, and review. Tradeoff: Assurance improves while promotion pipelines become more deliberate. Watch for: Loading arbitrary pickle-based artifacts can execute code.}
+\paragraph{MCQ-1786 [medium]} Which explanation would be strongest in a system-design interview about Model supply chain?
+\begin{enumerate}[label=\Alph*.]
+\item Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk.
+\item The host checks identity, scope, resource, action, policy, and user intent before every tool execution.
+\item Weights, datasets, containers, packages, adapters, and prompts require provenance, scanning, signing, and review.
+\item Credentials are issued narrowly, stored outside prompts and code, rotated, audited, and redacted from telemetry.
+\end{enumerate}
+\noindent\textbf{Answer.} Weights, datasets, containers, packages, adapters, and prompts require provenance, scanning, signing, and review.
+\par\textit{Weights, datasets, containers, packages, adapters, and prompts require provenance, scanning, signing, and review. Tradeoff: Assurance improves while promotion pipelines become more deliberate. Watch for: Loading arbitrary pickle-based artifacts can execute code.}
+\paragraph{MCQ-1787 [hard]} Which production warning is most directly associated with Model supply chain?
+\begin{enumerate}[label=\Alph*.]
+\item A model card without deployment-specific threat modeling is incomplete.
+\item Environment variables copied into sandboxes or crash logs leak broad authority.
+\item Authorizing the agent once at session start enables confused-deputy attacks.
+\item Loading arbitrary pickle-based artifacts can execute code.
+\end{enumerate}
+\noindent\textbf{Answer.} Loading arbitrary pickle-based artifacts can execute code.
+\par\textit{Weights, datasets, containers, packages, adapters, and prompts require provenance, scanning, signing, and review. Tradeoff: Assurance improves while promotion pipelines become more deliberate. Watch for: Loading arbitrary pickle-based artifacts can execute code.}
+\paragraph{FC-1788 [medium]} Define Model supply chain in interview-ready language.
+\noindent\textbf{Answer.} Weights, datasets, containers, packages, adapters, and prompts require provenance, scanning, signing, and review.
+\par\textit{Weights, datasets, containers, packages, adapters, and prompts require provenance, scanning, signing, and review.}
+\paragraph{FC-1789 [hard]} State the main tradeoff and production pitfall for Model supply chain.
+\noindent\textbf{Answer.} Tradeoff: Assurance improves while promotion pipelines become more deliberate. Pitfall: Loading arbitrary pickle-based artifacts can execute code.
+\par\textit{Tradeoff: Assurance improves while promotion pipelines become more deliberate. Pitfall: Loading arbitrary pickle-based artifacts can execute code.}
+\paragraph{LA-1790 [hard]} Explain Model supply chain from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Weights, datasets, containers, packages, adapters, and prompts require provenance, scanning, signing, and review. Make the tradeoff explicit: Assurance improves while promotion pipelines become more deliberate. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Loading arbitrary pickle-based artifacts can execute code.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1791 [medium]} Which statement best describes AI risk management?
+\begin{enumerate}[label=\Alph*.]
+\item Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk.
+\item The host checks identity, scope, resource, action, policy, and user intent before every tool execution.
+\item Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes.
+\item Data minimization, purpose limitation, access control, retention, deletion, and regional handling apply to prompts and traces.
+\end{enumerate}
+\noindent\textbf{Answer.} Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk.
+\par\textit{Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk. Tradeoff: Governance improves accountability but can become checkbox compliance without technical signals. Watch for: A model card without deployment-specific threat modeling is incomplete.}
+\paragraph{MCQ-1792 [hard]} What is the central engineering tradeoff of AI risk management?
+\begin{enumerate}[label=\Alph*.]
+\item Governance improves accountability but can become checkbox compliance without technical signals.
+\item Fine-grained authorization limits blast radius but adds policy complexity.
+\item Privacy protection can reduce debugging data and personalization.
+\item Investigations and compliance improve, while logs themselves become sensitive assets.
+\end{enumerate}
+\noindent\textbf{Answer.} Governance improves accountability but can become checkbox compliance without technical signals.
+\par\textit{Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk. Tradeoff: Governance improves accountability but can become checkbox compliance without technical signals. Watch for: A model card without deployment-specific threat modeling is incomplete.}
+\paragraph{MCQ-1793 [hard]} Which failure mode should an interviewer expect you to identify for AI risk management?
+\begin{enumerate}[label=\Alph*.]
+\item Authorizing the agent once at session start enables confused-deputy attacks.
+\item A model card without deployment-specific threat modeling is incomplete.
+\item Redacting only user messages while retaining retrieved documents leaves exposure.
+\item Logging reasoning text instead of decisive actions and evidence can reduce clarity.
+\end{enumerate}
+\noindent\textbf{Answer.} A model card without deployment-specific threat modeling is incomplete.
+\par\textit{Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk. Tradeoff: Governance improves accountability but can become checkbox compliance without technical signals. Watch for: A model card without deployment-specific threat modeling is incomplete.}
+\paragraph{MCQ-1794 [medium]} A design review is specifically concerned with this risk: A model card without deployment-specific threat modeling is incomplete. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Data privacy
+\item AI risk management
+\item Tool authorization
+\item Auditability
+\end{enumerate}
+\noindent\textbf{Answer.} AI risk management
+\par\textit{Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk. Tradeoff: Governance improves accountability but can become checkbox compliance without technical signals. Watch for: A model card without deployment-specific threat modeling is incomplete.}
+\paragraph{MCQ-1795 [hard]} Which design note most accurately balances the benefits and costs of AI risk management?
+\begin{enumerate}[label=\Alph*.]
+\item Investigations and compliance improve, while logs themselves become sensitive assets.
+\item Privacy protection can reduce debugging data and personalization.
+\item Fine-grained authorization limits blast radius but adds policy complexity.
+\item Governance improves accountability but can become checkbox compliance without technical signals.
+\end{enumerate}
+\noindent\textbf{Answer.} Governance improves accountability but can become checkbox compliance without technical signals.
+\par\textit{Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk. Tradeoff: Governance improves accountability but can become checkbox compliance without technical signals. Watch for: A model card without deployment-specific threat modeling is incomplete.}
+\paragraph{MCQ-1796 [medium]} Which explanation would be strongest in a system-design interview about AI risk management?
+\begin{enumerate}[label=\Alph*.]
+\item Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes.
+\item Data minimization, purpose limitation, access control, retention, deletion, and regional handling apply to prompts and traces.
+\item The host checks identity, scope, resource, action, policy, and user intent before every tool execution.
+\item Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk.
+\end{enumerate}
+\noindent\textbf{Answer.} Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk.
+\par\textit{Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk. Tradeoff: Governance improves accountability but can become checkbox compliance without technical signals. Watch for: A model card without deployment-specific threat modeling is incomplete.}
+\paragraph{MCQ-1797 [hard]} Which production warning is most directly associated with AI risk management?
+\begin{enumerate}[label=\Alph*.]
+\item Logging reasoning text instead of decisive actions and evidence can reduce clarity.
+\item A model card without deployment-specific threat modeling is incomplete.
+\item Redacting only user messages while retaining retrieved documents leaves exposure.
+\item Authorizing the agent once at session start enables confused-deputy attacks.
+\end{enumerate}
+\noindent\textbf{Answer.} A model card without deployment-specific threat modeling is incomplete.
+\par\textit{Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk. Tradeoff: Governance improves accountability but can become checkbox compliance without technical signals. Watch for: A model card without deployment-specific threat modeling is incomplete.}
+\paragraph{FC-1798 [medium]} Define AI risk management in interview-ready language.
+\noindent\textbf{Answer.} Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk.
+\par\textit{Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk.}
+\paragraph{FC-1799 [hard]} State the main tradeoff and production pitfall for AI risk management.
+\noindent\textbf{Answer.} Tradeoff: Governance improves accountability but can become checkbox compliance without technical signals. Pitfall: A model card without deployment-specific threat modeling is incomplete.
+\par\textit{Tradeoff: Governance improves accountability but can become checkbox compliance without technical signals. Pitfall: A model card without deployment-specific threat modeling is incomplete.}
+\paragraph{LA-1800 [hard]} Explain AI risk management from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk. Make the tradeoff explicit: Governance improves accountability but can become checkbox compliance without technical signals. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: A model card without deployment-specific threat modeling is incomplete.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1801 [medium]} Which statement best describes Red teaming?
+\begin{enumerate}[label=\Alph*.]
+\item Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk.
+\item Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes.
+\item Data minimization, purpose limitation, access control, retention, deletion, and regional handling apply to prompts and traces.
+\item Adversarial testing explores misuse, prompt injection, privacy, bias, jailbreaks, tool abuse, and failure recovery.
+\end{enumerate}
+\noindent\textbf{Answer.} Adversarial testing explores misuse, prompt injection, privacy, bias, jailbreaks, tool abuse, and failure recovery.
+\par\textit{Adversarial testing explores misuse, prompt injection, privacy, bias, jailbreaks, tool abuse, and failure recovery. Tradeoff: It reveals unknown weaknesses but provides samples, not a guarantee of safety. Watch for: Running one generic jailbreak list misses application-specific assets and actions.}
+\paragraph{MCQ-1802 [hard]} What is the central engineering tradeoff of Red teaming?
+\begin{enumerate}[label=\Alph*.]
+\item Investigations and compliance improve, while logs themselves become sensitive assets.
+\item It reveals unknown weaknesses but provides samples, not a guarantee of safety.
+\item Privacy protection can reduce debugging data and personalization.
+\item Governance improves accountability but can become checkbox compliance without technical signals.
+\end{enumerate}
+\noindent\textbf{Answer.} It reveals unknown weaknesses but provides samples, not a guarantee of safety.
+\par\textit{Adversarial testing explores misuse, prompt injection, privacy, bias, jailbreaks, tool abuse, and failure recovery. Tradeoff: It reveals unknown weaknesses but provides samples, not a guarantee of safety. Watch for: Running one generic jailbreak list misses application-specific assets and actions.}
+\paragraph{MCQ-1803 [hard]} Which failure mode should an interviewer expect you to identify for Red teaming?
+\begin{enumerate}[label=\Alph*.]
+\item Redacting only user messages while retaining retrieved documents leaves exposure.
+\item Logging reasoning text instead of decisive actions and evidence can reduce clarity.
+\item Running one generic jailbreak list misses application-specific assets and actions.
+\item A model card without deployment-specific threat modeling is incomplete.
+\end{enumerate}
+\noindent\textbf{Answer.} Running one generic jailbreak list misses application-specific assets and actions.
+\par\textit{Adversarial testing explores misuse, prompt injection, privacy, bias, jailbreaks, tool abuse, and failure recovery. Tradeoff: It reveals unknown weaknesses but provides samples, not a guarantee of safety. Watch for: Running one generic jailbreak list misses application-specific assets and actions.}
+\paragraph{MCQ-1804 [medium]} A design review is specifically concerned with this risk: Running one generic jailbreak list misses application-specific assets and actions. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Red teaming
+\item AI risk management
+\item Auditability
+\item Data privacy
+\end{enumerate}
+\noindent\textbf{Answer.} Red teaming
+\par\textit{Adversarial testing explores misuse, prompt injection, privacy, bias, jailbreaks, tool abuse, and failure recovery. Tradeoff: It reveals unknown weaknesses but provides samples, not a guarantee of safety. Watch for: Running one generic jailbreak list misses application-specific assets and actions.}
+\paragraph{MCQ-1805 [hard]} Which design note most accurately balances the benefits and costs of Red teaming?
+\begin{enumerate}[label=\Alph*.]
+\item Governance improves accountability but can become checkbox compliance without technical signals.
+\item It reveals unknown weaknesses but provides samples, not a guarantee of safety.
+\item Privacy protection can reduce debugging data and personalization.
+\item Investigations and compliance improve, while logs themselves become sensitive assets.
+\end{enumerate}
+\noindent\textbf{Answer.} It reveals unknown weaknesses but provides samples, not a guarantee of safety.
+\par\textit{Adversarial testing explores misuse, prompt injection, privacy, bias, jailbreaks, tool abuse, and failure recovery. Tradeoff: It reveals unknown weaknesses but provides samples, not a guarantee of safety. Watch for: Running one generic jailbreak list misses application-specific assets and actions.}
+\paragraph{MCQ-1806 [medium]} Which explanation would be strongest in a system-design interview about Red teaming?
+\begin{enumerate}[label=\Alph*.]
+\item Adversarial testing explores misuse, prompt injection, privacy, bias, jailbreaks, tool abuse, and failure recovery.
+\item Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk.
+\item Data minimization, purpose limitation, access control, retention, deletion, and regional handling apply to prompts and traces.
+\item Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes.
+\end{enumerate}
+\noindent\textbf{Answer.} Adversarial testing explores misuse, prompt injection, privacy, bias, jailbreaks, tool abuse, and failure recovery.
+\par\textit{Adversarial testing explores misuse, prompt injection, privacy, bias, jailbreaks, tool abuse, and failure recovery. Tradeoff: It reveals unknown weaknesses but provides samples, not a guarantee of safety. Watch for: Running one generic jailbreak list misses application-specific assets and actions.}
+\paragraph{MCQ-1807 [hard]} Which production warning is most directly associated with Red teaming?
+\begin{enumerate}[label=\Alph*.]
+\item A model card without deployment-specific threat modeling is incomplete.
+\item Redacting only user messages while retaining retrieved documents leaves exposure.
+\item Logging reasoning text instead of decisive actions and evidence can reduce clarity.
+\item Running one generic jailbreak list misses application-specific assets and actions.
+\end{enumerate}
+\noindent\textbf{Answer.} Running one generic jailbreak list misses application-specific assets and actions.
+\par\textit{Adversarial testing explores misuse, prompt injection, privacy, bias, jailbreaks, tool abuse, and failure recovery. Tradeoff: It reveals unknown weaknesses but provides samples, not a guarantee of safety. Watch for: Running one generic jailbreak list misses application-specific assets and actions.}
+\paragraph{FC-1808 [medium]} Define Red teaming in interview-ready language.
+\noindent\textbf{Answer.} Adversarial testing explores misuse, prompt injection, privacy, bias, jailbreaks, tool abuse, and failure recovery.
+\par\textit{Adversarial testing explores misuse, prompt injection, privacy, bias, jailbreaks, tool abuse, and failure recovery.}
+\paragraph{FC-1809 [hard]} State the main tradeoff and production pitfall for Red teaming.
+\noindent\textbf{Answer.} Tradeoff: It reveals unknown weaknesses but provides samples, not a guarantee of safety. Pitfall: Running one generic jailbreak list misses application-specific assets and actions.
+\par\textit{Tradeoff: It reveals unknown weaknesses but provides samples, not a guarantee of safety. Pitfall: Running one generic jailbreak list misses application-specific assets and actions.}
+\paragraph{LA-1810 [hard]} Explain Red teaming from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Adversarial testing explores misuse, prompt injection, privacy, bias, jailbreaks, tool abuse, and failure recovery. Make the tradeoff explicit: It reveals unknown weaknesses but provides samples, not a guarantee of safety. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Running one generic jailbreak list misses application-specific assets and actions.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1811 [medium]} Which statement best describes Auditability?
+\begin{enumerate}[label=\Alph*.]
+\item The host checks identity, scope, resource, action, policy, and user intent before every tool execution.
+\item Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes.
+\item Untrusted content attempts to override instructions, exfiltrate data, or induce tool actions.
+\item Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk.
+\end{enumerate}
+\noindent\textbf{Answer.} Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes.
+\par\textit{Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes. Tradeoff: Investigations and compliance improve, while logs themselves become sensitive assets. Watch for: Logging reasoning text instead of decisive actions and evidence can reduce clarity.}
+\paragraph{MCQ-1812 [hard]} What is the central engineering tradeoff of Auditability?
+\begin{enumerate}[label=\Alph*.]
+\item Governance improves accountability but can become checkbox compliance without technical signals.
+\item Fine-grained authorization limits blast radius but adds policy complexity.
+\item Investigations and compliance improve, while logs themselves become sensitive assets.
+\item Content isolation and least privilege reduce impact but cannot make untrusted text authoritative.
+\end{enumerate}
+\noindent\textbf{Answer.} Investigations and compliance improve, while logs themselves become sensitive assets.
+\par\textit{Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes. Tradeoff: Investigations and compliance improve, while logs themselves become sensitive assets. Watch for: Logging reasoning text instead of decisive actions and evidence can reduce clarity.}
+\paragraph{MCQ-1813 [hard]} Which failure mode should an interviewer expect you to identify for Auditability?
+\begin{enumerate}[label=\Alph*.]
+\item Telling the model to ignore attacks is not a security boundary.
+\item Logging reasoning text instead of decisive actions and evidence can reduce clarity.
+\item A model card without deployment-specific threat modeling is incomplete.
+\item Authorizing the agent once at session start enables confused-deputy attacks.
+\end{enumerate}
+\noindent\textbf{Answer.} Logging reasoning text instead of decisive actions and evidence can reduce clarity.
+\par\textit{Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes. Tradeoff: Investigations and compliance improve, while logs themselves become sensitive assets. Watch for: Logging reasoning text instead of decisive actions and evidence can reduce clarity.}
+\paragraph{MCQ-1814 [medium]} A design review is specifically concerned with this risk: Logging reasoning text instead of decisive actions and evidence can reduce clarity. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item AI risk management
+\item Prompt injection
+\item Auditability
+\item Tool authorization
+\end{enumerate}
+\noindent\textbf{Answer.} Auditability
+\par\textit{Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes. Tradeoff: Investigations and compliance improve, while logs themselves become sensitive assets. Watch for: Logging reasoning text instead of decisive actions and evidence can reduce clarity.}
+\paragraph{MCQ-1815 [hard]} Which design note most accurately balances the benefits and costs of Auditability?
+\begin{enumerate}[label=\Alph*.]
+\item Governance improves accountability but can become checkbox compliance without technical signals.
+\item Fine-grained authorization limits blast radius but adds policy complexity.
+\item Investigations and compliance improve, while logs themselves become sensitive assets.
+\item Content isolation and least privilege reduce impact but cannot make untrusted text authoritative.
+\end{enumerate}
+\noindent\textbf{Answer.} Investigations and compliance improve, while logs themselves become sensitive assets.
+\par\textit{Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes. Tradeoff: Investigations and compliance improve, while logs themselves become sensitive assets. Watch for: Logging reasoning text instead of decisive actions and evidence can reduce clarity.}
+\paragraph{MCQ-1816 [medium]} Which explanation would be strongest in a system-design interview about Auditability?
+\begin{enumerate}[label=\Alph*.]
+\item The host checks identity, scope, resource, action, policy, and user intent before every tool execution.
+\item Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes.
+\item Untrusted content attempts to override instructions, exfiltrate data, or induce tool actions.
+\item Risk processes map context, measure impacts, manage controls, document evidence, and govern residual risk.
+\end{enumerate}
+\noindent\textbf{Answer.} Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes.
+\par\textit{Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes. Tradeoff: Investigations and compliance improve, while logs themselves become sensitive assets. Watch for: Logging reasoning text instead of decisive actions and evidence can reduce clarity.}
+\paragraph{MCQ-1817 [hard]} Which production warning is most directly associated with Auditability?
+\begin{enumerate}[label=\Alph*.]
+\item A model card without deployment-specific threat modeling is incomplete.
+\item Logging reasoning text instead of decisive actions and evidence can reduce clarity.
+\item Telling the model to ignore attacks is not a security boundary.
+\item Authorizing the agent once at session start enables confused-deputy attacks.
+\end{enumerate}
+\noindent\textbf{Answer.} Logging reasoning text instead of decisive actions and evidence can reduce clarity.
+\par\textit{Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes. Tradeoff: Investigations and compliance improve, while logs themselves become sensitive assets. Watch for: Logging reasoning text instead of decisive actions and evidence can reduce clarity.}
+\paragraph{FC-1818 [medium]} Define Auditability in interview-ready language.
+\noindent\textbf{Answer.} Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes.
+\par\textit{Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes.}
+\paragraph{FC-1819 [hard]} State the main tradeoff and production pitfall for Auditability.
+\noindent\textbf{Answer.} Tradeoff: Investigations and compliance improve, while logs themselves become sensitive assets. Pitfall: Logging reasoning text instead of decisive actions and evidence can reduce clarity.
+\par\textit{Tradeoff: Investigations and compliance improve, while logs themselves become sensitive assets. Pitfall: Logging reasoning text instead of decisive actions and evidence can reduce clarity.}
+\paragraph{LA-1820 [hard]} Explain Auditability from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Immutable event records connect identity, input, policy, model, evidence, tool calls, decisions, and outcomes. Make the tradeoff explicit: Investigations and compliance improve, while logs themselves become sensitive assets. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Logging reasoning text instead of decisive actions and evidence can reduce clarity.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\subsection{Distributed Systems and Reliability}
+\paragraph{MCQ-1821 [medium]} Which statement best describes CAP and consistency?
+\begin{enumerate}[label=\Alph*.]
+\item Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers.
+\item Balancers route by health, load, locality, affinity, or capacity across replicas.
+\item Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures.
+\item Under a network partition, a distributed system must trade availability against consistent reads and writes.
+\end{enumerate}
+\noindent\textbf{Answer.} Under a network partition, a distributed system must trade availability against consistent reads and writes.
+\par\textit{Under a network partition, a distributed system must trade availability against consistent reads and writes. Tradeoff: Stronger guarantees simplify application invariants but increase latency and unavailability. Watch for: Quoting CAP without identifying partitions and operations does not guide design.}
+\paragraph{MCQ-1822 [hard]} What is the central engineering tradeoff of CAP and consistency?
+\begin{enumerate}[label=\Alph*.]
+\item Success rate improves, while retries amplify overload and tail latency.
+\item Stronger guarantees simplify application invariants but increase latency and unavailability.
+\item Distribution improves availability but generic least-connections may ignore token workload size.
+\item Smoothing improves utilization, while waiting increases latency and stale work.
+\end{enumerate}
+\noindent\textbf{Answer.} Stronger guarantees simplify application invariants but increase latency and unavailability.
+\par\textit{Under a network partition, a distributed system must trade availability against consistent reads and writes. Tradeoff: Stronger guarantees simplify application invariants but increase latency and unavailability. Watch for: Quoting CAP without identifying partitions and operations does not guide design.}
+\paragraph{MCQ-1823 [hard]} Which failure mode should an interviewer expect you to identify for CAP and consistency?
+\begin{enumerate}[label=\Alph*.]
+\item An unbounded queue converts overload into memory exhaustion.
+\item Layered automatic retries create multiplicative request storms.
+\item Quoting CAP without identifying partitions and operations does not guide design.
+\item Sending a long-context request to the least-busy replica can still cause head-of-line blocking.
+\end{enumerate}
+\noindent\textbf{Answer.} Quoting CAP without identifying partitions and operations does not guide design.
+\par\textit{Under a network partition, a distributed system must trade availability against consistent reads and writes. Tradeoff: Stronger guarantees simplify application invariants but increase latency and unavailability. Watch for: Quoting CAP without identifying partitions and operations does not guide design.}
+\paragraph{MCQ-1824 [medium]} A design review is specifically concerned with this risk: Quoting CAP without identifying partitions and operations does not guide design. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Queues and backpressure
+\item Load balancing
+\item Retries and timeouts
+\item CAP and consistency
+\end{enumerate}
+\noindent\textbf{Answer.} CAP and consistency
+\par\textit{Under a network partition, a distributed system must trade availability against consistent reads and writes. Tradeoff: Stronger guarantees simplify application invariants but increase latency and unavailability. Watch for: Quoting CAP without identifying partitions and operations does not guide design.}
+\paragraph{MCQ-1825 [hard]} Which design note most accurately balances the benefits and costs of CAP and consistency?
+\begin{enumerate}[label=\Alph*.]
+\item Stronger guarantees simplify application invariants but increase latency and unavailability.
+\item Smoothing improves utilization, while waiting increases latency and stale work.
+\item Success rate improves, while retries amplify overload and tail latency.
+\item Distribution improves availability but generic least-connections may ignore token workload size.
+\end{enumerate}
+\noindent\textbf{Answer.} Stronger guarantees simplify application invariants but increase latency and unavailability.
+\par\textit{Under a network partition, a distributed system must trade availability against consistent reads and writes. Tradeoff: Stronger guarantees simplify application invariants but increase latency and unavailability. Watch for: Quoting CAP without identifying partitions and operations does not guide design.}
+\paragraph{MCQ-1826 [medium]} Which explanation would be strongest in a system-design interview about CAP and consistency?
+\begin{enumerate}[label=\Alph*.]
+\item Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures.
+\item Under a network partition, a distributed system must trade availability against consistent reads and writes.
+\item Balancers route by health, load, locality, affinity, or capacity across replicas.
+\item Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers.
+\end{enumerate}
+\noindent\textbf{Answer.} Under a network partition, a distributed system must trade availability against consistent reads and writes.
+\par\textit{Under a network partition, a distributed system must trade availability against consistent reads and writes. Tradeoff: Stronger guarantees simplify application invariants but increase latency and unavailability. Watch for: Quoting CAP without identifying partitions and operations does not guide design.}
+\paragraph{MCQ-1827 [hard]} Which production warning is most directly associated with CAP and consistency?
+\begin{enumerate}[label=\Alph*.]
+\item Quoting CAP without identifying partitions and operations does not guide design.
+\item Sending a long-context request to the least-busy replica can still cause head-of-line blocking.
+\item Layered automatic retries create multiplicative request storms.
+\item An unbounded queue converts overload into memory exhaustion.
+\end{enumerate}
+\noindent\textbf{Answer.} Quoting CAP without identifying partitions and operations does not guide design.
+\par\textit{Under a network partition, a distributed system must trade availability against consistent reads and writes. Tradeoff: Stronger guarantees simplify application invariants but increase latency and unavailability. Watch for: Quoting CAP without identifying partitions and operations does not guide design.}
+\paragraph{FC-1828 [medium]} Define CAP and consistency in interview-ready language.
+\noindent\textbf{Answer.} Under a network partition, a distributed system must trade availability against consistent reads and writes.
+\par\textit{Under a network partition, a distributed system must trade availability against consistent reads and writes.}
+\paragraph{FC-1829 [hard]} State the main tradeoff and production pitfall for CAP and consistency.
+\noindent\textbf{Answer.} Tradeoff: Stronger guarantees simplify application invariants but increase latency and unavailability. Pitfall: Quoting CAP without identifying partitions and operations does not guide design.
+\par\textit{Tradeoff: Stronger guarantees simplify application invariants but increase latency and unavailability. Pitfall: Quoting CAP without identifying partitions and operations does not guide design.}
+\paragraph{LA-1830 [hard]} Explain CAP and consistency from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Under a network partition, a distributed system must trade availability against consistent reads and writes. Make the tradeoff explicit: Stronger guarantees simplify application invariants but increase latency and unavailability. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Quoting CAP without identifying partitions and operations does not guide design.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1831 [medium]} Which statement best describes Consensus?
+\begin{enumerate}[label=\Alph*.]
+\item Under a network partition, a distributed system must trade availability against consistent reads and writes.
+\item Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets.
+\item Protocols such as Raft replicate an ordered log so nodes agree despite failures.
+\item Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures.
+\end{enumerate}
+\noindent\textbf{Answer.} Protocols such as Raft replicate an ordered log so nodes agree despite failures.
+\par\textit{Protocols such as Raft replicate an ordered log so nodes agree despite failures. Tradeoff: Coordination provides a consistent control plane but costs extra messages and quorum latency. Watch for: Deploying a quorum across unreliable links can reduce availability.}
+\paragraph{MCQ-1832 [hard]} What is the central engineering tradeoff of Consensus?
+\begin{enumerate}[label=\Alph*.]
+\item Headroom handles bursts but idle accelerators are expensive.
+\item Coordination provides a consistent control plane but costs extra messages and quorum latency.
+\item Success rate improves, while retries amplify overload and tail latency.
+\item Stronger guarantees simplify application invariants but increase latency and unavailability.
+\end{enumerate}
+\noindent\textbf{Answer.} Coordination provides a consistent control plane but costs extra messages and quorum latency.
+\par\textit{Protocols such as Raft replicate an ordered log so nodes agree despite failures. Tradeoff: Coordination provides a consistent control plane but costs extra messages and quorum latency. Watch for: Deploying a quorum across unreliable links can reduce availability.}
+\paragraph{MCQ-1833 [hard]} Which failure mode should an interviewer expect you to identify for Consensus?
+\begin{enumerate}[label=\Alph*.]
+\item Deploying a quorum across unreliable links can reduce availability.
+\item Planning with average sequence length underestimates tail memory and latency.
+\item Layered automatic retries create multiplicative request storms.
+\item Quoting CAP without identifying partitions and operations does not guide design.
+\end{enumerate}
+\noindent\textbf{Answer.} Deploying a quorum across unreliable links can reduce availability.
+\par\textit{Protocols such as Raft replicate an ordered log so nodes agree despite failures. Tradeoff: Coordination provides a consistent control plane but costs extra messages and quorum latency. Watch for: Deploying a quorum across unreliable links can reduce availability.}
+\paragraph{MCQ-1834 [medium]} A design review is specifically concerned with this risk: Deploying a quorum across unreliable links can reduce availability. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Consensus
+\item CAP and consistency
+\item Retries and timeouts
+\item Capacity planning
+\end{enumerate}
+\noindent\textbf{Answer.} Consensus
+\par\textit{Protocols such as Raft replicate an ordered log so nodes agree despite failures. Tradeoff: Coordination provides a consistent control plane but costs extra messages and quorum latency. Watch for: Deploying a quorum across unreliable links can reduce availability.}
+\paragraph{MCQ-1835 [hard]} Which design note most accurately balances the benefits and costs of Consensus?
+\begin{enumerate}[label=\Alph*.]
+\item Headroom handles bursts but idle accelerators are expensive.
+\item Coordination provides a consistent control plane but costs extra messages and quorum latency.
+\item Stronger guarantees simplify application invariants but increase latency and unavailability.
+\item Success rate improves, while retries amplify overload and tail latency.
+\end{enumerate}
+\noindent\textbf{Answer.} Coordination provides a consistent control plane but costs extra messages and quorum latency.
+\par\textit{Protocols such as Raft replicate an ordered log so nodes agree despite failures. Tradeoff: Coordination provides a consistent control plane but costs extra messages and quorum latency. Watch for: Deploying a quorum across unreliable links can reduce availability.}
+\paragraph{MCQ-1836 [medium]} Which explanation would be strongest in a system-design interview about Consensus?
+\begin{enumerate}[label=\Alph*.]
+\item Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures.
+\item Protocols such as Raft replicate an ordered log so nodes agree despite failures.
+\item Under a network partition, a distributed system must trade availability against consistent reads and writes.
+\item Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets.
+\end{enumerate}
+\noindent\textbf{Answer.} Protocols such as Raft replicate an ordered log so nodes agree despite failures.
+\par\textit{Protocols such as Raft replicate an ordered log so nodes agree despite failures. Tradeoff: Coordination provides a consistent control plane but costs extra messages and quorum latency. Watch for: Deploying a quorum across unreliable links can reduce availability.}
+\paragraph{MCQ-1837 [hard]} Which production warning is most directly associated with Consensus?
+\begin{enumerate}[label=\Alph*.]
+\item Planning with average sequence length underestimates tail memory and latency.
+\item Layered automatic retries create multiplicative request storms.
+\item Deploying a quorum across unreliable links can reduce availability.
+\item Quoting CAP without identifying partitions and operations does not guide design.
+\end{enumerate}
+\noindent\textbf{Answer.} Deploying a quorum across unreliable links can reduce availability.
+\par\textit{Protocols such as Raft replicate an ordered log so nodes agree despite failures. Tradeoff: Coordination provides a consistent control plane but costs extra messages and quorum latency. Watch for: Deploying a quorum across unreliable links can reduce availability.}
+\paragraph{FC-1838 [medium]} Define Consensus in interview-ready language.
+\noindent\textbf{Answer.} Protocols such as Raft replicate an ordered log so nodes agree despite failures.
+\par\textit{Protocols such as Raft replicate an ordered log so nodes agree despite failures.}
+\paragraph{FC-1839 [hard]} State the main tradeoff and production pitfall for Consensus.
+\noindent\textbf{Answer.} Tradeoff: Coordination provides a consistent control plane but costs extra messages and quorum latency. Pitfall: Deploying a quorum across unreliable links can reduce availability.
+\par\textit{Tradeoff: Coordination provides a consistent control plane but costs extra messages and quorum latency. Pitfall: Deploying a quorum across unreliable links can reduce availability.}
+\paragraph{LA-1840 [hard]} Explain Consensus from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Protocols such as Raft replicate an ordered log so nodes agree despite failures. Make the tradeoff explicit: Coordination provides a consistent control plane but costs extra messages and quorum latency. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Deploying a quorum across unreliable links can reduce availability.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1841 [medium]} Which statement best describes Queues and backpressure?
+\begin{enumerate}[label=\Alph*.]
+\item Balancers route by health, load, locality, affinity, or capacity across replicas.
+\item Protocols such as Raft replicate an ordered log so nodes agree despite failures.
+\item Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources.
+\item Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers.
+\end{enumerate}
+\noindent\textbf{Answer.} Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers.
+\par\textit{Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Tradeoff: Smoothing improves utilization, while waiting increases latency and stale work. Watch for: An unbounded queue converts overload into memory exhaustion.}
+\paragraph{MCQ-1842 [hard]} What is the central engineering tradeoff of Queues and backpressure?
+\begin{enumerate}[label=\Alph*.]
+\item Distribution improves availability but generic least-connections may ignore token workload size.
+\item Smoothing improves utilization, while waiting increases latency and stale work.
+\item Coordination provides a consistent control plane but costs extra messages and quorum latency.
+\item Blast radius shrinks at some efficiency cost.
+\end{enumerate}
+\noindent\textbf{Answer.} Smoothing improves utilization, while waiting increases latency and stale work.
+\par\textit{Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Tradeoff: Smoothing improves utilization, while waiting increases latency and stale work. Watch for: An unbounded queue converts overload into memory exhaustion.}
+\paragraph{MCQ-1843 [hard]} Which failure mode should an interviewer expect you to identify for Queues and backpressure?
+\begin{enumerate}[label=\Alph*.]
+\item A single global vector index or queue can defeat otherwise isolated services.
+\item Sending a long-context request to the least-busy replica can still cause head-of-line blocking.
+\item Deploying a quorum across unreliable links can reduce availability.
+\item An unbounded queue converts overload into memory exhaustion.
+\end{enumerate}
+\noindent\textbf{Answer.} An unbounded queue converts overload into memory exhaustion.
+\par\textit{Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Tradeoff: Smoothing improves utilization, while waiting increases latency and stale work. Watch for: An unbounded queue converts overload into memory exhaustion.}
+\paragraph{MCQ-1844 [medium]} A design review is specifically concerned with this risk: An unbounded queue converts overload into memory exhaustion. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Load balancing
+\item Queues and backpressure
+\item Consensus
+\item Fault isolation
+\end{enumerate}
+\noindent\textbf{Answer.} Queues and backpressure
+\par\textit{Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Tradeoff: Smoothing improves utilization, while waiting increases latency and stale work. Watch for: An unbounded queue converts overload into memory exhaustion.}
+\paragraph{MCQ-1845 [hard]} Which design note most accurately balances the benefits and costs of Queues and backpressure?
+\begin{enumerate}[label=\Alph*.]
+\item Distribution improves availability but generic least-connections may ignore token workload size.
+\item Smoothing improves utilization, while waiting increases latency and stale work.
+\item Blast radius shrinks at some efficiency cost.
+\item Coordination provides a consistent control plane but costs extra messages and quorum latency.
+\end{enumerate}
+\noindent\textbf{Answer.} Smoothing improves utilization, while waiting increases latency and stale work.
+\par\textit{Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Tradeoff: Smoothing improves utilization, while waiting increases latency and stale work. Watch for: An unbounded queue converts overload into memory exhaustion.}
+\paragraph{MCQ-1846 [medium]} Which explanation would be strongest in a system-design interview about Queues and backpressure?
+\begin{enumerate}[label=\Alph*.]
+\item Balancers route by health, load, locality, affinity, or capacity across replicas.
+\item Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources.
+\item Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers.
+\item Protocols such as Raft replicate an ordered log so nodes agree despite failures.
+\end{enumerate}
+\noindent\textbf{Answer.} Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers.
+\par\textit{Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Tradeoff: Smoothing improves utilization, while waiting increases latency and stale work. Watch for: An unbounded queue converts overload into memory exhaustion.}
+\paragraph{MCQ-1847 [hard]} Which production warning is most directly associated with Queues and backpressure?
+\begin{enumerate}[label=\Alph*.]
+\item Sending a long-context request to the least-busy replica can still cause head-of-line blocking.
+\item Deploying a quorum across unreliable links can reduce availability.
+\item A single global vector index or queue can defeat otherwise isolated services.
+\item An unbounded queue converts overload into memory exhaustion.
+\end{enumerate}
+\noindent\textbf{Answer.} An unbounded queue converts overload into memory exhaustion.
+\par\textit{Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Tradeoff: Smoothing improves utilization, while waiting increases latency and stale work. Watch for: An unbounded queue converts overload into memory exhaustion.}
+\paragraph{FC-1848 [medium]} Define Queues and backpressure in interview-ready language.
+\noindent\textbf{Answer.} Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers.
+\par\textit{Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers.}
+\paragraph{FC-1849 [hard]} State the main tradeoff and production pitfall for Queues and backpressure.
+\noindent\textbf{Answer.} Tradeoff: Smoothing improves utilization, while waiting increases latency and stale work. Pitfall: An unbounded queue converts overload into memory exhaustion.
+\par\textit{Tradeoff: Smoothing improves utilization, while waiting increases latency and stale work. Pitfall: An unbounded queue converts overload into memory exhaustion.}
+\paragraph{LA-1850 [hard]} Explain Queues and backpressure from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Make the tradeoff explicit: Smoothing improves utilization, while waiting increases latency and stale work. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: An unbounded queue converts overload into memory exhaustion.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1851 [medium]} Which statement best describes Retries and timeouts?
+\begin{enumerate}[label=\Alph*.]
+\item Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources.
+\item Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures.
+\item Under a network partition, a distributed system must trade availability against consistent reads and writes.
+\item Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets.
+\end{enumerate}
+\noindent\textbf{Answer.} Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures.
+\par\textit{Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Tradeoff: Success rate improves, while retries amplify overload and tail latency. Watch for: Layered automatic retries create multiplicative request storms.}
+\paragraph{MCQ-1852 [hard]} What is the central engineering tradeoff of Retries and timeouts?
+\begin{enumerate}[label=\Alph*.]
+\item Stronger guarantees simplify application invariants but increase latency and unavailability.
+\item Success rate improves, while retries amplify overload and tail latency.
+\item Blast radius shrinks at some efficiency cost.
+\item Headroom handles bursts but idle accelerators are expensive.
+\end{enumerate}
+\noindent\textbf{Answer.} Success rate improves, while retries amplify overload and tail latency.
+\par\textit{Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Tradeoff: Success rate improves, while retries amplify overload and tail latency. Watch for: Layered automatic retries create multiplicative request storms.}
+\paragraph{MCQ-1853 [hard]} Which failure mode should an interviewer expect you to identify for Retries and timeouts?
+\begin{enumerate}[label=\Alph*.]
+\item A single global vector index or queue can defeat otherwise isolated services.
+\item Layered automatic retries create multiplicative request storms.
+\item Quoting CAP without identifying partitions and operations does not guide design.
+\item Planning with average sequence length underestimates tail memory and latency.
+\end{enumerate}
+\noindent\textbf{Answer.} Layered automatic retries create multiplicative request storms.
+\par\textit{Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Tradeoff: Success rate improves, while retries amplify overload and tail latency. Watch for: Layered automatic retries create multiplicative request storms.}
+\paragraph{MCQ-1854 [medium]} A design review is specifically concerned with this risk: Layered automatic retries create multiplicative request storms. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item CAP and consistency
+\item Retries and timeouts
+\item Capacity planning
+\item Fault isolation
+\end{enumerate}
+\noindent\textbf{Answer.} Retries and timeouts
+\par\textit{Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Tradeoff: Success rate improves, while retries amplify overload and tail latency. Watch for: Layered automatic retries create multiplicative request storms.}
+\paragraph{MCQ-1855 [hard]} Which design note most accurately balances the benefits and costs of Retries and timeouts?
+\begin{enumerate}[label=\Alph*.]
+\item Stronger guarantees simplify application invariants but increase latency and unavailability.
+\item Success rate improves, while retries amplify overload and tail latency.
+\item Headroom handles bursts but idle accelerators are expensive.
+\item Blast radius shrinks at some efficiency cost.
+\end{enumerate}
+\noindent\textbf{Answer.} Success rate improves, while retries amplify overload and tail latency.
+\par\textit{Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Tradeoff: Success rate improves, while retries amplify overload and tail latency. Watch for: Layered automatic retries create multiplicative request storms.}
+\paragraph{MCQ-1856 [medium]} Which explanation would be strongest in a system-design interview about Retries and timeouts?
+\begin{enumerate}[label=\Alph*.]
+\item Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets.
+\item Under a network partition, a distributed system must trade availability against consistent reads and writes.
+\item Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources.
+\item Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures.
+\end{enumerate}
+\noindent\textbf{Answer.} Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures.
+\par\textit{Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Tradeoff: Success rate improves, while retries amplify overload and tail latency. Watch for: Layered automatic retries create multiplicative request storms.}
+\paragraph{MCQ-1857 [hard]} Which production warning is most directly associated with Retries and timeouts?
+\begin{enumerate}[label=\Alph*.]
+\item Planning with average sequence length underestimates tail memory and latency.
+\item Quoting CAP without identifying partitions and operations does not guide design.
+\item Layered automatic retries create multiplicative request storms.
+\item A single global vector index or queue can defeat otherwise isolated services.
+\end{enumerate}
+\noindent\textbf{Answer.} Layered automatic retries create multiplicative request storms.
+\par\textit{Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Tradeoff: Success rate improves, while retries amplify overload and tail latency. Watch for: Layered automatic retries create multiplicative request storms.}
+\paragraph{FC-1858 [medium]} Define Retries and timeouts in interview-ready language.
+\noindent\textbf{Answer.} Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures.
+\par\textit{Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures.}
+\paragraph{FC-1859 [hard]} State the main tradeoff and production pitfall for Retries and timeouts.
+\noindent\textbf{Answer.} Tradeoff: Success rate improves, while retries amplify overload and tail latency. Pitfall: Layered automatic retries create multiplicative request storms.
+\par\textit{Tradeoff: Success rate improves, while retries amplify overload and tail latency. Pitfall: Layered automatic retries create multiplicative request storms.}
+\paragraph{LA-1860 [hard]} Explain Retries and timeouts from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Make the tradeoff explicit: Success rate improves, while retries amplify overload and tail latency. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Layered automatic retries create multiplicative request storms.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1861 [medium]} Which statement best describes Caching?
+\begin{enumerate}[label=\Alph*.]
+\item Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources.
+\item Caches trade staleness and invalidation complexity for lower latency and load.
+\item Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets.
+\item Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures.
+\end{enumerate}
+\noindent\textbf{Answer.} Caches trade staleness and invalidation complexity for lower latency and load.
+\par\textit{Caches trade staleness and invalidation complexity for lower latency and load. Tradeoff: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation. Watch for: Omitting tenant, model, prompt version, or authorization from a cache key leaks data.}
+\paragraph{MCQ-1862 [hard]} What is the central engineering tradeoff of Caching?
+\begin{enumerate}[label=\Alph*.]
+\item Success rate improves, while retries amplify overload and tail latency.
+\item Headroom handles bursts but idle accelerators are expensive.
+\item Blast radius shrinks at some efficiency cost.
+\item Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation.
+\end{enumerate}
+\noindent\textbf{Answer.} Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation.
+\par\textit{Caches trade staleness and invalidation complexity for lower latency and load. Tradeoff: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation. Watch for: Omitting tenant, model, prompt version, or authorization from a cache key leaks data.}
+\paragraph{MCQ-1863 [hard]} Which failure mode should an interviewer expect you to identify for Caching?
+\begin{enumerate}[label=\Alph*.]
+\item Layered automatic retries create multiplicative request storms.
+\item Planning with average sequence length underestimates tail memory and latency.
+\item A single global vector index or queue can defeat otherwise isolated services.
+\item Omitting tenant, model, prompt version, or authorization from a cache key leaks data.
+\end{enumerate}
+\noindent\textbf{Answer.} Omitting tenant, model, prompt version, or authorization from a cache key leaks data.
+\par\textit{Caches trade staleness and invalidation complexity for lower latency and load. Tradeoff: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation. Watch for: Omitting tenant, model, prompt version, or authorization from a cache key leaks data.}
+\paragraph{MCQ-1864 [medium]} A design review is specifically concerned with this risk: Omitting tenant, model, prompt version, or authorization from a cache key leaks data. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Capacity planning
+\item Caching
+\item Retries and timeouts
+\item Fault isolation
+\end{enumerate}
+\noindent\textbf{Answer.} Caching
+\par\textit{Caches trade staleness and invalidation complexity for lower latency and load. Tradeoff: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation. Watch for: Omitting tenant, model, prompt version, or authorization from a cache key leaks data.}
+\paragraph{MCQ-1865 [hard]} Which design note most accurately balances the benefits and costs of Caching?
+\begin{enumerate}[label=\Alph*.]
+\item Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation.
+\item Success rate improves, while retries amplify overload and tail latency.
+\item Blast radius shrinks at some efficiency cost.
+\item Headroom handles bursts but idle accelerators are expensive.
+\end{enumerate}
+\noindent\textbf{Answer.} Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation.
+\par\textit{Caches trade staleness and invalidation complexity for lower latency and load. Tradeoff: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation. Watch for: Omitting tenant, model, prompt version, or authorization from a cache key leaks data.}
+\paragraph{MCQ-1866 [medium]} Which explanation would be strongest in a system-design interview about Caching?
+\begin{enumerate}[label=\Alph*.]
+\item Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures.
+\item Caches trade staleness and invalidation complexity for lower latency and load.
+\item Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets.
+\item Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources.
+\end{enumerate}
+\noindent\textbf{Answer.} Caches trade staleness and invalidation complexity for lower latency and load.
+\par\textit{Caches trade staleness and invalidation complexity for lower latency and load. Tradeoff: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation. Watch for: Omitting tenant, model, prompt version, or authorization from a cache key leaks data.}
+\paragraph{MCQ-1867 [hard]} Which production warning is most directly associated with Caching?
+\begin{enumerate}[label=\Alph*.]
+\item Planning with average sequence length underestimates tail memory and latency.
+\item Omitting tenant, model, prompt version, or authorization from a cache key leaks data.
+\item Layered automatic retries create multiplicative request storms.
+\item A single global vector index or queue can defeat otherwise isolated services.
+\end{enumerate}
+\noindent\textbf{Answer.} Omitting tenant, model, prompt version, or authorization from a cache key leaks data.
+\par\textit{Caches trade staleness and invalidation complexity for lower latency and load. Tradeoff: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation. Watch for: Omitting tenant, model, prompt version, or authorization from a cache key leaks data.}
+\paragraph{FC-1868 [medium]} Define Caching in interview-ready language.
+\noindent\textbf{Answer.} Caches trade staleness and invalidation complexity for lower latency and load.
+\par\textit{Caches trade staleness and invalidation complexity for lower latency and load.}
+\paragraph{FC-1869 [hard]} State the main tradeoff and production pitfall for Caching.
+\noindent\textbf{Answer.} Tradeoff: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation. Pitfall: Omitting tenant, model, prompt version, or authorization from a cache key leaks data.
+\par\textit{Tradeoff: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation. Pitfall: Omitting tenant, model, prompt version, or authorization from a cache key leaks data.}
+\paragraph{LA-1870 [hard]} Explain Caching from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Caches trade staleness and invalidation complexity for lower latency and load. Make the tradeoff explicit: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Omitting tenant, model, prompt version, or authorization from a cache key leaks data.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1871 [medium]} Which statement best describes Load balancing?
+\begin{enumerate}[label=\Alph*.]
+\item Balancers route by health, load, locality, affinity, or capacity across replicas.
+\item Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers.
+\item Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets.
+\item Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes.
+\end{enumerate}
+\noindent\textbf{Answer.} Balancers route by health, load, locality, affinity, or capacity across replicas.
+\par\textit{Balancers route by health, load, locality, affinity, or capacity across replicas. Tradeoff: Distribution improves availability but generic least-connections may ignore token workload size. Watch for: Sending a long-context request to the least-busy replica can still cause head-of-line blocking.}
+\paragraph{MCQ-1872 [hard]} What is the central engineering tradeoff of Load balancing?
+\begin{enumerate}[label=\Alph*.]
+\item Headroom handles bursts but idle accelerators are expensive.
+\item Smoothing improves utilization, while waiting increases latency and stale work.
+\item Business effects can be effectively once, but state and retention are needed.
+\item Distribution improves availability but generic least-connections may ignore token workload size.
+\end{enumerate}
+\noindent\textbf{Answer.} Distribution improves availability but generic least-connections may ignore token workload size.
+\par\textit{Balancers route by health, load, locality, affinity, or capacity across replicas. Tradeoff: Distribution improves availability but generic least-connections may ignore token workload size. Watch for: Sending a long-context request to the least-busy replica can still cause head-of-line blocking.}
+\paragraph{MCQ-1873 [hard]} Which failure mode should an interviewer expect you to identify for Load balancing?
+\begin{enumerate}[label=\Alph*.]
+\item Planning with average sequence length underestimates tail memory and latency.
+\item Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.
+\item Sending a long-context request to the least-busy replica can still cause head-of-line blocking.
+\item An unbounded queue converts overload into memory exhaustion.
+\end{enumerate}
+\noindent\textbf{Answer.} Sending a long-context request to the least-busy replica can still cause head-of-line blocking.
+\par\textit{Balancers route by health, load, locality, affinity, or capacity across replicas. Tradeoff: Distribution improves availability but generic least-connections may ignore token workload size. Watch for: Sending a long-context request to the least-busy replica can still cause head-of-line blocking.}
+\paragraph{MCQ-1874 [medium]} A design review is specifically concerned with this risk: Sending a long-context request to the least-busy replica can still cause head-of-line blocking. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Queues and backpressure
+\item Capacity planning
+\item Exactly-once effects
+\item Load balancing
+\end{enumerate}
+\noindent\textbf{Answer.} Load balancing
+\par\textit{Balancers route by health, load, locality, affinity, or capacity across replicas. Tradeoff: Distribution improves availability but generic least-connections may ignore token workload size. Watch for: Sending a long-context request to the least-busy replica can still cause head-of-line blocking.}
+\paragraph{MCQ-1875 [hard]} Which design note most accurately balances the benefits and costs of Load balancing?
+\begin{enumerate}[label=\Alph*.]
+\item Headroom handles bursts but idle accelerators are expensive.
+\item Business effects can be effectively once, but state and retention are needed.
+\item Distribution improves availability but generic least-connections may ignore token workload size.
+\item Smoothing improves utilization, while waiting increases latency and stale work.
+\end{enumerate}
+\noindent\textbf{Answer.} Distribution improves availability but generic least-connections may ignore token workload size.
+\par\textit{Balancers route by health, load, locality, affinity, or capacity across replicas. Tradeoff: Distribution improves availability but generic least-connections may ignore token workload size. Watch for: Sending a long-context request to the least-busy replica can still cause head-of-line blocking.}
+\paragraph{MCQ-1876 [medium]} Which explanation would be strongest in a system-design interview about Load balancing?
+\begin{enumerate}[label=\Alph*.]
+\item Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes.
+\item Balancers route by health, load, locality, affinity, or capacity across replicas.
+\item Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets.
+\item Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers.
+\end{enumerate}
+\noindent\textbf{Answer.} Balancers route by health, load, locality, affinity, or capacity across replicas.
+\par\textit{Balancers route by health, load, locality, affinity, or capacity across replicas. Tradeoff: Distribution improves availability but generic least-connections may ignore token workload size. Watch for: Sending a long-context request to the least-busy replica can still cause head-of-line blocking.}
+\paragraph{MCQ-1877 [hard]} Which production warning is most directly associated with Load balancing?
+\begin{enumerate}[label=\Alph*.]
+\item Sending a long-context request to the least-busy replica can still cause head-of-line blocking.
+\item Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.
+\item Planning with average sequence length underestimates tail memory and latency.
+\item An unbounded queue converts overload into memory exhaustion.
+\end{enumerate}
+\noindent\textbf{Answer.} Sending a long-context request to the least-busy replica can still cause head-of-line blocking.
+\par\textit{Balancers route by health, load, locality, affinity, or capacity across replicas. Tradeoff: Distribution improves availability but generic least-connections may ignore token workload size. Watch for: Sending a long-context request to the least-busy replica can still cause head-of-line blocking.}
+\paragraph{FC-1878 [medium]} Define Load balancing in interview-ready language.
+\noindent\textbf{Answer.} Balancers route by health, load, locality, affinity, or capacity across replicas.
+\par\textit{Balancers route by health, load, locality, affinity, or capacity across replicas.}
+\paragraph{FC-1879 [hard]} State the main tradeoff and production pitfall for Load balancing.
+\noindent\textbf{Answer.} Tradeoff: Distribution improves availability but generic least-connections may ignore token workload size. Pitfall: Sending a long-context request to the least-busy replica can still cause head-of-line blocking.
+\par\textit{Tradeoff: Distribution improves availability but generic least-connections may ignore token workload size. Pitfall: Sending a long-context request to the least-busy replica can still cause head-of-line blocking.}
+\paragraph{LA-1880 [hard]} Explain Load balancing from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Balancers route by health, load, locality, affinity, or capacity across replicas. Make the tradeoff explicit: Distribution improves availability but generic least-connections may ignore token workload size. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Sending a long-context request to the least-busy replica can still cause head-of-line blocking.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1881 [medium]} Which statement best describes Fault isolation?
+\begin{enumerate}[label=\Alph*.]
+\item Regions trade user latency, residency, failover speed, replication lag, and operational complexity.
+\item Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources.
+\item Protocols such as Raft replicate an ordered log so nodes agree despite failures.
+\item Balancers route by health, load, locality, affinity, or capacity across replicas.
+\end{enumerate}
+\noindent\textbf{Answer.} Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources.
+\par\textit{Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources. Tradeoff: Blast radius shrinks at some efficiency cost. Watch for: A single global vector index or queue can defeat otherwise isolated services.}
+\paragraph{MCQ-1882 [hard]} What is the central engineering tradeoff of Fault isolation?
+\begin{enumerate}[label=\Alph*.]
+\item Blast radius shrinks at some efficiency cost.
+\item Distribution improves availability but generic least-connections may ignore token workload size.
+\item Active-active improves availability and latency but makes writes and conflict resolution harder.
+\item Coordination provides a consistent control plane but costs extra messages and quorum latency.
+\end{enumerate}
+\noindent\textbf{Answer.} Blast radius shrinks at some efficiency cost.
+\par\textit{Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources. Tradeoff: Blast radius shrinks at some efficiency cost. Watch for: A single global vector index or queue can defeat otherwise isolated services.}
+\paragraph{MCQ-1883 [hard]} Which failure mode should an interviewer expect you to identify for Fault isolation?
+\begin{enumerate}[label=\Alph*.]
+\item Deploying a quorum across unreliable links can reduce availability.
+\item A standby region that never receives realistic traffic may fail during disaster recovery.
+\item Sending a long-context request to the least-busy replica can still cause head-of-line blocking.
+\item A single global vector index or queue can defeat otherwise isolated services.
+\end{enumerate}
+\noindent\textbf{Answer.} A single global vector index or queue can defeat otherwise isolated services.
+\par\textit{Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources. Tradeoff: Blast radius shrinks at some efficiency cost. Watch for: A single global vector index or queue can defeat otherwise isolated services.}
+\paragraph{MCQ-1884 [medium]} A design review is specifically concerned with this risk: A single global vector index or queue can defeat otherwise isolated services. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Load balancing
+\item Fault isolation
+\item Multi-region design
+\item Consensus
+\end{enumerate}
+\noindent\textbf{Answer.} Fault isolation
+\par\textit{Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources. Tradeoff: Blast radius shrinks at some efficiency cost. Watch for: A single global vector index or queue can defeat otherwise isolated services.}
+\paragraph{MCQ-1885 [hard]} Which design note most accurately balances the benefits and costs of Fault isolation?
+\begin{enumerate}[label=\Alph*.]
+\item Coordination provides a consistent control plane but costs extra messages and quorum latency.
+\item Blast radius shrinks at some efficiency cost.
+\item Active-active improves availability and latency but makes writes and conflict resolution harder.
+\item Distribution improves availability but generic least-connections may ignore token workload size.
+\end{enumerate}
+\noindent\textbf{Answer.} Blast radius shrinks at some efficiency cost.
+\par\textit{Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources. Tradeoff: Blast radius shrinks at some efficiency cost. Watch for: A single global vector index or queue can defeat otherwise isolated services.}
+\paragraph{MCQ-1886 [medium]} Which explanation would be strongest in a system-design interview about Fault isolation?
+\begin{enumerate}[label=\Alph*.]
+\item Protocols such as Raft replicate an ordered log so nodes agree despite failures.
+\item Regions trade user latency, residency, failover speed, replication lag, and operational complexity.
+\item Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources.
+\item Balancers route by health, load, locality, affinity, or capacity across replicas.
+\end{enumerate}
+\noindent\textbf{Answer.} Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources.
+\par\textit{Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources. Tradeoff: Blast radius shrinks at some efficiency cost. Watch for: A single global vector index or queue can defeat otherwise isolated services.}
+\paragraph{MCQ-1887 [hard]} Which production warning is most directly associated with Fault isolation?
+\begin{enumerate}[label=\Alph*.]
+\item Deploying a quorum across unreliable links can reduce availability.
+\item Sending a long-context request to the least-busy replica can still cause head-of-line blocking.
+\item A single global vector index or queue can defeat otherwise isolated services.
+\item A standby region that never receives realistic traffic may fail during disaster recovery.
+\end{enumerate}
+\noindent\textbf{Answer.} A single global vector index or queue can defeat otherwise isolated services.
+\par\textit{Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources. Tradeoff: Blast radius shrinks at some efficiency cost. Watch for: A single global vector index or queue can defeat otherwise isolated services.}
+\paragraph{FC-1888 [medium]} Define Fault isolation in interview-ready language.
+\noindent\textbf{Answer.} Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources.
+\par\textit{Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources.}
+\paragraph{FC-1889 [hard]} State the main tradeoff and production pitfall for Fault isolation.
+\noindent\textbf{Answer.} Tradeoff: Blast radius shrinks at some efficiency cost. Pitfall: A single global vector index or queue can defeat otherwise isolated services.
+\par\textit{Tradeoff: Blast radius shrinks at some efficiency cost. Pitfall: A single global vector index or queue can defeat otherwise isolated services.}
+\paragraph{LA-1890 [hard]} Explain Fault isolation from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources. Make the tradeoff explicit: Blast radius shrinks at some efficiency cost. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: A single global vector index or queue can defeat otherwise isolated services.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1891 [medium]} Which statement best describes Exactly-once effects?
+\begin{enumerate}[label=\Alph*.]
+\item Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes.
+\item Caches trade staleness and invalidation complexity for lower latency and load.
+\item Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets.
+\item Under a network partition, a distributed system must trade availability against consistent reads and writes.
+\end{enumerate}
+\noindent\textbf{Answer.} Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes.
+\par\textit{Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Tradeoff: Business effects can be effectively once, but state and retention are needed. Watch for: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.}
+\paragraph{MCQ-1892 [hard]} What is the central engineering tradeoff of Exactly-once effects?
+\begin{enumerate}[label=\Alph*.]
+\item Stronger guarantees simplify application invariants but increase latency and unavailability.
+\item Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation.
+\item Business effects can be effectively once, but state and retention are needed.
+\item Headroom handles bursts but idle accelerators are expensive.
+\end{enumerate}
+\noindent\textbf{Answer.} Business effects can be effectively once, but state and retention are needed.
+\par\textit{Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Tradeoff: Business effects can be effectively once, but state and retention are needed. Watch for: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.}
+\paragraph{MCQ-1893 [hard]} Which failure mode should an interviewer expect you to identify for Exactly-once effects?
+\begin{enumerate}[label=\Alph*.]
+\item Quoting CAP without identifying partitions and operations does not guide design.
+\item Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.
+\item Omitting tenant, model, prompt version, or authorization from a cache key leaks data.
+\item Planning with average sequence length underestimates tail memory and latency.
+\end{enumerate}
+\noindent\textbf{Answer.} Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.
+\par\textit{Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Tradeoff: Business effects can be effectively once, but state and retention are needed. Watch for: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.}
+\paragraph{MCQ-1894 [medium]} A design review is specifically concerned with this risk: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Exactly-once effects
+\item Capacity planning
+\item Caching
+\item CAP and consistency
+\end{enumerate}
+\noindent\textbf{Answer.} Exactly-once effects
+\par\textit{Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Tradeoff: Business effects can be effectively once, but state and retention are needed. Watch for: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.}
+\paragraph{MCQ-1895 [hard]} Which design note most accurately balances the benefits and costs of Exactly-once effects?
+\begin{enumerate}[label=\Alph*.]
+\item Business effects can be effectively once, but state and retention are needed.
+\item Stronger guarantees simplify application invariants but increase latency and unavailability.
+\item Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation.
+\item Headroom handles bursts but idle accelerators are expensive.
+\end{enumerate}
+\noindent\textbf{Answer.} Business effects can be effectively once, but state and retention are needed.
+\par\textit{Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Tradeoff: Business effects can be effectively once, but state and retention are needed. Watch for: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.}
+\paragraph{MCQ-1896 [medium]} Which explanation would be strongest in a system-design interview about Exactly-once effects?
+\begin{enumerate}[label=\Alph*.]
+\item Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets.
+\item Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes.
+\item Caches trade staleness and invalidation complexity for lower latency and load.
+\item Under a network partition, a distributed system must trade availability against consistent reads and writes.
+\end{enumerate}
+\noindent\textbf{Answer.} Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes.
+\par\textit{Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Tradeoff: Business effects can be effectively once, but state and retention are needed. Watch for: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.}
+\paragraph{MCQ-1897 [hard]} Which production warning is most directly associated with Exactly-once effects?
+\begin{enumerate}[label=\Alph*.]
+\item Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.
+\item Omitting tenant, model, prompt version, or authorization from a cache key leaks data.
+\item Quoting CAP without identifying partitions and operations does not guide design.
+\item Planning with average sequence length underestimates tail memory and latency.
+\end{enumerate}
+\noindent\textbf{Answer.} Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.
+\par\textit{Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Tradeoff: Business effects can be effectively once, but state and retention are needed. Watch for: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.}
+\paragraph{FC-1898 [medium]} Define Exactly-once effects in interview-ready language.
+\noindent\textbf{Answer.} Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes.
+\par\textit{Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes.}
+\paragraph{FC-1899 [hard]} State the main tradeoff and production pitfall for Exactly-once effects.
+\noindent\textbf{Answer.} Tradeoff: Business effects can be effectively once, but state and retention are needed. Pitfall: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.
+\par\textit{Tradeoff: Business effects can be effectively once, but state and retention are needed. Pitfall: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.}
+\paragraph{LA-1900 [hard]} Explain Exactly-once effects from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Make the tradeoff explicit: Business effects can be effectively once, but state and retention are needed. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1901 [medium]} Which statement best describes Multi-region design?
+\begin{enumerate}[label=\Alph*.]
+\item Regions trade user latency, residency, failover speed, replication lag, and operational complexity.
+\item Under a network partition, a distributed system must trade availability against consistent reads and writes.
+\item Protocols such as Raft replicate an ordered log so nodes agree despite failures.
+\item Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers.
+\end{enumerate}
+\noindent\textbf{Answer.} Regions trade user latency, residency, failover speed, replication lag, and operational complexity.
+\par\textit{Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Tradeoff: Active-active improves availability and latency but makes writes and conflict resolution harder. Watch for: A standby region that never receives realistic traffic may fail during disaster recovery.}
+\paragraph{MCQ-1902 [hard]} What is the central engineering tradeoff of Multi-region design?
+\begin{enumerate}[label=\Alph*.]
+\item Stronger guarantees simplify application invariants but increase latency and unavailability.
+\item Active-active improves availability and latency but makes writes and conflict resolution harder.
+\item Coordination provides a consistent control plane but costs extra messages and quorum latency.
+\item Smoothing improves utilization, while waiting increases latency and stale work.
+\end{enumerate}
+\noindent\textbf{Answer.} Active-active improves availability and latency but makes writes and conflict resolution harder.
+\par\textit{Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Tradeoff: Active-active improves availability and latency but makes writes and conflict resolution harder. Watch for: A standby region that never receives realistic traffic may fail during disaster recovery.}
+\paragraph{MCQ-1903 [hard]} Which failure mode should an interviewer expect you to identify for Multi-region design?
+\begin{enumerate}[label=\Alph*.]
+\item Deploying a quorum across unreliable links can reduce availability.
+\item A standby region that never receives realistic traffic may fail during disaster recovery.
+\item Quoting CAP without identifying partitions and operations does not guide design.
+\item An unbounded queue converts overload into memory exhaustion.
+\end{enumerate}
+\noindent\textbf{Answer.} A standby region that never receives realistic traffic may fail during disaster recovery.
+\par\textit{Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Tradeoff: Active-active improves availability and latency but makes writes and conflict resolution harder. Watch for: A standby region that never receives realistic traffic may fail during disaster recovery.}
+\paragraph{MCQ-1904 [medium]} A design review is specifically concerned with this risk: A standby region that never receives realistic traffic may fail during disaster recovery. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Consensus
+\item Queues and backpressure
+\item CAP and consistency
+\item Multi-region design
+\end{enumerate}
+\noindent\textbf{Answer.} Multi-region design
+\par\textit{Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Tradeoff: Active-active improves availability and latency but makes writes and conflict resolution harder. Watch for: A standby region that never receives realistic traffic may fail during disaster recovery.}
+\paragraph{MCQ-1905 [hard]} Which design note most accurately balances the benefits and costs of Multi-region design?
+\begin{enumerate}[label=\Alph*.]
+\item Smoothing improves utilization, while waiting increases latency and stale work.
+\item Active-active improves availability and latency but makes writes and conflict resolution harder.
+\item Coordination provides a consistent control plane but costs extra messages and quorum latency.
+\item Stronger guarantees simplify application invariants but increase latency and unavailability.
+\end{enumerate}
+\noindent\textbf{Answer.} Active-active improves availability and latency but makes writes and conflict resolution harder.
+\par\textit{Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Tradeoff: Active-active improves availability and latency but makes writes and conflict resolution harder. Watch for: A standby region that never receives realistic traffic may fail during disaster recovery.}
+\paragraph{MCQ-1906 [medium]} Which explanation would be strongest in a system-design interview about Multi-region design?
+\begin{enumerate}[label=\Alph*.]
+\item Regions trade user latency, residency, failover speed, replication lag, and operational complexity.
+\item Under a network partition, a distributed system must trade availability against consistent reads and writes.
+\item Protocols such as Raft replicate an ordered log so nodes agree despite failures.
+\item Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers.
+\end{enumerate}
+\noindent\textbf{Answer.} Regions trade user latency, residency, failover speed, replication lag, and operational complexity.
+\par\textit{Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Tradeoff: Active-active improves availability and latency but makes writes and conflict resolution harder. Watch for: A standby region that never receives realistic traffic may fail during disaster recovery.}
+\paragraph{MCQ-1907 [hard]} Which production warning is most directly associated with Multi-region design?
+\begin{enumerate}[label=\Alph*.]
+\item An unbounded queue converts overload into memory exhaustion.
+\item Quoting CAP without identifying partitions and operations does not guide design.
+\item A standby region that never receives realistic traffic may fail during disaster recovery.
+\item Deploying a quorum across unreliable links can reduce availability.
+\end{enumerate}
+\noindent\textbf{Answer.} A standby region that never receives realistic traffic may fail during disaster recovery.
+\par\textit{Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Tradeoff: Active-active improves availability and latency but makes writes and conflict resolution harder. Watch for: A standby region that never receives realistic traffic may fail during disaster recovery.}
+\paragraph{FC-1908 [medium]} Define Multi-region design in interview-ready language.
+\noindent\textbf{Answer.} Regions trade user latency, residency, failover speed, replication lag, and operational complexity.
+\par\textit{Regions trade user latency, residency, failover speed, replication lag, and operational complexity.}
+\paragraph{FC-1909 [hard]} State the main tradeoff and production pitfall for Multi-region design.
+\noindent\textbf{Answer.} Tradeoff: Active-active improves availability and latency but makes writes and conflict resolution harder. Pitfall: A standby region that never receives realistic traffic may fail during disaster recovery.
+\par\textit{Tradeoff: Active-active improves availability and latency but makes writes and conflict resolution harder. Pitfall: A standby region that never receives realistic traffic may fail during disaster recovery.}
+\paragraph{LA-1910 [hard]} Explain Multi-region design from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Make the tradeoff explicit: Active-active improves availability and latency but makes writes and conflict resolution harder. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: A standby region that never receives realistic traffic may fail during disaster recovery.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1911 [medium]} Which statement best describes Capacity planning?
+\begin{enumerate}[label=\Alph*.]
+\item Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes.
+\item Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets.
+\item Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures.
+\item Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources.
+\end{enumerate}
+\noindent\textbf{Answer.} Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets.
+\par\textit{Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. Tradeoff: Headroom handles bursts but idle accelerators are expensive. Watch for: Planning with average sequence length underestimates tail memory and latency.}
+\paragraph{MCQ-1912 [hard]} What is the central engineering tradeoff of Capacity planning?
+\begin{enumerate}[label=\Alph*.]
+\item Business effects can be effectively once, but state and retention are needed.
+\item Success rate improves, while retries amplify overload and tail latency.
+\item Headroom handles bursts but idle accelerators are expensive.
+\item Blast radius shrinks at some efficiency cost.
+\end{enumerate}
+\noindent\textbf{Answer.} Headroom handles bursts but idle accelerators are expensive.
+\par\textit{Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. Tradeoff: Headroom handles bursts but idle accelerators are expensive. Watch for: Planning with average sequence length underestimates tail memory and latency.}
+\paragraph{MCQ-1913 [hard]} Which failure mode should an interviewer expect you to identify for Capacity planning?
+\begin{enumerate}[label=\Alph*.]
+\item Layered automatic retries create multiplicative request storms.
+\item Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.
+\item Planning with average sequence length underestimates tail memory and latency.
+\item A single global vector index or queue can defeat otherwise isolated services.
+\end{enumerate}
+\noindent\textbf{Answer.} Planning with average sequence length underestimates tail memory and latency.
+\par\textit{Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. Tradeoff: Headroom handles bursts but idle accelerators are expensive. Watch for: Planning with average sequence length underestimates tail memory and latency.}
+\paragraph{MCQ-1914 [medium]} A design review is specifically concerned with this risk: Planning with average sequence length underestimates tail memory and latency. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Capacity planning
+\item Retries and timeouts
+\item Fault isolation
+\item Exactly-once effects
+\end{enumerate}
+\noindent\textbf{Answer.} Capacity planning
+\par\textit{Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. Tradeoff: Headroom handles bursts but idle accelerators are expensive. Watch for: Planning with average sequence length underestimates tail memory and latency.}
+\paragraph{MCQ-1915 [hard]} Which design note most accurately balances the benefits and costs of Capacity planning?
+\begin{enumerate}[label=\Alph*.]
+\item Blast radius shrinks at some efficiency cost.
+\item Success rate improves, while retries amplify overload and tail latency.
+\item Headroom handles bursts but idle accelerators are expensive.
+\item Business effects can be effectively once, but state and retention are needed.
+\end{enumerate}
+\noindent\textbf{Answer.} Headroom handles bursts but idle accelerators are expensive.
+\par\textit{Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. Tradeoff: Headroom handles bursts but idle accelerators are expensive. Watch for: Planning with average sequence length underestimates tail memory and latency.}
+\paragraph{MCQ-1916 [medium]} Which explanation would be strongest in a system-design interview about Capacity planning?
+\begin{enumerate}[label=\Alph*.]
+\item Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources.
+\item Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures.
+\item Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes.
+\item Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets.
+\end{enumerate}
+\noindent\textbf{Answer.} Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets.
+\par\textit{Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. Tradeoff: Headroom handles bursts but idle accelerators are expensive. Watch for: Planning with average sequence length underestimates tail memory and latency.}
+\paragraph{MCQ-1917 [hard]} Which production warning is most directly associated with Capacity planning?
+\begin{enumerate}[label=\Alph*.]
+\item Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.
+\item Layered automatic retries create multiplicative request storms.
+\item A single global vector index or queue can defeat otherwise isolated services.
+\item Planning with average sequence length underestimates tail memory and latency.
+\end{enumerate}
+\noindent\textbf{Answer.} Planning with average sequence length underestimates tail memory and latency.
+\par\textit{Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. Tradeoff: Headroom handles bursts but idle accelerators are expensive. Watch for: Planning with average sequence length underestimates tail memory and latency.}
+\paragraph{FC-1918 [medium]} Define Capacity planning in interview-ready language.
+\noindent\textbf{Answer.} Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets.
+\par\textit{Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets.}
+\paragraph{FC-1919 [hard]} State the main tradeoff and production pitfall for Capacity planning.
+\noindent\textbf{Answer.} Tradeoff: Headroom handles bursts but idle accelerators are expensive. Pitfall: Planning with average sequence length underestimates tail memory and latency.
+\par\textit{Tradeoff: Headroom handles bursts but idle accelerators are expensive. Pitfall: Planning with average sequence length underestimates tail memory and latency.}
+\paragraph{LA-1920 [hard]} Explain Capacity planning from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. Make the tradeoff explicit: Headroom handles bursts but idle accelerators are expensive. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Planning with average sequence length underestimates tail memory and latency.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\clearpage\section{Primary sources}
+\begin{enumerate}
+\item \href{https://arxiv.org/abs/1706.03762}{Attention Is All You Need} (paper)
+\item \href{https://arxiv.org/abs/2005.11401}{Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks} (paper)
+\item \href{https://arxiv.org/abs/2004.04906}{Dense Passage Retrieval for Open-Domain Question Answering} (paper)
+\item \href{https://arxiv.org/abs/2104.08663}{BEIR: A Heterogeneous Benchmark for Zero-shot Evaluation of Information Retrieval Models} (paper)
+\item \href{https://arxiv.org/abs/2309.15217}{RAGAS: Automated Evaluation of Retrieval Augmented Generation} (paper)
+\item \href{https://arxiv.org/abs/2109.07958}{TruthfulQA: Measuring How Models Mimic Human Falsehoods} (paper)
+\item \href{https://arxiv.org/abs/2210.03629}{ReAct: Synergizing Reasoning and Acting in Language Models} (paper)
+\item \href{https://arxiv.org/abs/2303.11366}{Reflexion: Language Agents with Verbal Reinforcement Learning} (paper)
+\item \href{https://arxiv.org/abs/2302.04761}{Toolformer: Language Models Can Teach Themselves to Use Tools} (paper)
+\item \href{https://arxiv.org/abs/2404.16130}{A Graph RAG Approach to Query-Focused Summarization} (paper)
+\item \href{https://arxiv.org/abs/2409.13731}{KAG: Boosting LLMs in Professional Domains via Knowledge Augmented Generation} (paper)
+\item \href{https://modelcontextprotocol.io/specification/2026-07-28}{Model Context Protocol Specification (2026-07-28)} (specification)
+\item \href{https://arxiv.org/abs/2205.14135}{FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness} (paper)
+\item \href{https://arxiv.org/abs/2309.06180}{Efficient Memory Management for Large Language Model Serving with PagedAttention} (paper)
+\item \href{https://arxiv.org/abs/2305.13245}{GQA: Training Generalized Multi-Query Transformer Models} (paper)
+\item \href{https://arxiv.org/abs/2211.17192}{Fast Inference from Transformers via Speculative Decoding} (paper)
+\item \href{https://arxiv.org/abs/2106.09685}{LoRA: Low-Rank Adaptation of Large Language Models} (paper)
+\item \href{https://arxiv.org/abs/2305.14314}{QLoRA: Efficient Finetuning of Quantized LLMs} (paper)
+\item \href{https://arxiv.org/abs/2305.18290}{Direct Preference Optimization} (paper)
+\item \href{https://github.com/pgvector/pgvector}{pgvector Documentation} (official docs)
+\item \href{https://docs.pinecone.io/guides/search/hybrid-search}{Pinecone Hybrid Search} (official docs)
+\item \href{https://qdrant.tech/documentation/}{Qdrant Documentation} (official docs)
+\item \href{https://docs.weaviate.io/weaviate}{Weaviate Documentation} (official docs)
+\item \href{https://milvus.io/docs}{Milvus Documentation} (official docs)
+\item \href{https://www.elastic.co/docs/solutions/search/vector/knn}{Elasticsearch kNN Search} (official docs)
+\item \href{https://neo4j.com/docs/cypher-manual/current/indexes/semantic-indexes/vector-indexes/}{Neo4j Vector Indexes} (official docs)
+\item \href{https://docs.langchain.com/oss/python/langgraph/overview}{LangGraph Overview} (official docs)
+\item \href{https://docs.temporal.io/}{Temporal Durable Execution} (official docs)
+\item \href{https://opentelemetry.io/docs/specs/semconv/}{OpenTelemetry Semantic Conventions} (standard)
+\item \href{https://mlflow.org/docs/latest/genai/}{MLflow for LLMs and Agents} (official docs)
+\item \href{https://docs.evidentlyai.com/}{Evidently Documentation} (official docs)
+\item \href{https://doc.dvc.org/start/data-pipelines/data-pipelines}{DVC Data Pipelines and Versioning} (official docs)
+\item \href{https://docs.feast.dev/}{Feast Feature Store Documentation} (official docs)
+\item \href{https://docs.vllm.ai/}{vLLM Documentation} (official docs)
+\item \href{https://docs.ray.io/en/latest/serve/llm/}{Ray Serve LLM Serving} (official docs)
+\item \href{https://kserve.github.io/website/}{KServe Documentation} (official docs)
+\item \href{https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/}{Kubernetes Horizontal Pod Autoscaling} (official docs)
+\item \href{https://fastapi.tiangolo.com/}{FastAPI Documentation} (official docs)
+\item \href{https://grpc.io/docs/}{gRPC Documentation} (official docs)
+\item \href{https://docs.python.org/3/}{Python 3 Documentation} (official docs)
+\item \href{https://genai.owasp.org/llm-top-10/}{OWASP Top 10 for LLM Applications} (standard)
+\item \href{https://www.nist.gov/itl/ai-risk-management-framework}{NIST AI Risk Management Framework} (standard)
+\item \href{https://docs.langchain.com/oss/python/langchain/overview}{LangChain official documentation} (official technology documentation)
+\item \href{https://docs.langchain.com/oss/python/deepagents/overview}{Deep Agents official documentation} (official technology documentation)
+\item \href{https://docs.llamaindex.ai/en/stable/}{LlamaIndex official documentation} (official technology documentation)
+\item \href{https://docs.haystack.deepset.ai/docs/intro}{Haystack official documentation} (official technology documentation)
+\item \href{https://learn.microsoft.com/en-us/semantic-kernel/overview/}{Semantic Kernel official documentation} (official technology documentation)
+\item \href{https://microsoft.github.io/autogen/stable/}{AutoGen official documentation} (official technology documentation)
+\item \href{https://docs.crewai.com/}{CrewAI official documentation} (official technology documentation)
+\item \href{https://ai.pydantic.dev/}{PydanticAI official documentation} (official technology documentation)
+\item \href{https://dspy.ai/}{DSPy official documentation} (official technology documentation)
+\item \href{https://openai.github.io/openai-agents-python/}{OpenAI Agents SDK official documentation} (official technology documentation)
+\item \href{https://google.github.io/adk-docs/}{Google Agent Development Kit official documentation} (official technology documentation)
+\item \href{https://mastra.ai/docs}{Mastra official documentation} (official technology documentation)
+\item \href{https://docs.sglang.ai/}{SGLang official documentation} (official technology documentation)
+\item \href{https://huggingface.co/docs/text-generation-inference/index}{Hugging Face Text Generation Inference official documentation} (official technology documentation)
+\item \href{https://nvidia.github.io/TensorRT-LLM/}{TensorRT-LLM official documentation} (official technology documentation)
+\item \href{https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/}{NVIDIA Triton Inference Server official documentation} (official technology documentation)
+\item \href{https://github.com/ggml-org/llama.cpp}{llama.cpp official documentation} (official technology documentation)
+\item \href{https://docs.ollama.com/}{Ollama official documentation} (official technology documentation)
+\item \href{https://docs.ray.io/en/latest/serve/}{Ray Serve official documentation} (official technology documentation)
+\item \href{https://docs.bentoml.com/}{BentoML official documentation} (official technology documentation)
+\item \href{https://localai.io/}{LocalAI official documentation} (official technology documentation)
+\item \href{https://modal.com/docs/guide}{Modal official documentation} (official technology documentation)
+\item \href{https://docs.baseten.co/}{Baseten official documentation} (official technology documentation)
+\item \href{https://huggingface.co/docs/inference-endpoints/index}{Hugging Face Inference Endpoints official documentation} (official technology documentation)
+\item \href{https://docs.pinecone.io/}{Pinecone official documentation} (official technology documentation)
+\item \href{https://docs.trychroma.com/}{Chroma official documentation} (official technology documentation)
+\item \href{https://docs.lancedb.com/}{LanceDB official documentation} (official technology documentation)
+\item \href{https://github.com/facebookresearch/faiss}{FAISS official documentation} (official technology documentation)
+\item \href{https://www.elastic.co/docs/solutions/search}{Elasticsearch official documentation} (official technology documentation)
+\item \href{https://docs.opensearch.org/latest/vector-search/}{OpenSearch official documentation} (official technology documentation)
+\item \href{https://docs.vespa.ai/}{Vespa official documentation} (official technology documentation)
+\item \href{https://redis.io/docs/latest/develop/ai/}{Redis Search and Vector Sets official documentation} (official technology documentation)
+\item \href{https://neo4j.com/docs/}{Neo4j official documentation} (official technology documentation)
+\item \href{https://memgraph.com/docs}{Memgraph official documentation} (official technology documentation)
+\item \href{https://docs.falkordb.com/}{FalkorDB official documentation} (official technology documentation)
+\item \href{https://docs.aws.amazon.com/neptune/}{Amazon Neptune official documentation} (official technology documentation)
+\item \href{https://docs.kuzudb.com/}{Kuzu official documentation} (official technology documentation)
+\item \href{https://docs.langchain.com/langsmith/home}{LangSmith official documentation} (official technology documentation)
+\item \href{https://langfuse.com/docs}{Langfuse official documentation} (official technology documentation)
+\item \href{https://arize.com/docs/phoenix}{Arize Phoenix official documentation} (official technology documentation)
+\item \href{https://docs.helicone.ai/}{Helicone official documentation} (official technology documentation)
+\item \href{https://opentelemetry.io/docs/}{OpenTelemetry official documentation} (official technology documentation)
+\item \href{https://weave-docs.wandb.ai/}{Weights \& Biases Weave official documentation} (official technology documentation)
+\item \href{https://www.braintrust.dev/docs}{Braintrust official documentation} (official technology documentation)
+\item \href{https://docs.ragas.io/}{Ragas official documentation} (official technology documentation)
+\item \href{https://deepeval.com/docs/}{DeepEval official documentation} (official technology documentation)
+\item \href{https://www.trulens.org/}{TruLens official documentation} (official technology documentation)
+\item \href{https://www.promptfoo.dev/docs/}{Promptfoo official documentation} (official technology documentation)
+\item \href{https://modelcontextprotocol.io/docs/sdk}{Official MCP SDKs official documentation} (official technology documentation)
+\item \href{https://gofastmcp.com/getting-started/welcome}{FastMCP official documentation} (official technology documentation)
+\item \href{https://github.com/modelcontextprotocol/inspector}{MCP Inspector official documentation} (official technology documentation)
+\item \href{https://docs.docker.com/ai/mcp-catalog-and-toolkit/}{Docker MCP Toolkit and Gateway official documentation} (official technology documentation)
+\item \href{https://smithery.ai/docs}{Smithery official documentation} (official technology documentation)
+\item \href{https://docs.composio.dev/}{Composio official documentation} (official technology documentation)
+\item \href{https://docs.arcade.dev/}{Arcade official documentation} (official technology documentation)
+\item \href{https://e2b.dev/docs}{E2B official documentation} (official technology documentation)
+\item \href{https://www.daytona.io/docs/}{Daytona official documentation} (official technology documentation)
+\item \href{https://modal.com/docs/guide/sandbox}{Modal Sandboxes official documentation} (official technology documentation)
+\item \href{https://docs.docker.com/engine/security/}{Docker official documentation} (official technology documentation)
+\item \href{https://gvisor.dev/docs/}{gVisor official documentation} (official technology documentation)
+\item \href{https://github.com/firecracker-microvm/firecracker}{Firecracker official documentation} (official technology documentation)
+\item \href{https://katacontainers.io/docs/}{Kata Containers official documentation} (official technology documentation)
+\item \href{https://kubernetes.io/docs/concepts/workloads/controllers/job/}{Kubernetes Jobs official documentation} (official technology documentation)
+\item \href{https://airflow.apache.org/docs/}{Apache Airflow official documentation} (official technology documentation)
+\item \href{https://docs.prefect.io/}{Prefect official documentation} (official technology documentation)
+\item \href{https://docs.dagster.io/}{Dagster official documentation} (official technology documentation)
+\item \href{https://dvc.org/doc}{DVC official documentation} (official technology documentation)
+\item \href{https://docs.lakefs.io/}{lakeFS official documentation} (official technology documentation)
+\item \href{https://www.kubeflow.org/docs/components/pipelines/}{Kubeflow Pipelines official documentation} (official technology documentation)
+\item \href{https://docs.zenml.io/}{ZenML official documentation} (official technology documentation)
+\item \href{https://help.getzep.com/}{Zep official documentation} (official technology documentation)
+\item \href{https://docs.mem0.ai/}{Mem0 official documentation} (official technology documentation)
+\item \href{https://docs.pytorch.org/docs/stable/index.html}{PyTorch official documentation} (official technology documentation)
+\item \href{https://docs.jax.dev/en/latest/}{JAX official documentation} (official technology documentation)
+\item \href{https://huggingface.co/docs/transformers/index}{Hugging Face Transformers official documentation} (official technology documentation)
+\item \href{https://sbert.net/}{Sentence Transformers official documentation} (official technology documentation)
+\item \href{https://huggingface.co/docs/peft/index}{Hugging Face PEFT official documentation} (official technology documentation)
+\item \href{https://huggingface.co/docs/bitsandbytes/main/en/index}{bitsandbytes official documentation} (official technology documentation)
+\item \href{https://onnxruntime.ai/docs/}{ONNX Runtime official documentation} (official technology documentation)
+\item \href{https://docs.openvino.ai/}{OpenVINO official documentation} (official technology documentation)
+\item \href{https://bge-model.com/}{FlagEmbedding official documentation} (official technology documentation)
+\item \href{https://python.useinstructor.com/}{Instructor official documentation} (official technology documentation)
+\item \href{https://docs.cohere.com/docs/rerank-overview}{Cohere Rerank official documentation} (official technology documentation)
+\item \href{https://huggingface.co/docs/text-embeddings-inference/index}{Hugging Face Text Embeddings Inference official documentation} (official technology documentation)
+\item \href{https://docs.litellm.ai/}{LiteLLM official documentation} (official technology documentation)
+\item \href{https://portkey.ai/docs/}{Portkey AI Gateway official documentation} (official technology documentation)
+\item \href{https://developer.konghq.com/ai-gateway/}{Kong AI Gateway official documentation} (official technology documentation)
+\item \href{https://aigateway.envoyproxy.io/docs/}{Envoy AI Gateway official documentation} (official technology documentation)
+\item \href{https://docs.aws.amazon.com/sagemaker/latest/dg/deploy-model.html}{Amazon SageMaker AI Endpoints official documentation} (official technology documentation)
+\item \href{https://cloud.google.com/vertex-ai/docs/predictions/overview}{Vertex AI Endpoints official documentation} (official technology documentation)
+\item \href{https://learn.microsoft.com/en-us/azure/machine-learning/concept-endpoints-online}{Azure Machine Learning Managed Online Endpoints official documentation} (official technology documentation)
+\item \href{https://docs.nvidia.com/nemo/guardrails/latest/}{NVIDIA NeMo Guardrails official documentation} (official technology documentation)
+\item \href{https://www.guardrailsai.com/docs}{Guardrails AI official documentation} (official technology documentation)
+\item \href{https://www.llama.com/docs/model-cards-and-prompt-formats/llama-guard-4/}{Llama Guard official documentation} (official technology documentation)
+\item \href{https://protectai.github.io/llm-guard/}{Protect AI LLM Guard official documentation} (official technology documentation)
+\item \href{https://microsoft.github.io/presidio/}{Microsoft Presidio official documentation} (official technology documentation)
+\item \href{https://www.openpolicyagent.org/docs/latest/}{Open Policy Agent official documentation} (official technology documentation)
+\item \href{https://docs.cedarpolicy.com/}{Cedar official documentation} (official technology documentation)
+\item \href{https://docs.lakera.ai/docs}{Lakera Guard official documentation} (official technology documentation)
+\end{enumerate}

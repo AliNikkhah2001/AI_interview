@@ -3,16 +3,22 @@
   "tutorials": 192,
   "formulas": 33,
   "visuals": 15,
+  "technology_flow_diagrams": 111,
   "roadmap_phases": 12,
-  "generated_questions": 1920,
+  "curriculum_questions": 1920,
+  "technology_questions": 333,
+  "generated_questions": 2253,
   "question_files": [
     "questions_1.json",
     "questions_2.json",
     "questions_3.json",
     "questions_4.json"
   ],
+  "technology_question_file": "technology_questions.json",
   "core_questions": 50,
-  "design_challenges": 12,
-  "sources": 42,
-  "research_snapshot": "2026-09-02"
+  "technologies": 111,
+  "technology_categories": 9,
+  "design_challenges": 26,
+  "sources": 141,
+  "research_snapshot": "2026-09-05"
 }

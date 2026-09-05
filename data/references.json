@@ -250,5 +250,599 @@
     "title": "NIST AI Risk Management Framework",
     "url": "https://www.nist.gov/itl/ai-risk-management-framework",
     "kind": "standard"
+  },
+  {
+    "id": "tech-langchain",
+    "title": "LangChain official documentation",
+    "url": "https://docs.langchain.com/oss/python/langchain/overview",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-deep-agents",
+    "title": "Deep Agents official documentation",
+    "url": "https://docs.langchain.com/oss/python/deepagents/overview",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-llamaindex",
+    "title": "LlamaIndex official documentation",
+    "url": "https://docs.llamaindex.ai/en/stable/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-haystack",
+    "title": "Haystack official documentation",
+    "url": "https://docs.haystack.deepset.ai/docs/intro",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-semantic-kernel",
+    "title": "Semantic Kernel official documentation",
+    "url": "https://learn.microsoft.com/en-us/semantic-kernel/overview/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-autogen",
+    "title": "AutoGen official documentation",
+    "url": "https://microsoft.github.io/autogen/stable/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-crewai",
+    "title": "CrewAI official documentation",
+    "url": "https://docs.crewai.com/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-pydantic-ai",
+    "title": "PydanticAI official documentation",
+    "url": "https://ai.pydantic.dev/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-dspy",
+    "title": "DSPy official documentation",
+    "url": "https://dspy.ai/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-openai-agents-sdk",
+    "title": "OpenAI Agents SDK official documentation",
+    "url": "https://openai.github.io/openai-agents-python/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-google-adk",
+    "title": "Google Agent Development Kit official documentation",
+    "url": "https://google.github.io/adk-docs/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-mastra",
+    "title": "Mastra official documentation",
+    "url": "https://mastra.ai/docs",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-sglang",
+    "title": "SGLang official documentation",
+    "url": "https://docs.sglang.ai/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-tgi",
+    "title": "Hugging Face Text Generation Inference official documentation",
+    "url": "https://huggingface.co/docs/text-generation-inference/index",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-tensorrt-llm",
+    "title": "TensorRT-LLM official documentation",
+    "url": "https://nvidia.github.io/TensorRT-LLM/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-triton-inference-server",
+    "title": "NVIDIA Triton Inference Server official documentation",
+    "url": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-llama-cpp",
+    "title": "llama.cpp official documentation",
+    "url": "https://github.com/ggml-org/llama.cpp",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-ollama",
+    "title": "Ollama official documentation",
+    "url": "https://docs.ollama.com/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-ray-serve",
+    "title": "Ray Serve official documentation",
+    "url": "https://docs.ray.io/en/latest/serve/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-bentoml",
+    "title": "BentoML official documentation",
+    "url": "https://docs.bentoml.com/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-localai",
+    "title": "LocalAI official documentation",
+    "url": "https://localai.io/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-modal-platform",
+    "title": "Modal official documentation",
+    "url": "https://modal.com/docs/guide",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-baseten",
+    "title": "Baseten official documentation",
+    "url": "https://docs.baseten.co/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-huggingface-endpoints",
+    "title": "Hugging Face Inference Endpoints official documentation",
+    "url": "https://huggingface.co/docs/inference-endpoints/index",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-pinecone",
+    "title": "Pinecone official documentation",
+    "url": "https://docs.pinecone.io/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-chroma",
+    "title": "Chroma official documentation",
+    "url": "https://docs.trychroma.com/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-lancedb",
+    "title": "LanceDB official documentation",
+    "url": "https://docs.lancedb.com/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-faiss",
+    "title": "FAISS official documentation",
+    "url": "https://github.com/facebookresearch/faiss",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-elasticsearch",
+    "title": "Elasticsearch official documentation",
+    "url": "https://www.elastic.co/docs/solutions/search",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-opensearch",
+    "title": "OpenSearch official documentation",
+    "url": "https://docs.opensearch.org/latest/vector-search/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-vespa",
+    "title": "Vespa official documentation",
+    "url": "https://docs.vespa.ai/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-redis-search",
+    "title": "Redis Search and Vector Sets official documentation",
+    "url": "https://redis.io/docs/latest/develop/ai/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-neo4j",
+    "title": "Neo4j official documentation",
+    "url": "https://neo4j.com/docs/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-memgraph",
+    "title": "Memgraph official documentation",
+    "url": "https://memgraph.com/docs",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-falkordb",
+    "title": "FalkorDB official documentation",
+    "url": "https://docs.falkordb.com/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-amazon-neptune",
+    "title": "Amazon Neptune official documentation",
+    "url": "https://docs.aws.amazon.com/neptune/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-kuzu",
+    "title": "Kuzu official documentation",
+    "url": "https://docs.kuzudb.com/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-langsmith",
+    "title": "LangSmith official documentation",
+    "url": "https://docs.langchain.com/langsmith/home",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-langfuse",
+    "title": "Langfuse official documentation",
+    "url": "https://langfuse.com/docs",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-phoenix",
+    "title": "Arize Phoenix official documentation",
+    "url": "https://arize.com/docs/phoenix",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-helicone",
+    "title": "Helicone official documentation",
+    "url": "https://docs.helicone.ai/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-opentelemetry",
+    "title": "OpenTelemetry official documentation",
+    "url": "https://opentelemetry.io/docs/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-weave",
+    "title": "Weights & Biases Weave official documentation",
+    "url": "https://weave-docs.wandb.ai/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-braintrust",
+    "title": "Braintrust official documentation",
+    "url": "https://www.braintrust.dev/docs",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-ragas",
+    "title": "Ragas official documentation",
+    "url": "https://docs.ragas.io/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-deepeval",
+    "title": "DeepEval official documentation",
+    "url": "https://deepeval.com/docs/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-trulens",
+    "title": "TruLens official documentation",
+    "url": "https://www.trulens.org/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-promptfoo",
+    "title": "Promptfoo official documentation",
+    "url": "https://www.promptfoo.dev/docs/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-mcp-sdks",
+    "title": "Official MCP SDKs official documentation",
+    "url": "https://modelcontextprotocol.io/docs/sdk",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-fastmcp",
+    "title": "FastMCP official documentation",
+    "url": "https://gofastmcp.com/getting-started/welcome",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-mcp-inspector",
+    "title": "MCP Inspector official documentation",
+    "url": "https://github.com/modelcontextprotocol/inspector",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-docker-mcp-toolkit",
+    "title": "Docker MCP Toolkit and Gateway official documentation",
+    "url": "https://docs.docker.com/ai/mcp-catalog-and-toolkit/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-smithery",
+    "title": "Smithery official documentation",
+    "url": "https://smithery.ai/docs",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-composio",
+    "title": "Composio official documentation",
+    "url": "https://docs.composio.dev/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-arcade",
+    "title": "Arcade official documentation",
+    "url": "https://docs.arcade.dev/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-e2b",
+    "title": "E2B official documentation",
+    "url": "https://e2b.dev/docs",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-daytona",
+    "title": "Daytona official documentation",
+    "url": "https://www.daytona.io/docs/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-modal-sandboxes",
+    "title": "Modal Sandboxes official documentation",
+    "url": "https://modal.com/docs/guide/sandbox",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-docker",
+    "title": "Docker official documentation",
+    "url": "https://docs.docker.com/engine/security/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-gvisor",
+    "title": "gVisor official documentation",
+    "url": "https://gvisor.dev/docs/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-firecracker",
+    "title": "Firecracker official documentation",
+    "url": "https://github.com/firecracker-microvm/firecracker",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-kata-containers",
+    "title": "Kata Containers official documentation",
+    "url": "https://katacontainers.io/docs/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-kubernetes-jobs",
+    "title": "Kubernetes Jobs official documentation",
+    "url": "https://kubernetes.io/docs/concepts/workloads/controllers/job/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-airflow",
+    "title": "Apache Airflow official documentation",
+    "url": "https://airflow.apache.org/docs/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-prefect",
+    "title": "Prefect official documentation",
+    "url": "https://docs.prefect.io/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-dagster",
+    "title": "Dagster official documentation",
+    "url": "https://docs.dagster.io/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-dvc",
+    "title": "DVC official documentation",
+    "url": "https://dvc.org/doc",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-lakefs",
+    "title": "lakeFS official documentation",
+    "url": "https://docs.lakefs.io/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-kubeflow-pipelines",
+    "title": "Kubeflow Pipelines official documentation",
+    "url": "https://www.kubeflow.org/docs/components/pipelines/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-zenml",
+    "title": "ZenML official documentation",
+    "url": "https://docs.zenml.io/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-zep",
+    "title": "Zep official documentation",
+    "url": "https://help.getzep.com/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-mem0",
+    "title": "Mem0 official documentation",
+    "url": "https://docs.mem0.ai/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-pytorch",
+    "title": "PyTorch official documentation",
+    "url": "https://docs.pytorch.org/docs/stable/index.html",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-jax",
+    "title": "JAX official documentation",
+    "url": "https://docs.jax.dev/en/latest/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-transformers",
+    "title": "Hugging Face Transformers official documentation",
+    "url": "https://huggingface.co/docs/transformers/index",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-sentence-transformers",
+    "title": "Sentence Transformers official documentation",
+    "url": "https://sbert.net/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-peft",
+    "title": "Hugging Face PEFT official documentation",
+    "url": "https://huggingface.co/docs/peft/index",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-bitsandbytes",
+    "title": "bitsandbytes official documentation",
+    "url": "https://huggingface.co/docs/bitsandbytes/main/en/index",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-onnx-runtime",
+    "title": "ONNX Runtime official documentation",
+    "url": "https://onnxruntime.ai/docs/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-openvino",
+    "title": "OpenVINO official documentation",
+    "url": "https://docs.openvino.ai/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-flagembedding",
+    "title": "FlagEmbedding official documentation",
+    "url": "https://bge-model.com/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-instructor",
+    "title": "Instructor official documentation",
+    "url": "https://python.useinstructor.com/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-cohere-rerank",
+    "title": "Cohere Rerank official documentation",
+    "url": "https://docs.cohere.com/docs/rerank-overview",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-text-embeddings-inference",
+    "title": "Hugging Face Text Embeddings Inference official documentation",
+    "url": "https://huggingface.co/docs/text-embeddings-inference/index",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-litellm",
+    "title": "LiteLLM official documentation",
+    "url": "https://docs.litellm.ai/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-portkey",
+    "title": "Portkey AI Gateway official documentation",
+    "url": "https://portkey.ai/docs/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-kong-ai-gateway",
+    "title": "Kong AI Gateway official documentation",
+    "url": "https://developer.konghq.com/ai-gateway/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-envoy-ai-gateway",
+    "title": "Envoy AI Gateway official documentation",
+    "url": "https://aigateway.envoyproxy.io/docs/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-sagemaker-endpoints",
+    "title": "Amazon SageMaker AI Endpoints official documentation",
+    "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/deploy-model.html",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-vertex-ai-endpoints",
+    "title": "Vertex AI Endpoints official documentation",
+    "url": "https://cloud.google.com/vertex-ai/docs/predictions/overview",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-azure-ml-endpoints",
+    "title": "Azure Machine Learning Managed Online Endpoints official documentation",
+    "url": "https://learn.microsoft.com/en-us/azure/machine-learning/concept-endpoints-online",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-nemo-guardrails",
+    "title": "NVIDIA NeMo Guardrails official documentation",
+    "url": "https://docs.nvidia.com/nemo/guardrails/latest/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-guardrails-ai",
+    "title": "Guardrails AI official documentation",
+    "url": "https://www.guardrailsai.com/docs",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-llama-guard",
+    "title": "Llama Guard official documentation",
+    "url": "https://www.llama.com/docs/model-cards-and-prompt-formats/llama-guard-4/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-llm-guard",
+    "title": "Protect AI LLM Guard official documentation",
+    "url": "https://protectai.github.io/llm-guard/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-presidio",
+    "title": "Microsoft Presidio official documentation",
+    "url": "https://microsoft.github.io/presidio/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-open-policy-agent",
+    "title": "Open Policy Agent official documentation",
+    "url": "https://www.openpolicyagent.org/docs/latest/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-cedar",
+    "title": "Cedar official documentation",
+    "url": "https://docs.cedarpolicy.com/",
+    "kind": "official technology documentation"
+  },
+  {
+    "id": "tech-lakera-guard",
+    "title": "Lakera Guard official documentation",
+    "url": "https://docs.lakera.ai/docs",
+    "kind": "official technology documentation"
   }
 ]
