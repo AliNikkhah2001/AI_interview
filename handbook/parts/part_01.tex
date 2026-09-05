@@ -1,7 +1,7 @@
-\begin{titlepage}\pagecolor{navy}\color{white}\vspace*{1.1in}{\Huge\bfseries AI Engineering\\Interview Atlas\par}\vspace{.35in}{\Large Mathematical tutorials, systems, and 1,000+ questions\par}\vspace{.35in}{\large 33 derivations \textbullet\ 192 deep lessons \textbullet\ 12 roadmap phases\par}\vfill{\large Research snapshot: 2 September 2026\par}\vspace{.15in}{\normalsize Primary papers, official documentation, specifications, and standards\par}\vspace{.7in}{\color{cyan}\rule{\textwidth}{3pt}}\end{titlepage}\nopagecolor\color{black}
+\begin{titlepage}\pagecolor{navy}\color{white}\vspace*{1.1in}{\Huge\bfseries AI Engineering\\Interview Atlas\par}\vspace{.35in}{\Large Mathematical tutorials, systems, and 1,000+ questions\par}\vspace{.35in}{\large 33 derivations \textbullet\ 15 visual models \textbullet\ 192 deep lessons \textbullet\ 12 roadmap phases\par}\vfill{\large Research snapshot: 2 September 2026\par}\vspace{.15in}{\normalsize Primary papers, official documentation, specifications, and standards\par}\vspace{.7in}{\color{cyan}\rule{\textwidth}{3pt}}\end{titlepage}\nopagecolor\color{black}
 \tableofcontents\newpage
 \section{How to use this handbook}
-This handbook contains 192 complete topic tutorials, 1920 generated practice questions, 50 core interview questions, 12 progressive system-design challenges, and 33 mathematical modules. The tutorials are deliberately written to cover the definition, tradeoff, failure, scenario, design, and production reasoning tested by the question bank.
+This handbook contains 192 complete topic tutorials, 1920 generated practice questions, 50 core interview questions, 12 progressive system-design challenges, 15 visual intuition models, and 33 mathematical modules. The browser resumes the last unfinished chapter, records five reading checkpoints, unlocks a five-question exam, and advances after a score of at least 80 percent.
 \subsection{The interview answer loop}
 Answer in seven moves: \textbf{mechanism $\rightarrow$ assumptions $\rightarrow$ quantitative model $\rightarrow$ alternative $\rightarrow$ experiment $\rightarrow$ operation $\rightarrow$ recovery}. For a short answer, compress the same structure rather than replacing it with product slogans.
 \subsection{How to study a derivation}
@@ -33,6 +33,9 @@ The online atlas stores completed phases, mastered lessons, and reviewed questio
 \draw[arr](p9)--(p10);
 \draw[arr](p10)--(p11);
 \end{tikzpicture}\end{center}
+\subsection{The guided learning loop}
+\begin{center}\begin{tikzpicture}[visual/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=30mm,minimum height=11mm,font=\small},arr/.style={-{Stealth},thick,draw=blue},node distance=8mm]\node[visual](resume){Resume last\\unfinished};\node[visual,right=of resume](teach){Read five\\lesson parts};\node[visual,right=of teach](exam){Pass topic exam\\at 80\%};\node[visual,below=of exam](mark){Mark chapter\\and phase};\node[visual,left=of mark](next){Open next\\chapter};\draw[arr](resume)--(teach);\draw[arr](teach)--(exam);\draw[arr](exam)--(mark);\draw[arr](mark)--(next);\draw[arr](next.west) to[bend left=26] (resume.south);\end{tikzpicture}\end{center}
+The website stores the last opened chapter, reading checkpoints, exam attempts, best scores, chapter mastery, and automatically completed lesson-bearing phases in browser storage. A chapter is learned only after all five parts have been reached and its exam has been passed.
 \subsection{00. Diagnostic and study system}
 \badge{3 focused hours} \quad \textbf{Prerequisites:} none
 \begin{itemize}
@@ -141,6 +144,283 @@ The online atlas stores completed phases, mastered lessons, and reviewed questio
 \end{itemize}
 \textbf{Milestone.} Score at least 80\% on 200 unseen mixed questions and pass three timed mock loops.
 \textbf{Practice.} 200 mixed questions, 3 mocks, and spaced repetition of every miss.
+\clearpage\section{Visual intuition atlas}
+Use each picture to predict behavior before memorizing terminology. Curves are normalized teaching models unless a unit is stated; benchmark real systems on representative workloads.
+\subsection{Why BM25 saturates repeated terms}
+\badge{RANKING INTUITION} \quad The first matching term is strong evidence. Each repetition adds less information, so the score bends toward a ceiling instead of growing forever.
+\begin{center}\begin{tikzpicture}[x=1.32cm,y=0.047cm]
+\draw[->,draw=navy] (0,0)--(5.45,0) node[right]{\scriptsize term frequency};
+\draw[->,draw=navy] (0,0)--(0,108) node[above]{\scriptsize relative contribution};
+\draw[draw=gray!25,dashed] (0,25)--(5,25) node[left]{\scriptsize 25};
+\draw[draw=gray!25,dashed] (0,50)--(5,50) node[left]{\scriptsize 50};
+\draw[draw=gray!25,dashed] (0,75)--(5,75) node[left]{\scriptsize 75};
+\draw[draw=gray!25,dashed] (0,100)--(5,100) node[left]{\scriptsize 100};
+\draw[very thick,draw=cyan] plot coordinates {(0,3) (1,6) (2,13) (3,25) (4,50) (5,100)};
+\fill[cyan] (0,3) circle (1.5pt);
+\fill[cyan] (1,6) circle (1.5pt);
+\fill[cyan] (2,13) circle (1.5pt);
+\fill[cyan] (3,25) circle (1.5pt);
+\fill[cyan] (4,50) circle (1.5pt);
+\fill[cyan] (5,100) circle (1.5pt);
+\draw[very thick,draw=amber] plot coordinates {(0,47) (1,65) (2,80) (3,90) (4,96) (5,100)};
+\fill[amber] (0,47) circle (1.5pt);
+\fill[amber] (1,65) circle (1.5pt);
+\fill[amber] (2,80) circle (1.5pt);
+\fill[amber] (3,90) circle (1.5pt);
+\fill[amber] (4,96) circle (1.5pt);
+\fill[amber] (5,100) circle (1.5pt);
+\node[below,font=\scriptsize] at (0,0) {1};
+\node[below,font=\scriptsize] at (1,0) {2};
+\node[below,font=\scriptsize] at (2,0) {4};
+\node[below,font=\scriptsize] at (3,0) {8};
+\node[below,font=\scriptsize] at (4,0) {16};
+\node[below,font=\scriptsize] at (5,0) {32};
+\end{tikzpicture}\par\smallskip \textcolor{cyan}{\rule{5mm}{1.2pt}} linear count\quad \textcolor{amber}{\rule{5mm}{1.2pt}} BM25-like saturation\end{center}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Remember.} If a document repeats a query token 32 times, it should not automatically outrank a concise document with better coverage.}}
+\subsection{ANN search moves along a frontier}
+\badge{INDEX TUNING} \quad Searching more candidates usually improves recall, but tail latency and compute rise. The useful operating point is a measured frontier, not a universal index setting.
+\begin{center}\begin{tikzpicture}[x=1.32cm,y=0.047cm]
+\draw[->,draw=navy] (0,0)--(4.45,0) node[right]{\scriptsize search effort};
+\draw[->,draw=navy] (0,0)--(0,108) node[above]{\scriptsize normalized percent};
+\draw[draw=gray!25,dashed] (0,25)--(4,25) node[left]{\scriptsize 25};
+\draw[draw=gray!25,dashed] (0,50)--(4,50) node[left]{\scriptsize 50};
+\draw[draw=gray!25,dashed] (0,75)--(4,75) node[left]{\scriptsize 75};
+\draw[draw=gray!25,dashed] (0,100)--(4,100) node[left]{\scriptsize 100};
+\draw[very thick,draw=cyan] plot coordinates {(0,58) (1,74) (2,86) (3,94) (4,98)};
+\fill[cyan] (0,58) circle (1.5pt);
+\fill[cyan] (1,74) circle (1.5pt);
+\fill[cyan] (2,86) circle (1.5pt);
+\fill[cyan] (3,94) circle (1.5pt);
+\fill[cyan] (4,98) circle (1.5pt);
+\draw[very thick,draw=amber] plot coordinates {(0,12) (1,21) (2,37) (3,66) (4,100)};
+\fill[amber] (0,12) circle (1.5pt);
+\fill[amber] (1,21) circle (1.5pt);
+\fill[amber] (2,37) circle (1.5pt);
+\fill[amber] (3,66) circle (1.5pt);
+\fill[amber] (4,100) circle (1.5pt);
+\node[below,font=\scriptsize] at (0,0) {tiny};
+\node[below,font=\scriptsize] at (1,0) {low};
+\node[below,font=\scriptsize] at (2,0) {medium};
+\node[below,font=\scriptsize] at (3,0) {high};
+\node[below,font=\scriptsize] at (4,0) {max};
+\end{tikzpicture}\par\smallskip \textcolor{cyan}{\rule{5mm}{1.2pt}} recall\quad \textcolor{amber}{\rule{5mm}{1.2pt}} latency cost\end{center}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Remember.} Tune filtered recall and p95 latency together on representative queries; either number alone can hide a bad index configuration.}}
+\subsection{RAG is an evidence supply chain}
+\badge{DATA + MODEL FLOW} \quad A correct-looking answer can fail in five different places. Preserve identifiers so a bad claim can be traced backward to retrieval, source version, and parsing.
+\begin{center}\begin{tikzpicture}[visual/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=25mm,minimum height=12mm,font=\small},arr/.style={-{Stealth},thick,draw=blue},node distance=7mm]
+\node[visual] (v0) {\textbf{Source}\\{\scriptsize version + ACL}};
+\node[visual,right=of v0] (v1) {\textbf{Chunk}\\{\scriptsize span + metadata}};
+\node[visual,right=of v1] (v2) {\textbf{Retrieve}\\{\scriptsize candidate + score}};
+\node[visual,right=of v2] (v3) {\textbf{Generate}\\{\scriptsize claim + citation}};
+\node[visual,right=of v3] (v4) {\textbf{Evaluate}\\{\scriptsize localize failure}};
+\draw[arr] (v0)--(v1);
+\draw[arr] (v1)--(v2);
+\draw[arr] (v2)--(v3);
+\draw[arr] (v3)--(v4);
+\end{tikzpicture}\end{center}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Remember.} Measure retriever recall, context quality, claim support, and answer usefulness separately.}}
+\subsection{Graphs add structure in layers}
+\badge{GRAPH INTUITION} \quad A knowledge graph is not merely another vector index. It turns mentions into resolved entities, explicit relationships, communities, and queryable summaries.
+\begin{center}\begin{tikzpicture}[visual/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=25mm,minimum height=12mm,font=\small},arr/.style={-{Stealth},thick,draw=blue},node distance=7mm]
+\node[visual] (v0) {\textbf{Mentions}\\{\scriptsize raw spans}};
+\node[visual,right=of v0] (v1) {\textbf{Entities}\\{\scriptsize resolved identity}};
+\node[visual,right=of v1] (v2) {\textbf{Relations}\\{\scriptsize typed edges}};
+\node[visual,right=of v2] (v3) {\textbf{Communities}\\{\scriptsize global structure}};
+\node[visual,right=of v3] (v4) {\textbf{Answers}\\{\scriptsize traceable paths}};
+\draw[arr] (v0)--(v1);
+\draw[arr] (v1)--(v2);
+\draw[arr] (v2)--(v3);
+\draw[arr] (v3)--(v4);
+\end{tikzpicture}\end{center}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Remember.} Each higher layer adds reasoning power and a new source of extraction or resolution error.}}
+\subsection{An agent is a controlled feedback loop}
+\badge{CONTROL FLOW} \quad The model proposes; policy authorizes; a typed tool changes the world; observation updates state. The loop must have budgets and deterministic stop conditions.
+\begin{center}\begin{tikzpicture}[visual/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=25mm,minimum height=12mm,font=\small},arr/.style={-{Stealth},thick,draw=blue},node distance=7mm]
+\node[visual] (v0) {\textbf{Observe}\\{\scriptsize state + evidence}};
+\node[visual,right=of v0] (v1) {\textbf{Propose}\\{\scriptsize structured action}};
+\node[visual,right=of v1] (v2) {\textbf{Authorize}\\{\scriptsize policy + approval}};
+\node[visual,right=of v2] (v3) {\textbf{Execute}\\{\scriptsize idempotent tool}};
+\node[visual,right=of v3] (v4) {\textbf{Record}\\{\scriptsize result + audit}};
+\draw[arr] (v0)--(v1);
+\draw[arr] (v1)--(v2);
+\draw[arr] (v2)--(v3);
+\draw[arr] (v3)--(v4);
+\draw[arr] (v4.south) to[bend left=32] node[below,font=\scriptsize]{feedback} (v0.south);
+\end{tikzpicture}\end{center}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Remember.} Do not let natural-language intent bypass authorization or make an external effect invisible to the state machine.}}
+\subsection{Durability separates decisions from effects}
+\badge{WORKFLOW STATE} \quad Persist state before and after risky effects. A retry should replay a decision safely or reuse a recorded result, not duplicate the side effect.
+\begin{center}\begin{tikzpicture}[visual/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=25mm,minimum height=12mm,font=\small},arr/.style={-{Stealth},thick,draw=blue},node distance=7mm]
+\node[visual] (v0) {\textbf{State}\\{\scriptsize checkpoint}};
+\node[visual,right=of v0] (v1) {\textbf{Decision}\\{\scriptsize pure transition}};
+\node[visual,right=of v1] (v2) {\textbf{Effect}\\{\scriptsize idempotency key}};
+\node[visual,right=of v2] (v3) {\textbf{Result}\\{\scriptsize durable record}};
+\node[visual,right=of v3] (v4) {\textbf{Resume}\\{\scriptsize continue safely}};
+\draw[arr] (v0)--(v1);
+\draw[arr] (v1)--(v2);
+\draw[arr] (v2)--(v3);
+\draw[arr] (v3)--(v4);
+\draw[arr] (v4.south) to[bend left=32] node[below,font=\scriptsize]{feedback} (v0.south);
+\end{tikzpicture}\end{center}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Remember.} Crash recovery is a data-model property before it is a framework feature.}}
+\subsection{A trace explains where latency went}
+\badge{REQUEST WATERFALL} \quad End-to-end latency is a composition of queueing, retrieval, model prefill, decoding, tools, and retries. A single aggregate hides the critical path.
+\begin{center}\begin{tikzpicture}[visual/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=25mm,minimum height=12mm,font=\small},arr/.style={-{Stealth},thick,draw=blue},node distance=7mm]
+\node[visual] (v0) {\textbf{Queue}\\{\scriptsize 0-80 ms}};
+\node[visual,right=of v0] (v1) {\textbf{Retrieve}\\{\scriptsize 80-210 ms}};
+\node[visual,right=of v1] (v2) {\textbf{Prefill}\\{\scriptsize 210-430 ms}};
+\node[visual,right=of v2] (v3) {\textbf{Decode}\\{\scriptsize 430-1250 ms}};
+\node[visual,right=of v3] (v4) {\textbf{Tool}\\{\scriptsize overlap/retry}};
+\draw[arr] (v0)--(v1);
+\draw[arr] (v1)--(v2);
+\draw[arr] (v2)--(v3);
+\draw[arr] (v3)--(v4);
+\end{tikzpicture}\end{center}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Remember.} Correlate traces with quality, cost, model version, prompt version, and user cohort.}}
+\subsection{Batching trades latency for utilization}
+\badge{SERVING FRONTIER} \quad Larger effective batches fill the accelerator and raise throughput, but waiting and head-of-line blocking eventually dominate request latency.
+\begin{center}\begin{tikzpicture}[x=1.32cm,y=0.047cm]
+\draw[->,draw=navy] (0,0)--(5.45,0) node[right]{\scriptsize effective batch};
+\draw[->,draw=navy] (0,0)--(0,108) node[above]{\scriptsize normalized percent};
+\draw[draw=gray!25,dashed] (0,25)--(5,25) node[left]{\scriptsize 25};
+\draw[draw=gray!25,dashed] (0,50)--(5,50) node[left]{\scriptsize 50};
+\draw[draw=gray!25,dashed] (0,75)--(5,75) node[left]{\scriptsize 75};
+\draw[draw=gray!25,dashed] (0,100)--(5,100) node[left]{\scriptsize 100};
+\draw[very thick,draw=cyan] plot coordinates {(0,12) (1,23) (2,43) (3,68) (4,86) (5,92)};
+\fill[cyan] (0,12) circle (1.5pt);
+\fill[cyan] (1,23) circle (1.5pt);
+\fill[cyan] (2,43) circle (1.5pt);
+\fill[cyan] (3,68) circle (1.5pt);
+\fill[cyan] (4,86) circle (1.5pt);
+\fill[cyan] (5,92) circle (1.5pt);
+\draw[very thick,draw=amber] plot coordinates {(0,8) (1,12) (2,19) (3,31) (4,55) (5,94)};
+\fill[amber] (0,8) circle (1.5pt);
+\fill[amber] (1,12) circle (1.5pt);
+\fill[amber] (2,19) circle (1.5pt);
+\fill[amber] (3,31) circle (1.5pt);
+\fill[amber] (4,55) circle (1.5pt);
+\fill[amber] (5,94) circle (1.5pt);
+\node[below,font=\scriptsize] at (0,0) {1};
+\node[below,font=\scriptsize] at (1,0) {2};
+\node[below,font=\scriptsize] at (2,0) {4};
+\node[below,font=\scriptsize] at (3,0) {8};
+\node[below,font=\scriptsize] at (4,0) {16};
+\node[below,font=\scriptsize] at (5,0) {32};
+\end{tikzpicture}\par\smallskip \textcolor{cyan}{\rule{5mm}{1.2pt}} throughput\quad \textcolor{amber}{\rule{5mm}{1.2pt}} p95 latency\end{center}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Remember.} Choose a workload-specific knee using TTFT, decode rate, queue time, and quality-qualified cost.}}
+\subsection{Reproducibility is a chain of identities}
+\badge{LINEAGE} \quad A model version is insufficient. You need immutable links among data, code, parameters, environment, prompts, evaluations, and the deployed artifact.
+\begin{center}\begin{tikzpicture}[visual/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=25mm,minimum height=12mm,font=\small},arr/.style={-{Stealth},thick,draw=blue},node distance=7mm]
+\node[visual] (v0) {\textbf{Data}\\{\scriptsize snapshot}};
+\node[visual,right=of v0] (v1) {\textbf{Code}\\{\scriptsize commit}};
+\node[visual,right=of v1] (v2) {\textbf{Run}\\{\scriptsize params + env}};
+\node[visual,right=of v2] (v3) {\textbf{Artifact}\\{\scriptsize content hash}};
+\node[visual,right=of v3] (v4) {\textbf{Release}\\{\scriptsize evidence + rollback}};
+\draw[arr] (v0)--(v1);
+\draw[arr] (v1)--(v2);
+\draw[arr] (v2)--(v3);
+\draw[arr] (v3)--(v4);
+\end{tikzpicture}\end{center}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Remember.} When one link is mutable, exact reproduction and impact analysis become guesses.}}
+\subsection{Attention builds a token-to-token routing table}
+\badge{TENSOR SHAPES} \quad Queries choose where to read; keys advertise what each position contains; softmax turns similarities into routing weights; values carry the information mixed into the output.
+\begin{center}\begin{tikzpicture}[visual/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=25mm,minimum height=12mm,font=\small},arr/.style={-{Stealth},thick,draw=blue},node distance=7mm]
+\node[visual] (v0) {\textbf{QK\textasciicircum{}T}\\{\scriptsize n by n scores}};
+\node[visual,right=of v0] (v1) {\textbf{Scale}\\{\scriptsize divide by sqrt(d)}};
+\node[visual,right=of v1] (v2) {\textbf{Mask}\\{\scriptsize hide future tokens}};
+\node[visual,right=of v2] (v3) {\textbf{Softmax}\\{\scriptsize row probabilities}};
+\node[visual,right=of v3] (v4) {\textbf{Multiply V}\\{\scriptsize weighted content}};
+\draw[arr] (v0)--(v1);
+\draw[arr] (v1)--(v2);
+\draw[arr] (v2)--(v3);
+\draw[arr] (v3)--(v4);
+\end{tikzpicture}\end{center}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Remember.} Track the n-by-n score matrix separately from the n-by-d token representation.}}
+\subsection{KV memory grows linearly with live context}
+\badge{MEMORY MODEL} \quad Caching avoids recomputing old keys and values, but every live token consumes memory in every layer. GQA lowers the slope; paging reduces fragmentation, not live tensor bytes.
+\begin{center}\begin{tikzpicture}[x=1.32cm,y=0.047cm]
+\draw[->,draw=navy] (0,0)--(4.45,0) node[right]{\scriptsize context tokens (thousands)};
+\draw[->,draw=navy] (0,0)--(0,108) node[above]{\scriptsize relative KV memory};
+\draw[draw=gray!25,dashed] (0,25)--(4,25) node[left]{\scriptsize 25};
+\draw[draw=gray!25,dashed] (0,50)--(4,50) node[left]{\scriptsize 50};
+\draw[draw=gray!25,dashed] (0,75)--(4,75) node[left]{\scriptsize 75};
+\draw[draw=gray!25,dashed] (0,100)--(4,100) node[left]{\scriptsize 100};
+\draw[very thick,draw=cyan] plot coordinates {(0,6) (1,13) (2,25) (3,50) (4,100)};
+\fill[cyan] (0,6) circle (1.5pt);
+\fill[cyan] (1,13) circle (1.5pt);
+\fill[cyan] (2,25) circle (1.5pt);
+\fill[cyan] (3,50) circle (1.5pt);
+\fill[cyan] (4,100) circle (1.5pt);
+\draw[very thick,draw=amber] plot coordinates {(0,2) (1,3) (2,6) (3,13) (4,25)};
+\fill[amber] (0,2) circle (1.5pt);
+\fill[amber] (1,3) circle (1.5pt);
+\fill[amber] (2,6) circle (1.5pt);
+\fill[amber] (3,13) circle (1.5pt);
+\fill[amber] (4,25) circle (1.5pt);
+\node[below,font=\scriptsize] at (0,0) {1};
+\node[below,font=\scriptsize] at (1,0) {2};
+\node[below,font=\scriptsize] at (2,0) {4};
+\node[below,font=\scriptsize] at (3,0) {8};
+\node[below,font=\scriptsize] at (4,0) {16};
+\end{tikzpicture}\par\smallskip \textcolor{cyan}{\rule{5mm}{1.2pt}} multi-head KV\quad \textcolor{amber}{\rule{5mm}{1.2pt}} grouped-query KV\end{center}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Remember.} Capacity planning must use the distribution of concurrent sequence lengths, not one advertised context maximum.}}
+\subsection{Backpressure must travel toward the caller}
+\badge{SERVICE FLOW} \quad When downstream work saturates, bounded queues, deadlines, admission control, and cancellation prevent hidden overload from becoming an outage.
+\begin{center}\begin{tikzpicture}[visual/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=25mm,minimum height=12mm,font=\small},arr/.style={-{Stealth},thick,draw=blue},node distance=7mm]
+\node[visual] (v0) {\textbf{Client}\\{\scriptsize deadline}};
+\node[visual,right=of v0] (v1) {\textbf{Gateway}\\{\scriptsize admit/reject}};
+\node[visual,right=of v1] (v2) {\textbf{Queue}\\{\scriptsize bounded}};
+\node[visual,right=of v2] (v3) {\textbf{Worker}\\{\scriptsize cancelable}};
+\node[visual,right=of v3] (v4) {\textbf{Dependency}\\{\scriptsize timeout + breaker}};
+\draw[arr] (v0)--(v1);
+\draw[arr] (v1)--(v2);
+\draw[arr] (v2)--(v3);
+\draw[arr] (v3)--(v4);
+\end{tikzpicture}\end{center}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Remember.} An unbounded queue converts visible rejection into invisible latency and memory growth.}}
+\subsection{Choose concurrency from the waiting pattern}
+\badge{EXECUTION MODEL} \quad Asyncio overlaps many cooperative waits, threads overlap blocking I/O with shared memory, and processes provide CPU parallelism with serialization and coordination costs.
+\begin{center}\begin{tikzpicture}[visual/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=25mm,minimum height=12mm,font=\small},arr/.style={-{Stealth},thick,draw=blue},node distance=7mm]
+\node[visual] (v0) {\textbf{Asyncio}\\{\scriptsize many waits, one loop}};
+\node[visual,right=of v0] (v1) {\textbf{Threads}\\{\scriptsize blocking I/O}};
+\node[visual,right=of v1] (v2) {\textbf{Processes}\\{\scriptsize CPU parallelism}};
+\node[visual,right=of v2] (v3) {\textbf{Queues}\\{\scriptsize ownership boundary}};
+\node[visual,right=of v3] (v4) {\textbf{Cancel}\\{\scriptsize structured cleanup}};
+\draw[arr] (v0)--(v1);
+\draw[arr] (v1)--(v2);
+\draw[arr] (v2)--(v3);
+\draw[arr] (v3)--(v4);
+\end{tikzpicture}\end{center}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Remember.} Start with whether work is CPU-bound, blocking, or awaitable; syntax comes afterward.}}
+\subsection{Authority narrows at every trust boundary}
+\badge{DEFENSE IN DEPTH} \quad Prompts, retrieved text, and model outputs are untrusted data. Capabilities come from deterministic policy, scoped credentials, sandbox limits, and explicit approval.
+\begin{center}\begin{tikzpicture}[visual/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=25mm,minimum height=12mm,font=\small},arr/.style={-{Stealth},thick,draw=blue},node distance=7mm]
+\node[visual] (v0) {\textbf{Untrusted text}\\{\scriptsize no authority}};
+\node[visual,right=of v0] (v1) {\textbf{Typed proposal}\\{\scriptsize schema validation}};
+\node[visual,right=of v1] (v2) {\textbf{Policy}\\{\scriptsize allowlist + limits}};
+\node[visual,right=of v2] (v3) {\textbf{Sandbox}\\{\scriptsize isolated effect}};
+\node[visual,right=of v3] (v4) {\textbf{Audit}\\{\scriptsize evidence + revocation}};
+\draw[arr] (v0)--(v1);
+\draw[arr] (v1)--(v2);
+\draw[arr] (v2)--(v3);
+\draw[arr] (v3)--(v4);
+\end{tikzpicture}\end{center}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Remember.} A stronger prompt is not a security boundary; enforce effects outside the model.}}
+\subsection{Reliability controls form a stabilizing loop}
+\badge{OVERLOAD CONTROL} \quad Measure saturation, shed excess work, isolate failures, recover gradually, and feed the outcome into safer limits. Retries without this loop amplify overload.
+\begin{center}\begin{tikzpicture}[visual/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=25mm,minimum height=12mm,font=\small},arr/.style={-{Stealth},thick,draw=blue},node distance=7mm]
+\node[visual] (v0) {\textbf{Measure}\\{\scriptsize queue + tails}};
+\node[visual,right=of v0] (v1) {\textbf{Admit}\\{\scriptsize budgeted load}};
+\node[visual,right=of v1] (v2) {\textbf{Isolate}\\{\scriptsize bulkhead}};
+\node[visual,right=of v2] (v3) {\textbf{Recover}\\{\scriptsize backoff + probe}};
+\node[visual,right=of v3] (v4) {\textbf{Learn}\\{\scriptsize update limits}};
+\draw[arr] (v0)--(v1);
+\draw[arr] (v1)--(v2);
+\draw[arr] (v2)--(v3);
+\draw[arr] (v3)--(v4);
+\draw[arr] (v4.south) to[bend left=32] node[below,font=\scriptsize]{feedback} (v0.south);
+\end{tikzpicture}\end{center}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Remember.} Design for bounded degradation rather than assuming every dependency remains healthy.}}
 \clearpage\section{Mathematical formula and derivation reference}
 These equations are not decorative. Each derivation states the engineering interpretation and a limiting case or worked estimate. Symbols are redefined locally so modules can be studied independently.
 \subsection{BM25 relevance score}
@@ -2002,6 +2282,8 @@ Start with the input and output contract. Identify the state or representation b
 Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
 \paragraph{Recall, precision, MRR, MAP, and nDCG}
 \mathblock{P@k=\frac{1}{k}\sum_{i=1}^{k}rel_i,\quad R@k=\frac{\sum_{i=1}^{k}rel_i}{|R_q|},\quad \operatorname{MRR}=\frac1{|Q|}\sum_q\frac1{\operatorname{rank}_q}}
+\paragraph{Claim-level faithfulness}
+\mathblock{F=\frac{\sum_{i=1}^{m}w_i\,\mathbf 1[\operatorname{entailed}(c_i,E)]}{\sum_{i=1}^{m}w_i}}
 \subsubsection*{Decision and failure reasoning}
 Choose RAG evaluation when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Automated judges accelerate iteration but need human calibration and bias checks. Compare against the simplest viable baseline and make the decision reversible where possible.
 The key production trap is: Collapsing all dimensions into one score hides compensating failures. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
@@ -2159,7 +2441,9 @@ The key production trap is: Testing with the same model family that authored the
 Production monitoring tracks retrieval gaps, unsupported claims, drift, feedback, latency, and cost by slice. Decompose RAG into ingestion, retrieval, packing, generation, and evaluation so a final-answer failure can be localized.
 Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Online RAG monitoring, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
 \subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\paragraph{Distribution drift with KL and JS divergence}
+\mathblock{D_{KL}(P\|Q)=\sum_i P_i\log\frac{P_i}{Q_i},\qquad JS(P,Q)=\frac12D_{KL}(P\|M)+\frac12D_{KL}(Q\|M),\ M=\frac{P+Q}{2}}
 \subsubsection*{Decision and failure reasoning}
 Choose Online RAG monitoring when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Rich telemetry improves diagnosis but raises privacy and storage obligations. Compare against the simplest viable baseline and make the decision reversible where possible.
 The key production trap is: Logging full prompts and context without redaction can expose sensitive data. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
@@ -2515,7 +2799,9 @@ The key production trap is: Adopting KAG without stable domain schema simply rel
 Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value. Use graphs when entities, relations, paths, communities, or temporal structure carry information that flat similarity loses.
 Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Graph quality evaluation, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
 \subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\paragraph{Entity and edge extraction quality}
+\mathblock{P=\frac{TP}{TP+FP},\quad R=\frac{TP}{TP+FN},\quad F_1=\frac{2PR}{P+R}}
 \subsubsection*{Decision and failure reasoning}
 Choose Graph quality evaluation when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Intrinsic graph metrics catch construction defects but may not predict application utility. Compare against the simplest viable baseline and make the decision reversible where possible.
 The key production trap is: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
@@ -3071,219 +3357,3 @@ The key production trap is: Appending everything causes attention dilution and i
 \item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Context engineering.
 \item Baseline: implement or measure the least complex alternative before adding Context engineering.
 \item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: Targeted context improves reliability and cost, but selection logic becomes core application code.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Appending everything causes attention dilution and instruction conflicts.
-\end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
-\item Task success and intervention rate
-\item tool-call validity and side-effect accuracy
-\item steps, tokens, latency, and cost
-\item policy violations and recovery rate
-\end{itemize}
-\textbf{Operate.}\begin{itemize}
-\item Use scoped capabilities and short-lived credentials
-\item Persist idempotency keys before side effects
-\item Require approval by risk, not by UI convenience
-\item Replay traces in an isolated evaluation environment
-\end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: Context engineering selects instructions, memory, evidence, tools, schemas, and state for each model turn.
-\item[Tradeoff] Then state both sides without hedging: Targeted context improves reliability and cost, but selection logic becomes core application code.
-\item[Failure] Name a concrete failure and its detection signal: Appending everything causes attention dilution and instruction conflicts.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
-\subsection{Sandbox runs}
-\textbf{Learning objective.} Explain Sandbox runs from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-A sandbox isolates untrusted code with resource limits, scoped files, network policy, timeouts, and audit logs. An agent is a policy choosing actions under partial information; production safety comes from deterministic boundaries around that policy.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Sandbox runs, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
-\subsubsection*{Decision and failure reasoning}
-Choose Sandbox runs when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Isolation enables capability while imposing startup and compatibility overhead. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: A container without kernel, credential, and network boundaries is not a sufficient sandbox. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
-\begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Sandbox runs.
-\item Baseline: implement or measure the least complex alternative before adding Sandbox runs.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: Isolation enables capability while imposing startup and compatibility overhead.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: A container without kernel, credential, and network boundaries is not a sufficient sandbox.
-\end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
-\item Task success and intervention rate
-\item tool-call validity and side-effect accuracy
-\item steps, tokens, latency, and cost
-\item policy violations and recovery rate
-\end{itemize}
-\textbf{Operate.}\begin{itemize}
-\item Use scoped capabilities and short-lived credentials
-\item Persist idempotency keys before side effects
-\item Require approval by risk, not by UI convenience
-\item Replay traces in an isolated evaluation environment
-\end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: A sandbox isolates untrusted code with resource limits, scoped files, network policy, timeouts, and audit logs.
-\item[Tradeoff] Then state both sides without hedging: Isolation enables capability while imposing startup and compatibility overhead.
-\item[Failure] Name a concrete failure and its detection signal: A container without kernel, credential, and network boundaries is not a sufficient sandbox.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
-\clearpage\section{Orchestration Frameworks}
-\subsection{LangGraph}
-\textbf{Learning objective.} Explain LangGraph from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-LangGraph models long-running agent workflows as stateful graphs with checkpoints, interrupts, streaming, and durable execution. Represent long-running work as explicit state and transitions, with durable checkpoints around nondeterministic or side-effecting boundaries.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For LangGraph, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
-\subsubsection*{Decision and failure reasoning}
-Choose LangGraph when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Fine-grained control aids production reliability but exposes more state and graph design decisions. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Non-idempotent node side effects make checkpoint replay unsafe. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
-\begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for LangGraph.
-\item Baseline: implement or measure the least complex alternative before adding LangGraph.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: Fine-grained control aids production reliability but exposes more state and graph design decisions.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Non-idempotent node side effects make checkpoint replay unsafe.
-\end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
-\item Completion and resume success
-\item duplicate-effect rate
-\item time in each state and queue
-\item human-interrupt and compensation outcomes
-\end{itemize}
-\textbf{Operate.}\begin{itemize}
-\item Keep state schemas versioned
-\item Make activities idempotent
-\item Bound loops and retries
-\item Test crash recovery at every checkpoint
-\end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: LangGraph models long-running agent workflows as stateful graphs with checkpoints, interrupts, streaming, and durable execution.
-\item[Tradeoff] Then state both sides without hedging: Fine-grained control aids production reliability but exposes more state and graph design decisions.
-\item[Failure] Name a concrete failure and its detection signal: Non-idempotent node side effects make checkpoint replay unsafe.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
-\subsection{LlamaIndex workflows}
-\textbf{Learning objective.} Explain LlamaIndex workflows from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-Event-driven workflows coordinate retrieval, tools, agents, and structured steps in the LlamaIndex ecosystem. Represent long-running work as explicit state and transitions, with durable checkpoints around nondeterministic or side-effecting boundaries.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For LlamaIndex workflows, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
-\subsubsection*{Decision and failure reasoning}
-Choose LlamaIndex workflows when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Strong data and indexing integrations speed RAG work but can couple application flow to framework abstractions. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Hiding all retrieval behind defaults makes evaluation and migration difficult. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
-\begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for LlamaIndex workflows.
-\item Baseline: implement or measure the least complex alternative before adding LlamaIndex workflows.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: Strong data and indexing integrations speed RAG work but can couple application flow to framework abstractions.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Hiding all retrieval behind defaults makes evaluation and migration difficult.
-\end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
-\item Completion and resume success
-\item duplicate-effect rate
-\item time in each state and queue
-\item human-interrupt and compensation outcomes
-\end{itemize}
-\textbf{Operate.}\begin{itemize}
-\item Keep state schemas versioned
-\item Make activities idempotent
-\item Bound loops and retries
-\item Test crash recovery at every checkpoint
-\end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: Event-driven workflows coordinate retrieval, tools, agents, and structured steps in the LlamaIndex ecosystem.
-\item[Tradeoff] Then state both sides without hedging: Strong data and indexing integrations speed RAG work but can couple application flow to framework abstractions.
-\item[Failure] Name a concrete failure and its detection signal: Hiding all retrieval behind defaults makes evaluation and migration difficult.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
-\subsection{Haystack pipelines}
-\textbf{Learning objective.} Explain Haystack pipelines from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-Haystack connects typed components into retrieval, generation, routing, and agent pipelines. Represent long-running work as explicit state and transitions, with durable checkpoints around nondeterministic or side-effecting boundaries.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Haystack pipelines, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
-\subsubsection*{Decision and failure reasoning}
-Choose Haystack pipelines when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Explicit components support testing, while custom graphs still require lifecycle discipline. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Allowing incompatible document schemas across components creates runtime surprises. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
-\begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Haystack pipelines.
-\item Baseline: implement or measure the least complex alternative before adding Haystack pipelines.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: Explicit components support testing, while custom graphs still require lifecycle discipline.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Allowing incompatible document schemas across components creates runtime surprises.
-\end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
-\item Completion and resume success
-\item duplicate-effect rate
-\item time in each state and queue
-\item human-interrupt and compensation outcomes
-\end{itemize}
-\textbf{Operate.}\begin{itemize}
-\item Keep state schemas versioned
-\item Make activities idempotent
-\item Bound loops and retries
-\item Test crash recovery at every checkpoint
-\end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: Haystack connects typed components into retrieval, generation, routing, and agent pipelines.
-\item[Tradeoff] Then state both sides without hedging: Explicit components support testing, while custom graphs still require lifecycle discipline.
-\item[Failure] Name a concrete failure and its detection signal: Allowing incompatible document schemas across components creates runtime surprises.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
-\subsection{PydanticAI}
-\textbf{Learning objective.} Explain PydanticAI from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-PydanticAI uses typed dependencies, tools, results, and validation to build model-agnostic Python agents. Represent long-running work as explicit state and transitions, with durable checkpoints around nondeterministic or side-effecting boundaries.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For PydanticAI, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
-\subsubsection*{Decision and failure reasoning}
-Choose PydanticAI when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Type safety improves integration but cannot validate semantic truth. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Confusing schema conformance with a correct answer produces false confidence. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
-\begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for PydanticAI.
-\item Baseline: implement or measure the least complex alternative before adding PydanticAI.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: Type safety improves integration but cannot validate semantic truth.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Confusing schema conformance with a correct answer produces false confidence.
-\end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
-\item Completion and resume success
-\item duplicate-effect rate
-\item time in each state and queue
-\item human-interrupt and compensation outcomes
-\end{itemize}
-\textbf{Operate.}\begin{itemize}
-\item Keep state schemas versioned
-\item Make activities idempotent
-\item Bound loops and retries
-\item Test crash recovery at every checkpoint
-\end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: PydanticAI uses typed dependencies, tools, results, and validation to build model-agnostic Python agents.
-\item[Tradeoff] Then state both sides without hedging: Type safety improves integration but cannot validate semantic truth.
-\item[Failure] Name a concrete failure and its detection signal: Confusing schema conformance with a correct answer produces false confidence.

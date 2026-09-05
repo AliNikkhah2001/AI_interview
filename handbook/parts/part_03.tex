@@ -1,3 +1,240 @@
+\item[Tradeoff] Then state both sides without hedging: Parameter capacity scales, while communication and load balance determine performance.
+\item[Failure] Name a concrete failure and its detection signal: Average expert load hides hot experts that gate step time.
+\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
+\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
+\end{description}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
+\subsection{Dynamic batching}
+\textbf{Learning objective.} Explain Dynamic batching from first principles, choose it for a stated workload, measure it, and recover when it fails.
+\subsubsection*{First principles and mental model}
+A server waits briefly to combine compatible requests into a batch. Optimization changes compute, memory capacity, memory traffic, or scheduling; measure which bottleneck moved and what quality was lost.
+Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Dynamic batching, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
+\subsubsection*{Mathematics and quantitative reasoning}
+No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+\subsubsection*{Decision and failure reasoning}
+Choose Dynamic batching when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: GPU efficiency improves while queue delay harms time-to-first-token. Compare against the simplest viable baseline and make the decision reversible where possible.
+The key production trap is: One global maximum delay cannot serve both interactive and batch workloads well. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
+\subsubsection*{Worked production method}
+\begin{enumerate}
+\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Dynamic batching.
+\item Baseline: implement or measure the least complex alternative before adding Dynamic batching.
+\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
+\item Decision: accept the design only if the observed gain justifies this cost: GPU efficiency improves while queue delay harms time-to-first-token.
+\item Production gate: instrument the critical path and block or roll back release when this failure appears: One global maximum delay cannot serve both interactive and batch workloads well.
+\end{enumerate}
+\textbf{Evaluate.}\begin{itemize}
+\item Prefill and decode latency separately
+\item throughput at controlled concurrency
+\item memory and bandwidth utilization
+\item quality delta by task slice
+\end{itemize}
+\textbf{Operate.}\begin{itemize}
+\item Benchmark target hardware and kernels
+\item Use realistic batch and sequence distributions
+\item Track numerical format and model version
+\item Retain a correctness reference path
+\end{itemize}
+\subsubsection*{Interview answer blueprint}
+\begin{description}
+\item[Definition] Open with one sentence: A server waits briefly to combine compatible requests into a batch.
+\item[Tradeoff] Then state both sides without hedging: GPU efficiency improves while queue delay harms time-to-first-token.
+\item[Failure] Name a concrete failure and its detection signal: One global maximum delay cannot serve both interactive and batch workloads well.
+\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
+\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
+\end{description}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
+\subsection{Streaming generation}
+\textbf{Learning objective.} Explain Streaming generation from first principles, choose it for a stated workload, measure it, and recover when it fails.
+\subsubsection*{First principles and mental model}
+Servers emit tokens incrementally with backpressure, disconnect handling, and final usage accounting. Optimization changes compute, memory capacity, memory traffic, or scheduling; measure which bottleneck moved and what quality was lost.
+Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Streaming generation, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
+\subsubsection*{Mathematics and quantitative reasoning}
+Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\paragraph{Temperature and top-p sampling}
+\mathblock{p_i(T)=\frac{\exp(z_i/T)}{\sum_j\exp(z_j/T)},\qquad \mathcal V_p=\min\left\{V:\sum_{i\in V}p_i\ge p\right\}}
+\subsubsection*{Decision and failure reasoning}
+Choose Streaming generation when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Perceived latency improves, but partial outputs complicate moderation and retries. Compare against the simplest viable baseline and make the decision reversible where possible.
+The key production trap is: Retrying after visible partial output can duplicate text or side effects. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
+\subsubsection*{Worked production method}
+\begin{enumerate}
+\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Streaming generation.
+\item Baseline: implement or measure the least complex alternative before adding Streaming generation.
+\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
+\item Decision: accept the design only if the observed gain justifies this cost: Perceived latency improves, but partial outputs complicate moderation and retries.
+\item Production gate: instrument the critical path and block or roll back release when this failure appears: Retrying after visible partial output can duplicate text or side effects.
+\end{enumerate}
+\textbf{Evaluate.}\begin{itemize}
+\item Prefill and decode latency separately
+\item throughput at controlled concurrency
+\item memory and bandwidth utilization
+\item quality delta by task slice
+\end{itemize}
+\textbf{Operate.}\begin{itemize}
+\item Benchmark target hardware and kernels
+\item Use realistic batch and sequence distributions
+\item Track numerical format and model version
+\item Retain a correctness reference path
+\end{itemize}
+\subsubsection*{Interview answer blueprint}
+\begin{description}
+\item[Definition] Open with one sentence: Servers emit tokens incrementally with backpressure, disconnect handling, and final usage accounting.
+\item[Tradeoff] Then state both sides without hedging: Perceived latency improves, but partial outputs complicate moderation and retries.
+\item[Failure] Name a concrete failure and its detection signal: Retrying after visible partial output can duplicate text or side effects.
+\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
+\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
+\end{description}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
+\clearpage\section{Backend, APIs, and Microservices}
+\subsection{FastAPI}
+\textbf{Learning objective.} Explain FastAPI from first principles, choose it for a stated workload, measure it, and recover when it fails.
+\subsubsection*{First principles and mental model}
+FastAPI builds typed ASGI APIs from Python hints with validation, dependency injection, and OpenAPI generation. Define contracts, ownership, concurrency, backpressure, and failure semantics before choosing a web framework.
+Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For FastAPI, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
+\subsubsection*{Mathematics and quantitative reasoning}
+No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+\subsubsection*{Decision and failure reasoning}
+Choose FastAPI when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Development is fast, while blocking work must be isolated from the event loop. Compare against the simplest viable baseline and make the decision reversible where possible.
+The key production trap is: Declaring a blocking database or model call inside async code stalls all requests. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
+\subsubsection*{Worked production method}
+\begin{enumerate}
+\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for FastAPI.
+\item Baseline: implement or measure the least complex alternative before adding FastAPI.
+\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
+\item Decision: accept the design only if the observed gain justifies this cost: Development is fast, while blocking work must be isolated from the event loop.
+\item Production gate: instrument the critical path and block or roll back release when this failure appears: Declaring a blocking database or model call inside async code stalls all requests.
+\end{enumerate}
+\textbf{Evaluate.}\begin{itemize}
+\item request and stream latency
+\item queue depth and cancellation lag
+\item error rate by dependency
+\item resource use and saturation
+\end{itemize}
+\textbf{Operate.}\begin{itemize}
+\item Use bounded queues and timeouts
+\item Propagate cancellation
+\item Version schemas and idempotency contracts
+\item Test partial dependency failure
+\end{itemize}
+\subsubsection*{Interview answer blueprint}
+\begin{description}
+\item[Definition] Open with one sentence: FastAPI builds typed ASGI APIs from Python hints with validation, dependency injection, and OpenAPI generation.
+\item[Tradeoff] Then state both sides without hedging: Development is fast, while blocking work must be isolated from the event loop.
+\item[Failure] Name a concrete failure and its detection signal: Declaring a blocking database or model call inside async code stalls all requests.
+\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
+\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
+\end{description}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
+\subsection{Starlette}
+\textbf{Learning objective.} Explain Starlette from first principles, choose it for a stated workload, measure it, and recover when it fails.
+\subsubsection*{First principles and mental model}
+Starlette is a lightweight ASGI toolkit providing routing, middleware, WebSockets, background tasks, and test support. Define contracts, ownership, concurrency, backpressure, and failure semantics before choosing a web framework.
+Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Starlette, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
+\subsubsection*{Mathematics and quantitative reasoning}
+No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+\subsubsection*{Decision and failure reasoning}
+Choose Starlette when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It offers control with fewer batteries than a full API framework. Compare against the simplest viable baseline and make the decision reversible where possible.
+The key production trap is: Reimplementing validation and dependency patterns inconsistently increases defects. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
+\subsubsection*{Worked production method}
+\begin{enumerate}
+\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Starlette.
+\item Baseline: implement or measure the least complex alternative before adding Starlette.
+\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
+\item Decision: accept the design only if the observed gain justifies this cost: It offers control with fewer batteries than a full API framework.
+\item Production gate: instrument the critical path and block or roll back release when this failure appears: Reimplementing validation and dependency patterns inconsistently increases defects.
+\end{enumerate}
+\textbf{Evaluate.}\begin{itemize}
+\item request and stream latency
+\item queue depth and cancellation lag
+\item error rate by dependency
+\item resource use and saturation
+\end{itemize}
+\textbf{Operate.}\begin{itemize}
+\item Use bounded queues and timeouts
+\item Propagate cancellation
+\item Version schemas and idempotency contracts
+\item Test partial dependency failure
+\end{itemize}
+\subsubsection*{Interview answer blueprint}
+\begin{description}
+\item[Definition] Open with one sentence: Starlette is a lightweight ASGI toolkit providing routing, middleware, WebSockets, background tasks, and test support.
+\item[Tradeoff] Then state both sides without hedging: It offers control with fewer batteries than a full API framework.
+\item[Failure] Name a concrete failure and its detection signal: Reimplementing validation and dependency patterns inconsistently increases defects.
+\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
+\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
+\end{description}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
+\subsection{Litestar}
+\textbf{Learning objective.} Explain Litestar from first principles, choose it for a stated workload, measure it, and recover when it fails.
+\subsubsection*{First principles and mental model}
+Litestar is an ASGI framework with typing, dependency injection, OpenAPI, plugins, and data-transfer objects. Define contracts, ownership, concurrency, backpressure, and failure semantics before choosing a web framework.
+Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Litestar, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
+\subsubsection*{Mathematics and quantitative reasoning}
+No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+\subsubsection*{Decision and failure reasoning}
+Choose Litestar when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Rich framework features reduce boilerplate but introduce conventions and migration cost. Compare against the simplest viable baseline and make the decision reversible where possible.
+The key production trap is: Choosing by benchmark alone ignores ecosystem and team familiarity. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
+\subsubsection*{Worked production method}
+\begin{enumerate}
+\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Litestar.
+\item Baseline: implement or measure the least complex alternative before adding Litestar.
+\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
+\item Decision: accept the design only if the observed gain justifies this cost: Rich framework features reduce boilerplate but introduce conventions and migration cost.
+\item Production gate: instrument the critical path and block or roll back release when this failure appears: Choosing by benchmark alone ignores ecosystem and team familiarity.
+\end{enumerate}
+\textbf{Evaluate.}\begin{itemize}
+\item request and stream latency
+\item queue depth and cancellation lag
+\item error rate by dependency
+\item resource use and saturation
+\end{itemize}
+\textbf{Operate.}\begin{itemize}
+\item Use bounded queues and timeouts
+\item Propagate cancellation
+\item Version schemas and idempotency contracts
+\item Test partial dependency failure
+\end{itemize}
+\subsubsection*{Interview answer blueprint}
+\begin{description}
+\item[Definition] Open with one sentence: Litestar is an ASGI framework with typing, dependency injection, OpenAPI, plugins, and data-transfer objects.
+\item[Tradeoff] Then state both sides without hedging: Rich framework features reduce boilerplate but introduce conventions and migration cost.
+\item[Failure] Name a concrete failure and its detection signal: Choosing by benchmark alone ignores ecosystem and team familiarity.
+\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
+\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
+\end{description}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
+\subsection{Flask}
+\textbf{Learning objective.} Explain Flask from first principles, choose it for a stated workload, measure it, and recover when it fails.
+\subsubsection*{First principles and mental model}
+Flask is a minimal WSGI web framework with a large extension ecosystem. Define contracts, ownership, concurrency, backpressure, and failure semantics before choosing a web framework.
+Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Flask, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
+\subsubsection*{Mathematics and quantitative reasoning}
+No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+\subsubsection*{Decision and failure reasoning}
+Choose Flask when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Simplicity suits synchronous services, while async-first streaming needs different architecture. Compare against the simplest viable baseline and make the decision reversible where possible.
+The key production trap is: Assuming an async view converts a WSGI deployment into high-concurrency ASGI is wrong. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
+\subsubsection*{Worked production method}
+\begin{enumerate}
+\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Flask.
+\item Baseline: implement or measure the least complex alternative before adding Flask.
+\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
+\item Decision: accept the design only if the observed gain justifies this cost: Simplicity suits synchronous services, while async-first streaming needs different architecture.
+\item Production gate: instrument the critical path and block or roll back release when this failure appears: Assuming an async view converts a WSGI deployment into high-concurrency ASGI is wrong.
+\end{enumerate}
+\textbf{Evaluate.}\begin{itemize}
+\item request and stream latency
+\item queue depth and cancellation lag
+\item error rate by dependency
+\item resource use and saturation
+\end{itemize}
+\textbf{Operate.}\begin{itemize}
+\item Use bounded queues and timeouts
+\item Propagate cancellation
+\item Version schemas and idempotency contracts
+\item Test partial dependency failure
+\end{itemize}
+\subsubsection*{Interview answer blueprint}
+\begin{description}
+\item[Definition] Open with one sentence: Flask is a minimal WSGI web framework with a large extension ecosystem.
 \item[Tradeoff] Then state both sides without hedging: Simplicity suits synchronous services, while async-first streaming needs different architecture.
 \item[Failure] Name a concrete failure and its detection signal: Assuming an async view converts a WSGI deployment into high-concurrency ASGI is wrong.
 \item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
@@ -483,7 +720,9 @@ The key production trap is: Passing large models to spawned workers duplicates m
 Asyncio cooperatively schedules coroutines on an event loop around awaitable I/O. Reason from Python's object model, execution model, and concurrency boundaries rather than memorizing syntax trivia.
 Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Asyncio, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
 \subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\paragraph{Little's Law for capacity}
+\mathblock{L=\lambda W}
 \subsubsection*{Decision and failure reasoning}
 Choose Asyncio when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: High connection concurrency is efficient, while blocking functions freeze the loop. Compare against the simplest viable baseline and make the decision reversible where possible.
 The key production trap is: Creating coroutines without awaiting them silently drops work. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
@@ -1586,6 +1825,8 @@ Start with the input and output contract. Identify the state or representation b
 Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
 \paragraph{Availability composition}
 \mathblock{A_{series}=\prod_i A_i,\qquad A_{parallel}=1-\prod_i(1-A_i)}
+\paragraph{SLO error budget}
+\mathblock{B_{error}=N(1-SLO),\qquad \operatorname{burn}=\frac{\text{observed bad-event fraction}}{1-SLO}}
 \subsubsection*{Decision and failure reasoning}
 Choose Fault isolation when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Blast radius shrinks at some efficiency cost. Compare against the simplest viable baseline and make the decision reversible where possible.
 The key production trap is: A single global vector index or queue can defeat otherwise isolated services. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
@@ -2715,215 +2956,3 @@ Every prompt is paired with an answer. When an explanation is brief, return to t
 \paragraph{LA-0100 [hard]} Explain Retrieval metrics from first principles, then show how you would evaluate and operate it in production.
 \noindent\textbf{Answer.} Start with the mechanism: Recall@k, precision@k, MRR, MAP, and nDCG measure different ranking behaviors. Make the tradeoff explicit: A metric must match the product objective and judgment granularity. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Optimizing MRR for a task that consumes many passages can worsen context coverage.
 \par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
-\paragraph{MCQ-0101 [medium]} Which statement best describes Embedding geometry?
-\begin{enumerate}[label=\Alph*.]
-\item Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality.
-\item Learned sparse models retain token-aligned inverted-index retrieval while expanding or reweighting terms.
-\item A sparse weighting scheme that combines within-document frequency with inverse collection frequency.
-\item A bi-encoder maps queries and passages into a shared embedding space for nearest-neighbor search.
-\end{enumerate}
-\noindent\textbf{Answer.} Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality.
-\par\textit{Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality. Tradeoff: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Watch for: Mixing an index metric with a differently trained embedding objective silently harms ranking.}
-\paragraph{MCQ-0102 [hard]} What is the central engineering tradeoff of Embedding geometry?
-\begin{enumerate}[label=\Alph*.]
-\item They bridge lexical and semantic matching but increase index size and model cost.
-\item Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions.
-\item Semantic recall improves, while exact names, numbers, and out-of-domain language may regress.
-\item It is transparent and cheap but lacks BM25's term-frequency saturation and tuned length normalization.
-\end{enumerate}
-\noindent\textbf{Answer.} Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions.
-\par\textit{Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality. Tradeoff: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Watch for: Mixing an index metric with a differently trained embedding objective silently harms ranking.}
-\paragraph{MCQ-0103 [hard]} Which failure mode should an interviewer expect you to identify for Embedding geometry?
-\begin{enumerate}[label=\Alph*.]
-\item Unbounded expansion creates latency and storage blowups.
-\item Mixing an index metric with a differently trained embedding objective silently harms ranking.
-\item Evaluating only on in-domain examples hides lexical misses and embedding drift.
-\item Comparing raw cosine scores across changing corpora without rebuilding IDF causes drift.
-\end{enumerate}
-\noindent\textbf{Answer.} Mixing an index metric with a differently trained embedding objective silently harms ranking.
-\par\textit{Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality. Tradeoff: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Watch for: Mixing an index metric with a differently trained embedding objective silently harms ranking.}
-\paragraph{MCQ-0104 [medium]} A design review is specifically concerned with this risk: Mixing an index metric with a differently trained embedding objective silently harms ranking. Which topic should be reviewed first?
-\begin{enumerate}[label=\Alph*.]
-\item Embedding geometry
-\item Sparse neural retrieval
-\item TF-IDF
-\item Dense retrieval
-\end{enumerate}
-\noindent\textbf{Answer.} Embedding geometry
-\par\textit{Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality. Tradeoff: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Watch for: Mixing an index metric with a differently trained embedding objective silently harms ranking.}
-\paragraph{MCQ-0105 [hard]} Which design note most accurately balances the benefits and costs of Embedding geometry?
-\begin{enumerate}[label=\Alph*.]
-\item Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions.
-\item It is transparent and cheap but lacks BM25's term-frequency saturation and tuned length normalization.
-\item Semantic recall improves, while exact names, numbers, and out-of-domain language may regress.
-\item They bridge lexical and semantic matching but increase index size and model cost.
-\end{enumerate}
-\noindent\textbf{Answer.} Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions.
-\par\textit{Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality. Tradeoff: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Watch for: Mixing an index metric with a differently trained embedding objective silently harms ranking.}
-\paragraph{MCQ-0106 [medium]} Which explanation would be strongest in a system-design interview about Embedding geometry?
-\begin{enumerate}[label=\Alph*.]
-\item Learned sparse models retain token-aligned inverted-index retrieval while expanding or reweighting terms.
-\item A sparse weighting scheme that combines within-document frequency with inverse collection frequency.
-\item Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality.
-\item A bi-encoder maps queries and passages into a shared embedding space for nearest-neighbor search.
-\end{enumerate}
-\noindent\textbf{Answer.} Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality.
-\par\textit{Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality. Tradeoff: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Watch for: Mixing an index metric with a differently trained embedding objective silently harms ranking.}
-\paragraph{MCQ-0107 [hard]} Which production warning is most directly associated with Embedding geometry?
-\begin{enumerate}[label=\Alph*.]
-\item Comparing raw cosine scores across changing corpora without rebuilding IDF causes drift.
-\item Unbounded expansion creates latency and storage blowups.
-\item Mixing an index metric with a differently trained embedding objective silently harms ranking.
-\item Evaluating only on in-domain examples hides lexical misses and embedding drift.
-\end{enumerate}
-\noindent\textbf{Answer.} Mixing an index metric with a differently trained embedding objective silently harms ranking.
-\par\textit{Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality. Tradeoff: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Watch for: Mixing an index metric with a differently trained embedding objective silently harms ranking.}
-\paragraph{FC-0108 [medium]} Define Embedding geometry in interview-ready language.
-\noindent\textbf{Answer.} Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality.
-\par\textit{Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality.}
-\paragraph{FC-0109 [hard]} State the main tradeoff and production pitfall for Embedding geometry.
-\noindent\textbf{Answer.} Tradeoff: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Pitfall: Mixing an index metric with a differently trained embedding objective silently harms ranking.
-\par\textit{Tradeoff: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Pitfall: Mixing an index metric with a differently trained embedding objective silently harms ranking.}
-\paragraph{LA-0110 [hard]} Explain Embedding geometry from first principles, then show how you would evaluate and operate it in production.
-\noindent\textbf{Answer.} Start with the mechanism: Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality. Make the tradeoff explicit: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Mixing an index metric with a differently trained embedding objective silently harms ranking.
-\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
-\paragraph{MCQ-0111 [medium]} Which statement best describes Query expansion?
-\begin{enumerate}[label=\Alph*.]
-\item A model jointly encodes query and candidate text to assign a relevance score.
-\item Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval.
-\item A probabilistic lexical ranker that rewards term frequency while saturating repeated terms and normalizing document length.
-\item Recall@k, precision@k, MRR, MAP, and nDCG measure different ranking behaviors.
-\end{enumerate}
-\noindent\textbf{Answer.} Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval.
-\par\textit{Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval. Tradeoff: Recall can improve at the expense of latency and topic drift. Watch for: Letting an LLM expand unconstrained queries can inject unsupported intent.}
-\paragraph{MCQ-0112 [hard]} What is the central engineering tradeoff of Query expansion?
-\begin{enumerate}[label=\Alph*.]
-\item It gives strong precision on a small candidate set but is too expensive for full-corpus retrieval.
-\item A metric must match the product objective and judgment granularity.
-\item It is fast, interpretable, and exact for rare tokens but cannot directly match paraphrases.
-\item Recall can improve at the expense of latency and topic drift.
-\end{enumerate}
-\noindent\textbf{Answer.} Recall can improve at the expense of latency and topic drift.
-\par\textit{Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval. Tradeoff: Recall can improve at the expense of latency and topic drift. Watch for: Letting an LLM expand unconstrained queries can inject unsupported intent.}
-\paragraph{MCQ-0113 [hard]} Which failure mode should an interviewer expect you to identify for Query expansion?
-\begin{enumerate}[label=\Alph*.]
-\item Optimizing MRR for a task that consumes many passages can worsen context coverage.
-\item Treating it as obsolete removes a strong baseline and hurts identifier-heavy queries.
-\item Letting an LLM expand unconstrained queries can inject unsupported intent.
-\item Reranking too many long passages dominates p95 latency.
-\end{enumerate}
-\noindent\textbf{Answer.} Letting an LLM expand unconstrained queries can inject unsupported intent.
-\par\textit{Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval. Tradeoff: Recall can improve at the expense of latency and topic drift. Watch for: Letting an LLM expand unconstrained queries can inject unsupported intent.}
-\paragraph{MCQ-0114 [medium]} A design review is specifically concerned with this risk: Letting an LLM expand unconstrained queries can inject unsupported intent. Which topic should be reviewed first?
-\begin{enumerate}[label=\Alph*.]
-\item BM25
-\item Query expansion
-\item Retrieval metrics
-\item Cross-encoder reranking
-\end{enumerate}
-\noindent\textbf{Answer.} Query expansion
-\par\textit{Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval. Tradeoff: Recall can improve at the expense of latency and topic drift. Watch for: Letting an LLM expand unconstrained queries can inject unsupported intent.}
-\paragraph{MCQ-0115 [hard]} Which design note most accurately balances the benefits and costs of Query expansion?
-\begin{enumerate}[label=\Alph*.]
-\item It gives strong precision on a small candidate set but is too expensive for full-corpus retrieval.
-\item Recall can improve at the expense of latency and topic drift.
-\item It is fast, interpretable, and exact for rare tokens but cannot directly match paraphrases.
-\item A metric must match the product objective and judgment granularity.
-\end{enumerate}
-\noindent\textbf{Answer.} Recall can improve at the expense of latency and topic drift.
-\par\textit{Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval. Tradeoff: Recall can improve at the expense of latency and topic drift. Watch for: Letting an LLM expand unconstrained queries can inject unsupported intent.}
-\paragraph{MCQ-0116 [medium]} Which explanation would be strongest in a system-design interview about Query expansion?
-\begin{enumerate}[label=\Alph*.]
-\item A model jointly encodes query and candidate text to assign a relevance score.
-\item A probabilistic lexical ranker that rewards term frequency while saturating repeated terms and normalizing document length.
-\item Recall@k, precision@k, MRR, MAP, and nDCG measure different ranking behaviors.
-\item Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval.
-\end{enumerate}
-\noindent\textbf{Answer.} Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval.
-\par\textit{Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval. Tradeoff: Recall can improve at the expense of latency and topic drift. Watch for: Letting an LLM expand unconstrained queries can inject unsupported intent.}
-\paragraph{MCQ-0117 [hard]} Which production warning is most directly associated with Query expansion?
-\begin{enumerate}[label=\Alph*.]
-\item Reranking too many long passages dominates p95 latency.
-\item Optimizing MRR for a task that consumes many passages can worsen context coverage.
-\item Letting an LLM expand unconstrained queries can inject unsupported intent.
-\item Treating it as obsolete removes a strong baseline and hurts identifier-heavy queries.
-\end{enumerate}
-\noindent\textbf{Answer.} Letting an LLM expand unconstrained queries can inject unsupported intent.
-\par\textit{Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval. Tradeoff: Recall can improve at the expense of latency and topic drift. Watch for: Letting an LLM expand unconstrained queries can inject unsupported intent.}
-\paragraph{FC-0118 [medium]} Define Query expansion in interview-ready language.
-\noindent\textbf{Answer.} Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval.
-\par\textit{Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval.}
-\paragraph{FC-0119 [hard]} State the main tradeoff and production pitfall for Query expansion.
-\noindent\textbf{Answer.} Tradeoff: Recall can improve at the expense of latency and topic drift. Pitfall: Letting an LLM expand unconstrained queries can inject unsupported intent.
-\par\textit{Tradeoff: Recall can improve at the expense of latency and topic drift. Pitfall: Letting an LLM expand unconstrained queries can inject unsupported intent.}
-\paragraph{LA-0120 [hard]} Explain Query expansion from first principles, then show how you would evaluate and operate it in production.
-\noindent\textbf{Answer.} Start with the mechanism: Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval. Make the tradeoff explicit: Recall can improve at the expense of latency and topic drift. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Letting an LLM expand unconstrained queries can inject unsupported intent.
-\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
-\subsection{Vector Databases and Search Engines}
-\paragraph{MCQ-0121 [medium]} Which statement best describes pgvector?
-\begin{enumerate}[label=\Alph*.]
-\item A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search.
-\item Redis Query Engine adds vector indexes and filters to an in-memory data platform.
-\item Elasticsearch combines inverted indexes, filters, aggregations, and approximate kNN in one search platform.
-\item Milvus is a distributed vector database; Zilliz provides its managed service with multiple index choices.
-\end{enumerate}
-\noindent\textbf{Answer.} A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search.
-\par\textit{A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search. Tradeoff: It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily. Watch for: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.}
-\paragraph{MCQ-0122 [hard]} What is the central engineering tradeoff of pgvector?
-\begin{enumerate}[label=\Alph*.]
-\item It is compelling for existing Elastic estates but vector memory and shard design require care.
-\item It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily.
-\item It targets large-scale separation of compute and storage, with more operational concepts than embedded options.
-\item Very low latency is possible, but RAM cost and persistence design matter at scale.
-\end{enumerate}
-\noindent\textbf{Answer.} It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily.
-\par\textit{A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search. Tradeoff: It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily. Watch for: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.}
-\paragraph{MCQ-0123 [hard]} Which failure mode should an interviewer expect you to identify for pgvector?
-\begin{enumerate}[label=\Alph*.]
-\item Oversharding fragments candidate pools and increases coordination overhead.
-\item Using Redis only as a vector database without capacity planning can evict critical data.
-\item Selecting an index by popularity instead of dataset size and latency-recall tests wastes resources.
-\item Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.
-\end{enumerate}
-\noindent\textbf{Answer.} Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.
-\par\textit{A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search. Tradeoff: It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily. Watch for: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.}
-\paragraph{MCQ-0124 [medium]} A design review is specifically concerned with this risk: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index. Which topic should be reviewed first?
-\begin{enumerate}[label=\Alph*.]
-\item Milvus and Zilliz
-\item Redis vector search
-\item Elasticsearch vector search
-\item pgvector
-\end{enumerate}
-\noindent\textbf{Answer.} pgvector
-\par\textit{A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search. Tradeoff: It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily. Watch for: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.}
-\paragraph{MCQ-0125 [hard]} Which design note most accurately balances the benefits and costs of pgvector?
-\begin{enumerate}[label=\Alph*.]
-\item It targets large-scale separation of compute and storage, with more operational concepts than embedded options.
-\item Very low latency is possible, but RAM cost and persistence design matter at scale.
-\item It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily.
-\item It is compelling for existing Elastic estates but vector memory and shard design require care.
-\end{enumerate}
-\noindent\textbf{Answer.} It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily.
-\par\textit{A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search. Tradeoff: It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily. Watch for: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.}
-\paragraph{MCQ-0126 [medium]} Which explanation would be strongest in a system-design interview about pgvector?
-\begin{enumerate}[label=\Alph*.]
-\item Elasticsearch combines inverted indexes, filters, aggregations, and approximate kNN in one search platform.
-\item Redis Query Engine adds vector indexes and filters to an in-memory data platform.
-\item Milvus is a distributed vector database; Zilliz provides its managed service with multiple index choices.
-\item A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search.
-\end{enumerate}
-\noindent\textbf{Answer.} A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search.
-\par\textit{A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search. Tradeoff: It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily. Watch for: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.}
-\paragraph{MCQ-0127 [hard]} Which production warning is most directly associated with pgvector?
-\begin{enumerate}[label=\Alph*.]
-\item Selecting an index by popularity instead of dataset size and latency-recall tests wastes resources.
-\item Using Redis only as a vector database without capacity planning can evict critical data.
-\item Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.
-\item Oversharding fragments candidate pools and increases coordination overhead.
-\end{enumerate}
-\noindent\textbf{Answer.} Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.
-\par\textit{A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search. Tradeoff: It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily. Watch for: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.}
-\paragraph{FC-0128 [medium]} Define pgvector in interview-ready language.
-\noindent\textbf{Answer.} A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search.
-\par\textit{A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search.}
-\paragraph{FC-0129 [hard]} State the main tradeoff and production pitfall for pgvector.

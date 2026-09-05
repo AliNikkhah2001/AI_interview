@@ -1,3 +1,219 @@
+\item Decision: accept the design only if the observed gain justifies this cost: Targeted context improves reliability and cost, but selection logic becomes core application code.
+\item Production gate: instrument the critical path and block or roll back release when this failure appears: Appending everything causes attention dilution and instruction conflicts.
+\end{enumerate}
+\textbf{Evaluate.}\begin{itemize}
+\item Task success and intervention rate
+\item tool-call validity and side-effect accuracy
+\item steps, tokens, latency, and cost
+\item policy violations and recovery rate
+\end{itemize}
+\textbf{Operate.}\begin{itemize}
+\item Use scoped capabilities and short-lived credentials
+\item Persist idempotency keys before side effects
+\item Require approval by risk, not by UI convenience
+\item Replay traces in an isolated evaluation environment
+\end{itemize}
+\subsubsection*{Interview answer blueprint}
+\begin{description}
+\item[Definition] Open with one sentence: Context engineering selects instructions, memory, evidence, tools, schemas, and state for each model turn.
+\item[Tradeoff] Then state both sides without hedging: Targeted context improves reliability and cost, but selection logic becomes core application code.
+\item[Failure] Name a concrete failure and its detection signal: Appending everything causes attention dilution and instruction conflicts.
+\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
+\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
+\end{description}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
+\subsection{Sandbox runs}
+\textbf{Learning objective.} Explain Sandbox runs from first principles, choose it for a stated workload, measure it, and recover when it fails.
+\subsubsection*{First principles and mental model}
+A sandbox isolates untrusted code with resource limits, scoped files, network policy, timeouts, and audit logs. An agent is a policy choosing actions under partial information; production safety comes from deterministic boundaries around that policy.
+Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Sandbox runs, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
+\subsubsection*{Mathematics and quantitative reasoning}
+No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+\subsubsection*{Decision and failure reasoning}
+Choose Sandbox runs when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Isolation enables capability while imposing startup and compatibility overhead. Compare against the simplest viable baseline and make the decision reversible where possible.
+The key production trap is: A container without kernel, credential, and network boundaries is not a sufficient sandbox. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
+\subsubsection*{Worked production method}
+\begin{enumerate}
+\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Sandbox runs.
+\item Baseline: implement or measure the least complex alternative before adding Sandbox runs.
+\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
+\item Decision: accept the design only if the observed gain justifies this cost: Isolation enables capability while imposing startup and compatibility overhead.
+\item Production gate: instrument the critical path and block or roll back release when this failure appears: A container without kernel, credential, and network boundaries is not a sufficient sandbox.
+\end{enumerate}
+\textbf{Evaluate.}\begin{itemize}
+\item Task success and intervention rate
+\item tool-call validity and side-effect accuracy
+\item steps, tokens, latency, and cost
+\item policy violations and recovery rate
+\end{itemize}
+\textbf{Operate.}\begin{itemize}
+\item Use scoped capabilities and short-lived credentials
+\item Persist idempotency keys before side effects
+\item Require approval by risk, not by UI convenience
+\item Replay traces in an isolated evaluation environment
+\end{itemize}
+\subsubsection*{Interview answer blueprint}
+\begin{description}
+\item[Definition] Open with one sentence: A sandbox isolates untrusted code with resource limits, scoped files, network policy, timeouts, and audit logs.
+\item[Tradeoff] Then state both sides without hedging: Isolation enables capability while imposing startup and compatibility overhead.
+\item[Failure] Name a concrete failure and its detection signal: A container without kernel, credential, and network boundaries is not a sufficient sandbox.
+\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
+\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
+\end{description}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
+\clearpage\section{Orchestration Frameworks}
+\subsection{LangGraph}
+\textbf{Learning objective.} Explain LangGraph from first principles, choose it for a stated workload, measure it, and recover when it fails.
+\subsubsection*{First principles and mental model}
+LangGraph models long-running agent workflows as stateful graphs with checkpoints, interrupts, streaming, and durable execution. Represent long-running work as explicit state and transitions, with durable checkpoints around nondeterministic or side-effecting boundaries.
+Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For LangGraph, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
+\subsubsection*{Mathematics and quantitative reasoning}
+No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+\subsubsection*{Decision and failure reasoning}
+Choose LangGraph when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Fine-grained control aids production reliability but exposes more state and graph design decisions. Compare against the simplest viable baseline and make the decision reversible where possible.
+The key production trap is: Non-idempotent node side effects make checkpoint replay unsafe. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
+\subsubsection*{Worked production method}
+\begin{enumerate}
+\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for LangGraph.
+\item Baseline: implement or measure the least complex alternative before adding LangGraph.
+\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
+\item Decision: accept the design only if the observed gain justifies this cost: Fine-grained control aids production reliability but exposes more state and graph design decisions.
+\item Production gate: instrument the critical path and block or roll back release when this failure appears: Non-idempotent node side effects make checkpoint replay unsafe.
+\end{enumerate}
+\textbf{Evaluate.}\begin{itemize}
+\item Completion and resume success
+\item duplicate-effect rate
+\item time in each state and queue
+\item human-interrupt and compensation outcomes
+\end{itemize}
+\textbf{Operate.}\begin{itemize}
+\item Keep state schemas versioned
+\item Make activities idempotent
+\item Bound loops and retries
+\item Test crash recovery at every checkpoint
+\end{itemize}
+\subsubsection*{Interview answer blueprint}
+\begin{description}
+\item[Definition] Open with one sentence: LangGraph models long-running agent workflows as stateful graphs with checkpoints, interrupts, streaming, and durable execution.
+\item[Tradeoff] Then state both sides without hedging: Fine-grained control aids production reliability but exposes more state and graph design decisions.
+\item[Failure] Name a concrete failure and its detection signal: Non-idempotent node side effects make checkpoint replay unsafe.
+\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
+\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
+\end{description}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
+\subsection{LlamaIndex workflows}
+\textbf{Learning objective.} Explain LlamaIndex workflows from first principles, choose it for a stated workload, measure it, and recover when it fails.
+\subsubsection*{First principles and mental model}
+Event-driven workflows coordinate retrieval, tools, agents, and structured steps in the LlamaIndex ecosystem. Represent long-running work as explicit state and transitions, with durable checkpoints around nondeterministic or side-effecting boundaries.
+Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For LlamaIndex workflows, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
+\subsubsection*{Mathematics and quantitative reasoning}
+No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+\subsubsection*{Decision and failure reasoning}
+Choose LlamaIndex workflows when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Strong data and indexing integrations speed RAG work but can couple application flow to framework abstractions. Compare against the simplest viable baseline and make the decision reversible where possible.
+The key production trap is: Hiding all retrieval behind defaults makes evaluation and migration difficult. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
+\subsubsection*{Worked production method}
+\begin{enumerate}
+\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for LlamaIndex workflows.
+\item Baseline: implement or measure the least complex alternative before adding LlamaIndex workflows.
+\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
+\item Decision: accept the design only if the observed gain justifies this cost: Strong data and indexing integrations speed RAG work but can couple application flow to framework abstractions.
+\item Production gate: instrument the critical path and block or roll back release when this failure appears: Hiding all retrieval behind defaults makes evaluation and migration difficult.
+\end{enumerate}
+\textbf{Evaluate.}\begin{itemize}
+\item Completion and resume success
+\item duplicate-effect rate
+\item time in each state and queue
+\item human-interrupt and compensation outcomes
+\end{itemize}
+\textbf{Operate.}\begin{itemize}
+\item Keep state schemas versioned
+\item Make activities idempotent
+\item Bound loops and retries
+\item Test crash recovery at every checkpoint
+\end{itemize}
+\subsubsection*{Interview answer blueprint}
+\begin{description}
+\item[Definition] Open with one sentence: Event-driven workflows coordinate retrieval, tools, agents, and structured steps in the LlamaIndex ecosystem.
+\item[Tradeoff] Then state both sides without hedging: Strong data and indexing integrations speed RAG work but can couple application flow to framework abstractions.
+\item[Failure] Name a concrete failure and its detection signal: Hiding all retrieval behind defaults makes evaluation and migration difficult.
+\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
+\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
+\end{description}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
+\subsection{Haystack pipelines}
+\textbf{Learning objective.} Explain Haystack pipelines from first principles, choose it for a stated workload, measure it, and recover when it fails.
+\subsubsection*{First principles and mental model}
+Haystack connects typed components into retrieval, generation, routing, and agent pipelines. Represent long-running work as explicit state and transitions, with durable checkpoints around nondeterministic or side-effecting boundaries.
+Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Haystack pipelines, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
+\subsubsection*{Mathematics and quantitative reasoning}
+No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+\subsubsection*{Decision and failure reasoning}
+Choose Haystack pipelines when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Explicit components support testing, while custom graphs still require lifecycle discipline. Compare against the simplest viable baseline and make the decision reversible where possible.
+The key production trap is: Allowing incompatible document schemas across components creates runtime surprises. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
+\subsubsection*{Worked production method}
+\begin{enumerate}
+\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Haystack pipelines.
+\item Baseline: implement or measure the least complex alternative before adding Haystack pipelines.
+\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
+\item Decision: accept the design only if the observed gain justifies this cost: Explicit components support testing, while custom graphs still require lifecycle discipline.
+\item Production gate: instrument the critical path and block or roll back release when this failure appears: Allowing incompatible document schemas across components creates runtime surprises.
+\end{enumerate}
+\textbf{Evaluate.}\begin{itemize}
+\item Completion and resume success
+\item duplicate-effect rate
+\item time in each state and queue
+\item human-interrupt and compensation outcomes
+\end{itemize}
+\textbf{Operate.}\begin{itemize}
+\item Keep state schemas versioned
+\item Make activities idempotent
+\item Bound loops and retries
+\item Test crash recovery at every checkpoint
+\end{itemize}
+\subsubsection*{Interview answer blueprint}
+\begin{description}
+\item[Definition] Open with one sentence: Haystack connects typed components into retrieval, generation, routing, and agent pipelines.
+\item[Tradeoff] Then state both sides without hedging: Explicit components support testing, while custom graphs still require lifecycle discipline.
+\item[Failure] Name a concrete failure and its detection signal: Allowing incompatible document schemas across components creates runtime surprises.
+\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
+\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
+\end{description}
+\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
+\subsection{PydanticAI}
+\textbf{Learning objective.} Explain PydanticAI from first principles, choose it for a stated workload, measure it, and recover when it fails.
+\subsubsection*{First principles and mental model}
+PydanticAI uses typed dependencies, tools, results, and validation to build model-agnostic Python agents. Represent long-running work as explicit state and transitions, with durable checkpoints around nondeterministic or side-effecting boundaries.
+Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For PydanticAI, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
+\subsubsection*{Mathematics and quantitative reasoning}
+No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+\subsubsection*{Decision and failure reasoning}
+Choose PydanticAI when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Type safety improves integration but cannot validate semantic truth. Compare against the simplest viable baseline and make the decision reversible where possible.
+The key production trap is: Confusing schema conformance with a correct answer produces false confidence. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
+\subsubsection*{Worked production method}
+\begin{enumerate}
+\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for PydanticAI.
+\item Baseline: implement or measure the least complex alternative before adding PydanticAI.
+\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
+\item Decision: accept the design only if the observed gain justifies this cost: Type safety improves integration but cannot validate semantic truth.
+\item Production gate: instrument the critical path and block or roll back release when this failure appears: Confusing schema conformance with a correct answer produces false confidence.
+\end{enumerate}
+\textbf{Evaluate.}\begin{itemize}
+\item Completion and resume success
+\item duplicate-effect rate
+\item time in each state and queue
+\item human-interrupt and compensation outcomes
+\end{itemize}
+\textbf{Operate.}\begin{itemize}
+\item Keep state schemas versioned
+\item Make activities idempotent
+\item Bound loops and retries
+\item Test crash recovery at every checkpoint
+\end{itemize}
+\subsubsection*{Interview answer blueprint}
+\begin{description}
+\item[Definition] Open with one sentence: PydanticAI uses typed dependencies, tools, results, and validation to build model-agnostic Python agents.
+\item[Tradeoff] Then state both sides without hedging: Type safety improves integration but cannot validate semantic truth.
+\item[Failure] Name a concrete failure and its detection signal: Confusing schema conformance with a correct answer produces false confidence.
 \item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
 \item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
 \end{description}
@@ -164,7 +380,9 @@ The key production trap is: Optimizing against a leaky judge overfits wording in
 Temporal persists workflow history and replays deterministic workflow code around durable activities. Represent long-running work as explicit state and transitions, with durable checkpoints around nondeterministic or side-effecting boundaries.
 Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Temporal, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
 \subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\paragraph{Exponential backoff with jitter}
+\mathblock{d_n\sim U\left(0,\min(d_{max},d_0 2^n)\right),\qquad N_{attempts}\le 1+\left\lfloor\frac{B}{C_{attempt}}\right\rfloor}
 \subsubsection*{Decision and failure reasoning}
 Choose Temporal when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It provides robust retries and long-running execution but requires deterministic workflow discipline. Compare against the simplest viable baseline and make the decision reversible where possible.
 The key production trap is: Reading wall-clock time or random state directly in replayed code causes nondeterminism. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
@@ -360,7 +578,9 @@ The key production trap is: Logging secrets or personal data by default creates 
 Counters, histograms, gauges, service-level indicators, and objectives quantify reliability and performance. Connect request traces, semantic evaluation, infrastructure metrics, and business outcomes without treating any single signal as ground truth.
 Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Metrics and SLOs, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
 \subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\paragraph{SLO error budget}
+\mathblock{B_{error}=N(1-SLO),\qquad \operatorname{burn}=\frac{\text{observed bad-event fraction}}{1-SLO}}
 \subsubsection*{Decision and failure reasoning}
 Choose Metrics and SLOs when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Aggregate signals scale well but cannot explain individual semantic failures. Compare against the simplest viable baseline and make the decision reversible where possible.
 The key production trap is: Averaging latency hides long-tail p95 and p99 user pain. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
@@ -633,7 +853,9 @@ The key production trap is: Saving mutable datasets without immutable versions u
 Drift monitoring detects changes in inputs, retrieved evidence, outputs, model versions, and user behavior. Connect request traces, semantic evaluation, infrastructure metrics, and business outcomes without treating any single signal as ground truth.
 Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Prompt and model drift, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
 \subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\paragraph{Distribution drift with KL and JS divergence}
+\mathblock{D_{KL}(P\|Q)=\sum_i P_i\log\frac{P_i}{Q_i},\qquad JS(P,Q)=\frac12D_{KL}(P\|M)+\frac12D_{KL}(Q\|M),\ M=\frac{P+Q}{2}}
 \subsubsection*{Decision and failure reasoning}
 Choose Prompt and model drift when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Alerts catch regressions but thresholds must distinguish seasonality from harm. Compare against the simplest viable baseline and make the decision reversible where possible.
 The key production trap is: Measuring embedding distribution shift alone does not prove answer quality changed. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
@@ -713,7 +935,9 @@ The key production trap is: Tracking only average cost hides pathological long-r
 Online evaluators combine sampled judges, deterministic checks, human feedback, and business outcomes. Connect request traces, semantic evaluation, infrastructure metrics, and business outcomes without treating any single signal as ground truth.
 Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Evaluation in production, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
 \subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\paragraph{SLO error budget}
+\mathblock{B_{error}=N(1-SLO),\qquad \operatorname{burn}=\frac{\text{observed bad-event fraction}}{1-SLO}}
 \subsubsection*{Decision and failure reasoning}
 Choose Evaluation in production when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Live coverage improves realism but evaluations must not expose or delay users. Compare against the simplest viable baseline and make the decision reversible where possible.
 The key production trap is: Treating implicit clicks as unambiguous quality labels creates bias. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
@@ -1143,7 +1367,9 @@ The key production trap is: Requesting whole GPUs for tiny models can strand cap
 Gateways normalize provider APIs and add routing, budgets, rate limits, fallbacks, caching, and audit policy. Serving is a token-and-memory scheduling problem wrapped in release engineering, routing, and reliability controls.
 Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For LLM gateways, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
 \subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\paragraph{LLM request cost}
+\mathblock{C_{req}=\frac{T_{in}P_{in}+T_{out}P_{out}}{10^6}+C_{retrieval}+C_{tools}+C_{infra}}
 \subsubsection*{Decision and failure reasoning}
 Choose LLM gateways when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Central control improves governance but becomes a high-impact availability and security dependency. Compare against the simplest viable baseline and make the decision reversible where possible.
 The key production trap is: Automatic fallback across non-equivalent models can silently change behavior. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
@@ -1769,7 +1995,13 @@ The key production trap is: Forgetting vocabulary changes invalidates checkpoint
 Attention computes scaled query-key scores, applies masking and softmax, then mixes value vectors. Track tensor shapes, probability objectives, gradient paths, and memory movement; architecture names are shorthand for these mechanisms.
 Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Self-attention math, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
 \subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\paragraph{Scaled dot-product attention}
+\mathblock{\operatorname{Attention}(Q,K,V)=\operatorname{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}+M\right)V}
+\paragraph{Softmax and its gradient}
+\mathblock{p_i=\frac{e^{z_i}}{\sum_j e^{z_j}},\qquad \frac{\partial p_i}{\partial z_j}=p_i(\delta_{ij}-p_j)}
+\paragraph{Attention compute and memory}
+\mathblock{\operatorname{FLOPs}(QK^\top)\approx2n^2d,\qquad M_{scores}=\Theta(n^2),\qquad M_{Flash}=\Theta(nd)\ \text{auxiliary}}
 \subsubsection*{Decision and failure reasoning}
 Choose Self-attention math when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Every token can interact directly, while standard sequence cost grows quadratically. Compare against the simplest viable baseline and make the decision reversible where possible.
 The key production trap is: Omitting the square-root head-dimension scale saturates softmax gradients. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
@@ -2089,7 +2321,13 @@ The key production trap is: Expert collapse and uneven routing create stragglers
 Next-token training factorizes sequence likelihood from left to right under a causal mask. Track tensor shapes, probability objectives, gradient paths, and memory movement; architecture names are shorthand for these mechanisms.
 Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Causal language modeling, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
 \subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\paragraph{Softmax and its gradient}
+\mathblock{p_i=\frac{e^{z_i}}{\sum_j e^{z_j}},\qquad \frac{\partial p_i}{\partial z_j}=p_i(\delta_{ij}-p_j)}
+\paragraph{Cross-entropy and perplexity}
+\mathblock{\mathcal L=-\frac1T\sum_{t=1}^{T}\log p_\theta(x_t\mid x_{<t}),\qquad \operatorname{PPL}=e^{\mathcal L}}
+\paragraph{Temperature and top-p sampling}
+\mathblock{p_i(T)=\frac{\exp(z_i/T)}{\sum_j\exp(z_j/T)},\qquad \mathcal V_p=\min\left\{V:\sum_{i\in V}p_i\ge p\right\}}
 \subsubsection*{Decision and failure reasoning}
 Choose Causal language modeling when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It provides a simple scalable objective but does not directly optimize instruction usefulness or truth. Compare against the simplest viable baseline and make the decision reversible where possible.
 The key production trap is: Interpreting low perplexity as safe task performance is invalid. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
@@ -2128,7 +2366,9 @@ The key production trap is: Interpreting low perplexity as safe task performance
 Cross-entropy is negative log likelihood; perplexity exponentiates average token loss. Track tensor shapes, probability objectives, gradient paths, and memory movement; architecture names are shorthand for these mechanisms.
 Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Cross-entropy and perplexity, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
 \subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\paragraph{Cross-entropy and perplexity}
+\mathblock{\mathcal L=-\frac1T\sum_{t=1}^{T}\log p_\theta(x_t\mid x_{<t}),\qquad \operatorname{PPL}=e^{\mathcal L}}
 \subsubsection*{Decision and failure reasoning}
 Choose Cross-entropy and perplexity when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It is stable for model comparison on the same tokenization and data, not across arbitrary setups. Compare against the simplest viable baseline and make the decision reversible where possible.
 The key production trap is: Comparing perplexity across vocabularies or tokenizers is misleading. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
@@ -2206,7 +2446,9 @@ The key production trap is: Training on conflicting instructions without provena
 A preference model supplies rewards while PPO constrains policy updates relative to a reference model. Track tensor shapes, probability objectives, gradient paths, and memory movement; architecture names are shorthand for these mechanisms.
 Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For RLHF and PPO, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
 \subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\paragraph{PPO clipped objective}
+\mathblock{L^{clip}=\mathbb E_t\left[\min\left(r_tA_t,\operatorname{clip}(r_t,1-\epsilon,1+\epsilon)A_t\right)\right],\quad r_t=\frac{\pi_\theta(a_t\mid s_t)}{\pi_{old}(a_t\mid s_t)}}
 \subsubsection*{Decision and failure reasoning}
 Choose RLHF and PPO when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It can optimize human preferences but adds reward hacking and training complexity. Compare against the simplest viable baseline and make the decision reversible where possible.
 The key production trap is: A biased reward model can produce confidently optimized failure modes. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
@@ -2245,7 +2487,9 @@ The key production trap is: A biased reward model can produce confidently optimi
 Direct Preference Optimization fits preferred over rejected responses through a classification-style objective relative to a reference policy. Track tensor shapes, probability objectives, gradient paths, and memory movement; architecture names are shorthand for these mechanisms.
 Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For DPO, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
 \subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\paragraph{Direct Preference Optimization}
+\mathblock{\mathcal L_{DPO}=-\log\sigma\left(\beta\left[\log\frac{\pi_\theta(y_w\mid x)}{\pi_{ref}(y_w\mid x)}-\log\frac{\pi_\theta(y_l\mid x)}{\pi_{ref}(y_l\mid x)}\right]\right)}
 \subsubsection*{Decision and failure reasoning}
 Choose DPO when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It simplifies preference training but still depends on pair quality and distribution coverage. Compare against the simplest viable baseline and make the decision reversible where possible.
 The key production trap is: Treating implicit user choices as clean preferences introduces confounding. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
@@ -2406,7 +2650,11 @@ The key production trap is: Distilling only easy teacher outputs creates a decep
 Autoregressive decoding stores prior keys and values so each new token avoids recomputing attention over the entire prefix. Optimization changes compute, memory capacity, memory traffic, or scheduling; measure which bottleneck moved and what quality was lost.
 Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For KV caching, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
 \subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\paragraph{KV-cache memory}
+\mathblock{M_{KV}=B\,L\,S\,2\,H_{kv}\,D_h\,b}
+\paragraph{GQA KV reduction}
+\mathblock{\frac{M_{KV}^{GQA}}{M_{KV}^{MHA}}=\frac{H_{kv}}{H_q}}
 \subsubsection*{Decision and failure reasoning}
 Choose KV caching when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Decode speed improves while cache memory grows with layers, sequence, batch, and KV heads. Compare against the simplest viable baseline and make the decision reversible where possible.
 The key production trap is: Capacity planning only model weights causes out-of-memory failures at long context. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
@@ -2567,6 +2815,8 @@ FlashAttention tiles exact attention to reduce high-bandwidth-memory traffic and
 Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For FlashAttention, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
 \subsubsection*{Mathematics and quantitative reasoning}
 Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\paragraph{Scaled dot-product attention}
+\mathblock{\operatorname{Attention}(Q,K,V)=\operatorname{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}+M\right)V}
 \paragraph{Attention compute and memory}
 \mathblock{\operatorname{FLOPs}(QK^\top)\approx2n^2d,\qquad M_{scores}=\Theta(n^2),\qquad M_{Flash}=\Theta(nd)\ \text{auxiliary}}
 \subsubsection*{Decision and failure reasoning}
@@ -2607,7 +2857,11 @@ The key production trap is: Calling it subquadratic compute confuses IO optimiza
 Grouped-query and multi-query attention share key-value heads across query heads to shrink KV cache and memory bandwidth. Optimization changes compute, memory capacity, memory traffic, or scheduling; measure which bottleneck moved and what quality was lost.
 Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For GQA and MQA, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
 \subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\paragraph{KV-cache memory}
+\mathblock{M_{KV}=B\,L\,S\,2\,H_{kv}\,D_h\,b}
+\paragraph{GQA KV reduction}
+\mathblock{\frac{M_{KV}^{GQA}}{M_{KV}^{MHA}}=\frac{H_{kv}}{H_q}}
 \subsubsection*{Decision and failure reasoning}
 Choose GQA and MQA when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Decode efficiency improves, with possible quality loss relative to full multi-head KV. Compare against the simplest viable baseline and make the decision reversible where possible.
 The key production trap is: Converting weights naively after training does not reproduce a model trained for shared KV heads. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
@@ -2810,7 +3064,9 @@ The key production trap is: Too few microbatches leave stages idle. Trace that f
 Replicas serve independent requests and scale throughput with routing and load balancing. Optimization changes compute, memory capacity, memory traffic, or scheduling; measure which bottleneck moved and what quality was lost.
 Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Data parallel inference, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
 \subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
+Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\paragraph{Amdahl's Law}
+\mathblock{S(N)=\frac{1}{(1-p)+p/N}}
 \subsubsection*{Decision and failure reasoning}
 Choose Data parallel inference when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It is operationally simple but duplicates model weights on every replica. Compare against the simplest viable baseline and make the decision reversible where possible.
 The key production trap is: Random routing ignores prefix-cache locality and uneven sequence lengths. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
@@ -2876,238 +3132,3 @@ The key production trap is: Average expert load hides hot experts that gate step
 \subsubsection*{Interview answer blueprint}
 \begin{description}
 \item[Definition] Open with one sentence: MoE experts are distributed across devices and tokens are routed with all-to-all communication.
-\item[Tradeoff] Then state both sides without hedging: Parameter capacity scales, while communication and load balance determine performance.
-\item[Failure] Name a concrete failure and its detection signal: Average expert load hides hot experts that gate step time.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
-\subsection{Dynamic batching}
-\textbf{Learning objective.} Explain Dynamic batching from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-A server waits briefly to combine compatible requests into a batch. Optimization changes compute, memory capacity, memory traffic, or scheduling; measure which bottleneck moved and what quality was lost.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Dynamic batching, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
-\subsubsection*{Decision and failure reasoning}
-Choose Dynamic batching when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: GPU efficiency improves while queue delay harms time-to-first-token. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: One global maximum delay cannot serve both interactive and batch workloads well. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
-\begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Dynamic batching.
-\item Baseline: implement or measure the least complex alternative before adding Dynamic batching.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: GPU efficiency improves while queue delay harms time-to-first-token.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: One global maximum delay cannot serve both interactive and batch workloads well.
-\end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
-\item Prefill and decode latency separately
-\item throughput at controlled concurrency
-\item memory and bandwidth utilization
-\item quality delta by task slice
-\end{itemize}
-\textbf{Operate.}\begin{itemize}
-\item Benchmark target hardware and kernels
-\item Use realistic batch and sequence distributions
-\item Track numerical format and model version
-\item Retain a correctness reference path
-\end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: A server waits briefly to combine compatible requests into a batch.
-\item[Tradeoff] Then state both sides without hedging: GPU efficiency improves while queue delay harms time-to-first-token.
-\item[Failure] Name a concrete failure and its detection signal: One global maximum delay cannot serve both interactive and batch workloads well.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
-\subsection{Streaming generation}
-\textbf{Learning objective.} Explain Streaming generation from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-Servers emit tokens incrementally with backpressure, disconnect handling, and final usage accounting. Optimization changes compute, memory capacity, memory traffic, or scheduling; measure which bottleneck moved and what quality was lost.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Streaming generation, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
-\subsubsection*{Decision and failure reasoning}
-Choose Streaming generation when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Perceived latency improves, but partial outputs complicate moderation and retries. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Retrying after visible partial output can duplicate text or side effects. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
-\begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Streaming generation.
-\item Baseline: implement or measure the least complex alternative before adding Streaming generation.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: Perceived latency improves, but partial outputs complicate moderation and retries.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Retrying after visible partial output can duplicate text or side effects.
-\end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
-\item Prefill and decode latency separately
-\item throughput at controlled concurrency
-\item memory and bandwidth utilization
-\item quality delta by task slice
-\end{itemize}
-\textbf{Operate.}\begin{itemize}
-\item Benchmark target hardware and kernels
-\item Use realistic batch and sequence distributions
-\item Track numerical format and model version
-\item Retain a correctness reference path
-\end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: Servers emit tokens incrementally with backpressure, disconnect handling, and final usage accounting.
-\item[Tradeoff] Then state both sides without hedging: Perceived latency improves, but partial outputs complicate moderation and retries.
-\item[Failure] Name a concrete failure and its detection signal: Retrying after visible partial output can duplicate text or side effects.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
-\clearpage\section{Backend, APIs, and Microservices}
-\subsection{FastAPI}
-\textbf{Learning objective.} Explain FastAPI from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-FastAPI builds typed ASGI APIs from Python hints with validation, dependency injection, and OpenAPI generation. Define contracts, ownership, concurrency, backpressure, and failure semantics before choosing a web framework.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For FastAPI, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
-\subsubsection*{Decision and failure reasoning}
-Choose FastAPI when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Development is fast, while blocking work must be isolated from the event loop. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Declaring a blocking database or model call inside async code stalls all requests. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
-\begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for FastAPI.
-\item Baseline: implement or measure the least complex alternative before adding FastAPI.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: Development is fast, while blocking work must be isolated from the event loop.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Declaring a blocking database or model call inside async code stalls all requests.
-\end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
-\item request and stream latency
-\item queue depth and cancellation lag
-\item error rate by dependency
-\item resource use and saturation
-\end{itemize}
-\textbf{Operate.}\begin{itemize}
-\item Use bounded queues and timeouts
-\item Propagate cancellation
-\item Version schemas and idempotency contracts
-\item Test partial dependency failure
-\end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: FastAPI builds typed ASGI APIs from Python hints with validation, dependency injection, and OpenAPI generation.
-\item[Tradeoff] Then state both sides without hedging: Development is fast, while blocking work must be isolated from the event loop.
-\item[Failure] Name a concrete failure and its detection signal: Declaring a blocking database or model call inside async code stalls all requests.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
-\subsection{Starlette}
-\textbf{Learning objective.} Explain Starlette from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-Starlette is a lightweight ASGI toolkit providing routing, middleware, WebSockets, background tasks, and test support. Define contracts, ownership, concurrency, backpressure, and failure semantics before choosing a web framework.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Starlette, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
-\subsubsection*{Decision and failure reasoning}
-Choose Starlette when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It offers control with fewer batteries than a full API framework. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Reimplementing validation and dependency patterns inconsistently increases defects. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
-\begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Starlette.
-\item Baseline: implement or measure the least complex alternative before adding Starlette.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: It offers control with fewer batteries than a full API framework.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Reimplementing validation and dependency patterns inconsistently increases defects.
-\end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
-\item request and stream latency
-\item queue depth and cancellation lag
-\item error rate by dependency
-\item resource use and saturation
-\end{itemize}
-\textbf{Operate.}\begin{itemize}
-\item Use bounded queues and timeouts
-\item Propagate cancellation
-\item Version schemas and idempotency contracts
-\item Test partial dependency failure
-\end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: Starlette is a lightweight ASGI toolkit providing routing, middleware, WebSockets, background tasks, and test support.
-\item[Tradeoff] Then state both sides without hedging: It offers control with fewer batteries than a full API framework.
-\item[Failure] Name a concrete failure and its detection signal: Reimplementing validation and dependency patterns inconsistently increases defects.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
-\subsection{Litestar}
-\textbf{Learning objective.} Explain Litestar from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-Litestar is an ASGI framework with typing, dependency injection, OpenAPI, plugins, and data-transfer objects. Define contracts, ownership, concurrency, backpressure, and failure semantics before choosing a web framework.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Litestar, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
-\subsubsection*{Decision and failure reasoning}
-Choose Litestar when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Rich framework features reduce boilerplate but introduce conventions and migration cost. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Choosing by benchmark alone ignores ecosystem and team familiarity. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
-\begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Litestar.
-\item Baseline: implement or measure the least complex alternative before adding Litestar.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: Rich framework features reduce boilerplate but introduce conventions and migration cost.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Choosing by benchmark alone ignores ecosystem and team familiarity.
-\end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
-\item request and stream latency
-\item queue depth and cancellation lag
-\item error rate by dependency
-\item resource use and saturation
-\end{itemize}
-\textbf{Operate.}\begin{itemize}
-\item Use bounded queues and timeouts
-\item Propagate cancellation
-\item Version schemas and idempotency contracts
-\item Test partial dependency failure
-\end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: Litestar is an ASGI framework with typing, dependency injection, OpenAPI, plugins, and data-transfer objects.
-\item[Tradeoff] Then state both sides without hedging: Rich framework features reduce boilerplate but introduce conventions and migration cost.
-\item[Failure] Name a concrete failure and its detection signal: Choosing by benchmark alone ignores ecosystem and team familiarity.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
-\subsection{Flask}
-\textbf{Learning objective.} Explain Flask from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-Flask is a minimal WSGI web framework with a large extension ecosystem. Define contracts, ownership, concurrency, backpressure, and failure semantics before choosing a web framework.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Flask, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
-\subsubsection*{Decision and failure reasoning}
-Choose Flask when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Simplicity suits synchronous services, while async-first streaming needs different architecture. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Assuming an async view converts a WSGI deployment into high-concurrency ASGI is wrong. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
-\begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Flask.
-\item Baseline: implement or measure the least complex alternative before adding Flask.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: Simplicity suits synchronous services, while async-first streaming needs different architecture.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Assuming an async view converts a WSGI deployment into high-concurrency ASGI is wrong.
-\end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
-\item request and stream latency
-\item queue depth and cancellation lag
-\item error rate by dependency
-\item resource use and saturation
-\end{itemize}
-\textbf{Operate.}\begin{itemize}
-\item Use bounded queues and timeouts
-\item Propagate cancellation
-\item Version schemas and idempotency contracts
-\item Test partial dependency failure
-\end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: Flask is a minimal WSGI web framework with a large extension ecosystem.

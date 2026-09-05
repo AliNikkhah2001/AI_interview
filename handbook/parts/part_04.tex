@@ -1,3 +1,215 @@
+\paragraph{MCQ-0101 [medium]} Which statement best describes Embedding geometry?
+\begin{enumerate}[label=\Alph*.]
+\item Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality.
+\item Learned sparse models retain token-aligned inverted-index retrieval while expanding or reweighting terms.
+\item A sparse weighting scheme that combines within-document frequency with inverse collection frequency.
+\item A bi-encoder maps queries and passages into a shared embedding space for nearest-neighbor search.
+\end{enumerate}
+\noindent\textbf{Answer.} Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality.
+\par\textit{Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality. Tradeoff: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Watch for: Mixing an index metric with a differently trained embedding objective silently harms ranking.}
+\paragraph{MCQ-0102 [hard]} What is the central engineering tradeoff of Embedding geometry?
+\begin{enumerate}[label=\Alph*.]
+\item They bridge lexical and semantic matching but increase index size and model cost.
+\item Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions.
+\item Semantic recall improves, while exact names, numbers, and out-of-domain language may regress.
+\item It is transparent and cheap but lacks BM25's term-frequency saturation and tuned length normalization.
+\end{enumerate}
+\noindent\textbf{Answer.} Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions.
+\par\textit{Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality. Tradeoff: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Watch for: Mixing an index metric with a differently trained embedding objective silently harms ranking.}
+\paragraph{MCQ-0103 [hard]} Which failure mode should an interviewer expect you to identify for Embedding geometry?
+\begin{enumerate}[label=\Alph*.]
+\item Unbounded expansion creates latency and storage blowups.
+\item Mixing an index metric with a differently trained embedding objective silently harms ranking.
+\item Evaluating only on in-domain examples hides lexical misses and embedding drift.
+\item Comparing raw cosine scores across changing corpora without rebuilding IDF causes drift.
+\end{enumerate}
+\noindent\textbf{Answer.} Mixing an index metric with a differently trained embedding objective silently harms ranking.
+\par\textit{Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality. Tradeoff: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Watch for: Mixing an index metric with a differently trained embedding objective silently harms ranking.}
+\paragraph{MCQ-0104 [medium]} A design review is specifically concerned with this risk: Mixing an index metric with a differently trained embedding objective silently harms ranking. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Embedding geometry
+\item Sparse neural retrieval
+\item TF-IDF
+\item Dense retrieval
+\end{enumerate}
+\noindent\textbf{Answer.} Embedding geometry
+\par\textit{Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality. Tradeoff: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Watch for: Mixing an index metric with a differently trained embedding objective silently harms ranking.}
+\paragraph{MCQ-0105 [hard]} Which design note most accurately balances the benefits and costs of Embedding geometry?
+\begin{enumerate}[label=\Alph*.]
+\item Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions.
+\item It is transparent and cheap but lacks BM25's term-frequency saturation and tuned length normalization.
+\item Semantic recall improves, while exact names, numbers, and out-of-domain language may regress.
+\item They bridge lexical and semantic matching but increase index size and model cost.
+\end{enumerate}
+\noindent\textbf{Answer.} Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions.
+\par\textit{Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality. Tradeoff: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Watch for: Mixing an index metric with a differently trained embedding objective silently harms ranking.}
+\paragraph{MCQ-0106 [medium]} Which explanation would be strongest in a system-design interview about Embedding geometry?
+\begin{enumerate}[label=\Alph*.]
+\item Learned sparse models retain token-aligned inverted-index retrieval while expanding or reweighting terms.
+\item A sparse weighting scheme that combines within-document frequency with inverse collection frequency.
+\item Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality.
+\item A bi-encoder maps queries and passages into a shared embedding space for nearest-neighbor search.
+\end{enumerate}
+\noindent\textbf{Answer.} Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality.
+\par\textit{Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality. Tradeoff: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Watch for: Mixing an index metric with a differently trained embedding objective silently harms ranking.}
+\paragraph{MCQ-0107 [hard]} Which production warning is most directly associated with Embedding geometry?
+\begin{enumerate}[label=\Alph*.]
+\item Comparing raw cosine scores across changing corpora without rebuilding IDF causes drift.
+\item Unbounded expansion creates latency and storage blowups.
+\item Mixing an index metric with a differently trained embedding objective silently harms ranking.
+\item Evaluating only on in-domain examples hides lexical misses and embedding drift.
+\end{enumerate}
+\noindent\textbf{Answer.} Mixing an index metric with a differently trained embedding objective silently harms ranking.
+\par\textit{Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality. Tradeoff: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Watch for: Mixing an index metric with a differently trained embedding objective silently harms ranking.}
+\paragraph{FC-0108 [medium]} Define Embedding geometry in interview-ready language.
+\noindent\textbf{Answer.} Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality.
+\par\textit{Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality.}
+\paragraph{FC-0109 [hard]} State the main tradeoff and production pitfall for Embedding geometry.
+\noindent\textbf{Answer.} Tradeoff: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Pitfall: Mixing an index metric with a differently trained embedding objective silently harms ranking.
+\par\textit{Tradeoff: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Pitfall: Mixing an index metric with a differently trained embedding objective silently harms ranking.}
+\paragraph{LA-0110 [hard]} Explain Embedding geometry from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality. Make the tradeoff explicit: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Mixing an index metric with a differently trained embedding objective silently harms ranking.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-0111 [medium]} Which statement best describes Query expansion?
+\begin{enumerate}[label=\Alph*.]
+\item A model jointly encodes query and candidate text to assign a relevance score.
+\item Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval.
+\item A probabilistic lexical ranker that rewards term frequency while saturating repeated terms and normalizing document length.
+\item Recall@k, precision@k, MRR, MAP, and nDCG measure different ranking behaviors.
+\end{enumerate}
+\noindent\textbf{Answer.} Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval.
+\par\textit{Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval. Tradeoff: Recall can improve at the expense of latency and topic drift. Watch for: Letting an LLM expand unconstrained queries can inject unsupported intent.}
+\paragraph{MCQ-0112 [hard]} What is the central engineering tradeoff of Query expansion?
+\begin{enumerate}[label=\Alph*.]
+\item It gives strong precision on a small candidate set but is too expensive for full-corpus retrieval.
+\item A metric must match the product objective and judgment granularity.
+\item It is fast, interpretable, and exact for rare tokens but cannot directly match paraphrases.
+\item Recall can improve at the expense of latency and topic drift.
+\end{enumerate}
+\noindent\textbf{Answer.} Recall can improve at the expense of latency and topic drift.
+\par\textit{Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval. Tradeoff: Recall can improve at the expense of latency and topic drift. Watch for: Letting an LLM expand unconstrained queries can inject unsupported intent.}
+\paragraph{MCQ-0113 [hard]} Which failure mode should an interviewer expect you to identify for Query expansion?
+\begin{enumerate}[label=\Alph*.]
+\item Optimizing MRR for a task that consumes many passages can worsen context coverage.
+\item Treating it as obsolete removes a strong baseline and hurts identifier-heavy queries.
+\item Letting an LLM expand unconstrained queries can inject unsupported intent.
+\item Reranking too many long passages dominates p95 latency.
+\end{enumerate}
+\noindent\textbf{Answer.} Letting an LLM expand unconstrained queries can inject unsupported intent.
+\par\textit{Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval. Tradeoff: Recall can improve at the expense of latency and topic drift. Watch for: Letting an LLM expand unconstrained queries can inject unsupported intent.}
+\paragraph{MCQ-0114 [medium]} A design review is specifically concerned with this risk: Letting an LLM expand unconstrained queries can inject unsupported intent. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item BM25
+\item Query expansion
+\item Retrieval metrics
+\item Cross-encoder reranking
+\end{enumerate}
+\noindent\textbf{Answer.} Query expansion
+\par\textit{Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval. Tradeoff: Recall can improve at the expense of latency and topic drift. Watch for: Letting an LLM expand unconstrained queries can inject unsupported intent.}
+\paragraph{MCQ-0115 [hard]} Which design note most accurately balances the benefits and costs of Query expansion?
+\begin{enumerate}[label=\Alph*.]
+\item It gives strong precision on a small candidate set but is too expensive for full-corpus retrieval.
+\item Recall can improve at the expense of latency and topic drift.
+\item It is fast, interpretable, and exact for rare tokens but cannot directly match paraphrases.
+\item A metric must match the product objective and judgment granularity.
+\end{enumerate}
+\noindent\textbf{Answer.} Recall can improve at the expense of latency and topic drift.
+\par\textit{Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval. Tradeoff: Recall can improve at the expense of latency and topic drift. Watch for: Letting an LLM expand unconstrained queries can inject unsupported intent.}
+\paragraph{MCQ-0116 [medium]} Which explanation would be strongest in a system-design interview about Query expansion?
+\begin{enumerate}[label=\Alph*.]
+\item A model jointly encodes query and candidate text to assign a relevance score.
+\item A probabilistic lexical ranker that rewards term frequency while saturating repeated terms and normalizing document length.
+\item Recall@k, precision@k, MRR, MAP, and nDCG measure different ranking behaviors.
+\item Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval.
+\end{enumerate}
+\noindent\textbf{Answer.} Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval.
+\par\textit{Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval. Tradeoff: Recall can improve at the expense of latency and topic drift. Watch for: Letting an LLM expand unconstrained queries can inject unsupported intent.}
+\paragraph{MCQ-0117 [hard]} Which production warning is most directly associated with Query expansion?
+\begin{enumerate}[label=\Alph*.]
+\item Reranking too many long passages dominates p95 latency.
+\item Optimizing MRR for a task that consumes many passages can worsen context coverage.
+\item Letting an LLM expand unconstrained queries can inject unsupported intent.
+\item Treating it as obsolete removes a strong baseline and hurts identifier-heavy queries.
+\end{enumerate}
+\noindent\textbf{Answer.} Letting an LLM expand unconstrained queries can inject unsupported intent.
+\par\textit{Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval. Tradeoff: Recall can improve at the expense of latency and topic drift. Watch for: Letting an LLM expand unconstrained queries can inject unsupported intent.}
+\paragraph{FC-0118 [medium]} Define Query expansion in interview-ready language.
+\noindent\textbf{Answer.} Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval.
+\par\textit{Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval.}
+\paragraph{FC-0119 [hard]} State the main tradeoff and production pitfall for Query expansion.
+\noindent\textbf{Answer.} Tradeoff: Recall can improve at the expense of latency and topic drift. Pitfall: Letting an LLM expand unconstrained queries can inject unsupported intent.
+\par\textit{Tradeoff: Recall can improve at the expense of latency and topic drift. Pitfall: Letting an LLM expand unconstrained queries can inject unsupported intent.}
+\paragraph{LA-0120 [hard]} Explain Query expansion from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval. Make the tradeoff explicit: Recall can improve at the expense of latency and topic drift. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Letting an LLM expand unconstrained queries can inject unsupported intent.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\subsection{Vector Databases and Search Engines}
+\paragraph{MCQ-0121 [medium]} Which statement best describes pgvector?
+\begin{enumerate}[label=\Alph*.]
+\item A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search.
+\item Redis Query Engine adds vector indexes and filters to an in-memory data platform.
+\item Elasticsearch combines inverted indexes, filters, aggregations, and approximate kNN in one search platform.
+\item Milvus is a distributed vector database; Zilliz provides its managed service with multiple index choices.
+\end{enumerate}
+\noindent\textbf{Answer.} A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search.
+\par\textit{A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search. Tradeoff: It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily. Watch for: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.}
+\paragraph{MCQ-0122 [hard]} What is the central engineering tradeoff of pgvector?
+\begin{enumerate}[label=\Alph*.]
+\item It is compelling for existing Elastic estates but vector memory and shard design require care.
+\item It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily.
+\item It targets large-scale separation of compute and storage, with more operational concepts than embedded options.
+\item Very low latency is possible, but RAM cost and persistence design matter at scale.
+\end{enumerate}
+\noindent\textbf{Answer.} It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily.
+\par\textit{A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search. Tradeoff: It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily. Watch for: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.}
+\paragraph{MCQ-0123 [hard]} Which failure mode should an interviewer expect you to identify for pgvector?
+\begin{enumerate}[label=\Alph*.]
+\item Oversharding fragments candidate pools and increases coordination overhead.
+\item Using Redis only as a vector database without capacity planning can evict critical data.
+\item Selecting an index by popularity instead of dataset size and latency-recall tests wastes resources.
+\item Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.
+\end{enumerate}
+\noindent\textbf{Answer.} Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.
+\par\textit{A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search. Tradeoff: It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily. Watch for: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.}
+\paragraph{MCQ-0124 [medium]} A design review is specifically concerned with this risk: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Milvus and Zilliz
+\item Redis vector search
+\item Elasticsearch vector search
+\item pgvector
+\end{enumerate}
+\noindent\textbf{Answer.} pgvector
+\par\textit{A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search. Tradeoff: It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily. Watch for: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.}
+\paragraph{MCQ-0125 [hard]} Which design note most accurately balances the benefits and costs of pgvector?
+\begin{enumerate}[label=\Alph*.]
+\item It targets large-scale separation of compute and storage, with more operational concepts than embedded options.
+\item Very low latency is possible, but RAM cost and persistence design matter at scale.
+\item It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily.
+\item It is compelling for existing Elastic estates but vector memory and shard design require care.
+\end{enumerate}
+\noindent\textbf{Answer.} It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily.
+\par\textit{A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search. Tradeoff: It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily. Watch for: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.}
+\paragraph{MCQ-0126 [medium]} Which explanation would be strongest in a system-design interview about pgvector?
+\begin{enumerate}[label=\Alph*.]
+\item Elasticsearch combines inverted indexes, filters, aggregations, and approximate kNN in one search platform.
+\item Redis Query Engine adds vector indexes and filters to an in-memory data platform.
+\item Milvus is a distributed vector database; Zilliz provides its managed service with multiple index choices.
+\item A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search.
+\end{enumerate}
+\noindent\textbf{Answer.} A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search.
+\par\textit{A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search. Tradeoff: It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily. Watch for: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.}
+\paragraph{MCQ-0127 [hard]} Which production warning is most directly associated with pgvector?
+\begin{enumerate}[label=\Alph*.]
+\item Selecting an index by popularity instead of dataset size and latency-recall tests wastes resources.
+\item Using Redis only as a vector database without capacity planning can evict critical data.
+\item Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.
+\item Oversharding fragments candidate pools and increases coordination overhead.
+\end{enumerate}
+\noindent\textbf{Answer.} Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.
+\par\textit{A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search. Tradeoff: It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily. Watch for: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.}
+\paragraph{FC-0128 [medium]} Define pgvector in interview-ready language.
+\noindent\textbf{Answer.} A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search.
+\par\textit{A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search.}
+\paragraph{FC-0129 [hard]} State the main tradeoff and production pitfall for pgvector.
 \noindent\textbf{Answer.} Tradeoff: It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily. Pitfall: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.
 \par\textit{Tradeoff: It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily. Pitfall: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.}
 \paragraph{LA-0130 [hard]} Explain pgvector from first principles, then show how you would evaluate and operate it in production.
@@ -2593,211 +2805,3 @@
 \par\textit{Knowledge Augmented Generation combines schema-aware graphs, chunk mutual indexing, alignment, and logical-form-guided reasoning.}
 \paragraph{FC-0489 [hard]} State the main tradeoff and production pitfall for KAG.
 \noindent\textbf{Answer.} Tradeoff: It improves domain logic and multi-hop control at substantial modeling and maintenance cost. Pitfall: Adopting KAG without stable domain schema simply relocates ambiguity.
-\par\textit{Tradeoff: It improves domain logic and multi-hop control at substantial modeling and maintenance cost. Pitfall: Adopting KAG without stable domain schema simply relocates ambiguity.}
-\paragraph{LA-0490 [hard]} Explain KAG from first principles, then show how you would evaluate and operate it in production.
-\noindent\textbf{Answer.} Start with the mechanism: Knowledge Augmented Generation combines schema-aware graphs, chunk mutual indexing, alignment, and logical-form-guided reasoning. Make the tradeoff explicit: It improves domain logic and multi-hop control at substantial modeling and maintenance cost. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Adopting KAG without stable domain schema simply relocates ambiguity.
-\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
-\paragraph{MCQ-0491 [medium]} Which statement best describes Graph quality evaluation?
-\begin{enumerate}[label=\Alph*.]
-\item Cypher expresses graph patterns, predicates, paths, updates, and aggregation for property graphs.
-\item Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value.
-\item Facts carry validity intervals, event time, and version history so queries can reason about change.
-\item Construction extracts entities and relations, resolves identities, applies schema, validates facts, and records provenance.
-\end{enumerate}
-\noindent\textbf{Answer.} Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value.
-\par\textit{Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value. Tradeoff: Intrinsic graph metrics catch construction defects but may not predict application utility. Watch for: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.}
-\paragraph{MCQ-0492 [hard]} What is the central engineering tradeoff of Graph quality evaluation?
-\begin{enumerate}[label=\Alph*.]
-\item Automation scales coverage but introduces extraction and entity-resolution errors.
-\item Declarative queries are readable, while unbounded path patterns can be expensive.
-\item Intrinsic graph metrics catch construction defects but may not predict application utility.
-\item Temporal accuracy improves, while updates, conflicts, and query logic become harder.
-\end{enumerate}
-\noindent\textbf{Answer.} Intrinsic graph metrics catch construction defects but may not predict application utility.
-\par\textit{Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value. Tradeoff: Intrinsic graph metrics catch construction defects but may not predict application utility. Watch for: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.}
-\paragraph{MCQ-0493 [hard]} Which failure mode should an interviewer expect you to identify for Graph quality evaluation?
-\begin{enumerate}[label=\Alph*.]
-\item Allowing generated edges without source spans prevents later verification.
-\item Omitting labels or relationship types can trigger broad scans.
-\item Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.
-\item Overwriting old facts destroys the ability to answer as-of questions.
-\end{enumerate}
-\noindent\textbf{Answer.} Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.
-\par\textit{Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value. Tradeoff: Intrinsic graph metrics catch construction defects but may not predict application utility. Watch for: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.}
-\paragraph{MCQ-0494 [medium]} A design review is specifically concerned with this risk: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts. Which topic should be reviewed first?
-\begin{enumerate}[label=\Alph*.]
-\item Knowledge graph construction
-\item Temporal knowledge graphs
-\item Cypher
-\item Graph quality evaluation
-\end{enumerate}
-\noindent\textbf{Answer.} Graph quality evaluation
-\par\textit{Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value. Tradeoff: Intrinsic graph metrics catch construction defects but may not predict application utility. Watch for: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.}
-\paragraph{MCQ-0495 [hard]} Which design note most accurately balances the benefits and costs of Graph quality evaluation?
-\begin{enumerate}[label=\Alph*.]
-\item Automation scales coverage but introduces extraction and entity-resolution errors.
-\item Declarative queries are readable, while unbounded path patterns can be expensive.
-\item Intrinsic graph metrics catch construction defects but may not predict application utility.
-\item Temporal accuracy improves, while updates, conflicts, and query logic become harder.
-\end{enumerate}
-\noindent\textbf{Answer.} Intrinsic graph metrics catch construction defects but may not predict application utility.
-\par\textit{Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value. Tradeoff: Intrinsic graph metrics catch construction defects but may not predict application utility. Watch for: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.}
-\paragraph{MCQ-0496 [medium]} Which explanation would be strongest in a system-design interview about Graph quality evaluation?
-\begin{enumerate}[label=\Alph*.]
-\item Facts carry validity intervals, event time, and version history so queries can reason about change.
-\item Cypher expresses graph patterns, predicates, paths, updates, and aggregation for property graphs.
-\item Construction extracts entities and relations, resolves identities, applies schema, validates facts, and records provenance.
-\item Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value.
-\end{enumerate}
-\noindent\textbf{Answer.} Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value.
-\par\textit{Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value. Tradeoff: Intrinsic graph metrics catch construction defects but may not predict application utility. Watch for: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.}
-\paragraph{MCQ-0497 [hard]} Which production warning is most directly associated with Graph quality evaluation?
-\begin{enumerate}[label=\Alph*.]
-\item Overwriting old facts destroys the ability to answer as-of questions.
-\item Omitting labels or relationship types can trigger broad scans.
-\item Allowing generated edges without source spans prevents later verification.
-\item Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.
-\end{enumerate}
-\noindent\textbf{Answer.} Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.
-\par\textit{Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value. Tradeoff: Intrinsic graph metrics catch construction defects but may not predict application utility. Watch for: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.}
-\paragraph{FC-0498 [medium]} Define Graph quality evaluation in interview-ready language.
-\noindent\textbf{Answer.} Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value.
-\par\textit{Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value.}
-\paragraph{FC-0499 [hard]} State the main tradeoff and production pitfall for Graph quality evaluation.
-\noindent\textbf{Answer.} Tradeoff: Intrinsic graph metrics catch construction defects but may not predict application utility. Pitfall: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.
-\par\textit{Tradeoff: Intrinsic graph metrics catch construction defects but may not predict application utility. Pitfall: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.}
-\paragraph{LA-0500 [hard]} Explain Graph quality evaluation from first principles, then show how you would evaluate and operate it in production.
-\noindent\textbf{Answer.} Start with the mechanism: Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value. Make the tradeoff explicit: Intrinsic graph metrics catch construction defects but may not predict application utility. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.
-\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
-\paragraph{MCQ-0501 [medium]} Which statement best describes Temporal knowledge graphs?
-\begin{enumerate}[label=\Alph*.]
-\item Local search expands from query-relevant entities through nearby relationships and associated text.
-\item RDF triples plus vocabularies such as RDFS or OWL provide globally identified semantics and inference rules.
-\item Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value.
-\item Facts carry validity intervals, event time, and version history so queries can reason about change.
-\end{enumerate}
-\noindent\textbf{Answer.} Facts carry validity intervals, event time, and version history so queries can reason about change.
-\par\textit{Facts carry validity intervals, event time, and version history so queries can reason about change. Tradeoff: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Watch for: Overwriting old facts destroys the ability to answer as-of questions.}
-\paragraph{MCQ-0502 [hard]} What is the central engineering tradeoff of Temporal knowledge graphs?
-\begin{enumerate}[label=\Alph*.]
-\item Intrinsic graph metrics catch construction defects but may not predict application utility.
-\item Temporal accuracy improves, while updates, conflicts, and query logic become harder.
-\item It supports entity-centric multi-hop questions but depends on extraction and linking quality.
-\item Formal interoperability grows, with more modeling and reasoning complexity.
-\end{enumerate}
-\noindent\textbf{Answer.} Temporal accuracy improves, while updates, conflicts, and query logic become harder.
-\par\textit{Facts carry validity intervals, event time, and version history so queries can reason about change. Tradeoff: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Watch for: Overwriting old facts destroys the ability to answer as-of questions.}
-\paragraph{MCQ-0503 [hard]} Which failure mode should an interviewer expect you to identify for Temporal knowledge graphs?
-\begin{enumerate}[label=\Alph*.]
-\item Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.
-\item Overwriting old facts destroys the ability to answer as-of questions.
-\item Confusing open-world semantics with database constraints produces invalid assumptions.
-\item Unbounded neighborhood expansion floods context with high-degree hubs.
-\end{enumerate}
-\noindent\textbf{Answer.} Overwriting old facts destroys the ability to answer as-of questions.
-\par\textit{Facts carry validity intervals, event time, and version history so queries can reason about change. Tradeoff: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Watch for: Overwriting old facts destroys the ability to answer as-of questions.}
-\paragraph{MCQ-0504 [medium]} A design review is specifically concerned with this risk: Overwriting old facts destroys the ability to answer as-of questions. Which topic should be reviewed first?
-\begin{enumerate}[label=\Alph*.]
-\item GraphRAG local search
-\item Graph quality evaluation
-\item RDF and ontologies
-\item Temporal knowledge graphs
-\end{enumerate}
-\noindent\textbf{Answer.} Temporal knowledge graphs
-\par\textit{Facts carry validity intervals, event time, and version history so queries can reason about change. Tradeoff: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Watch for: Overwriting old facts destroys the ability to answer as-of questions.}
-\paragraph{MCQ-0505 [hard]} Which design note most accurately balances the benefits and costs of Temporal knowledge graphs?
-\begin{enumerate}[label=\Alph*.]
-\item It supports entity-centric multi-hop questions but depends on extraction and linking quality.
-\item Temporal accuracy improves, while updates, conflicts, and query logic become harder.
-\item Formal interoperability grows, with more modeling and reasoning complexity.
-\item Intrinsic graph metrics catch construction defects but may not predict application utility.
-\end{enumerate}
-\noindent\textbf{Answer.} Temporal accuracy improves, while updates, conflicts, and query logic become harder.
-\par\textit{Facts carry validity intervals, event time, and version history so queries can reason about change. Tradeoff: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Watch for: Overwriting old facts destroys the ability to answer as-of questions.}
-\paragraph{MCQ-0506 [medium]} Which explanation would be strongest in a system-design interview about Temporal knowledge graphs?
-\begin{enumerate}[label=\Alph*.]
-\item Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value.
-\item RDF triples plus vocabularies such as RDFS or OWL provide globally identified semantics and inference rules.
-\item Local search expands from query-relevant entities through nearby relationships and associated text.
-\item Facts carry validity intervals, event time, and version history so queries can reason about change.
-\end{enumerate}
-\noindent\textbf{Answer.} Facts carry validity intervals, event time, and version history so queries can reason about change.
-\par\textit{Facts carry validity intervals, event time, and version history so queries can reason about change. Tradeoff: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Watch for: Overwriting old facts destroys the ability to answer as-of questions.}
-\paragraph{MCQ-0507 [hard]} Which production warning is most directly associated with Temporal knowledge graphs?
-\begin{enumerate}[label=\Alph*.]
-\item Unbounded neighborhood expansion floods context with high-degree hubs.
-\item Overwriting old facts destroys the ability to answer as-of questions.
-\item Confusing open-world semantics with database constraints produces invalid assumptions.
-\item Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.
-\end{enumerate}
-\noindent\textbf{Answer.} Overwriting old facts destroys the ability to answer as-of questions.
-\par\textit{Facts carry validity intervals, event time, and version history so queries can reason about change. Tradeoff: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Watch for: Overwriting old facts destroys the ability to answer as-of questions.}
-\paragraph{FC-0508 [medium]} Define Temporal knowledge graphs in interview-ready language.
-\noindent\textbf{Answer.} Facts carry validity intervals, event time, and version history so queries can reason about change.
-\par\textit{Facts carry validity intervals, event time, and version history so queries can reason about change.}
-\paragraph{FC-0509 [hard]} State the main tradeoff and production pitfall for Temporal knowledge graphs.
-\noindent\textbf{Answer.} Tradeoff: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Pitfall: Overwriting old facts destroys the ability to answer as-of questions.
-\par\textit{Tradeoff: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Pitfall: Overwriting old facts destroys the ability to answer as-of questions.}
-\paragraph{LA-0510 [hard]} Explain Temporal knowledge graphs from first principles, then show how you would evaluate and operate it in production.
-\noindent\textbf{Answer.} Start with the mechanism: Facts carry validity intervals, event time, and version history so queries can reason about change. Make the tradeoff explicit: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Overwriting old facts destroys the ability to answer as-of questions.
-\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
-\subsection{Agents, MCP, and Control}
-\paragraph{MCQ-0511 [medium]} Which statement best describes Agent loop?
-\begin{enumerate}[label=\Alph*.]
-\item Context engineering selects instructions, memory, evidence, tools, schemas, and state for each model turn.
-\item Explicit states and transitions constrain allowed agent behavior and make recovery inspectable.
-\item A sandbox isolates untrusted code with resource limits, scoped files, network policy, timeouts, and audit logs.
-\item An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping.
-\end{enumerate}
-\noindent\textbf{Answer.} An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping.
-\par\textit{An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping. Tradeoff: Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows. Watch for: Omitting hard budgets and stop conditions creates runaway calls.}
-\paragraph{MCQ-0512 [hard]} What is the central engineering tradeoff of Agent loop?
-\begin{enumerate}[label=\Alph*.]
-\item Isolation enables capability while imposing startup and compatibility overhead.
-\item Targeted context improves reliability and cost, but selection logic becomes core application code.
-\item Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows.
-\item Predictability and testability improve at the cost of less open-ended autonomy.
-\end{enumerate}
-\noindent\textbf{Answer.} Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows.
-\par\textit{An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping. Tradeoff: Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows. Watch for: Omitting hard budgets and stop conditions creates runaway calls.}
-\paragraph{MCQ-0513 [hard]} Which failure mode should an interviewer expect you to identify for Agent loop?
-\begin{enumerate}[label=\Alph*.]
-\item Omitting hard budgets and stop conditions creates runaway calls.
-\item Encoding side effects inside transition guards breaks replay safety.
-\item A container without kernel, credential, and network boundaries is not a sufficient sandbox.
-\item Appending everything causes attention dilution and instruction conflicts.
-\end{enumerate}
-\noindent\textbf{Answer.} Omitting hard budgets and stop conditions creates runaway calls.
-\par\textit{An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping. Tradeoff: Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows. Watch for: Omitting hard budgets and stop conditions creates runaway calls.}
-\paragraph{MCQ-0514 [medium]} A design review is specifically concerned with this risk: Omitting hard budgets and stop conditions creates runaway calls. Which topic should be reviewed first?
-\begin{enumerate}[label=\Alph*.]
-\item Agent loop
-\item State machines
-\item Context engineering
-\item Sandbox runs
-\end{enumerate}
-\noindent\textbf{Answer.} Agent loop
-\par\textit{An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping. Tradeoff: Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows. Watch for: Omitting hard budgets and stop conditions creates runaway calls.}
-\paragraph{MCQ-0515 [hard]} Which design note most accurately balances the benefits and costs of Agent loop?
-\begin{enumerate}[label=\Alph*.]
-\item Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows.
-\item Isolation enables capability while imposing startup and compatibility overhead.
-\item Targeted context improves reliability and cost, but selection logic becomes core application code.
-\item Predictability and testability improve at the cost of less open-ended autonomy.
-\end{enumerate}
-\noindent\textbf{Answer.} Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows.
-\par\textit{An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping. Tradeoff: Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows. Watch for: Omitting hard budgets and stop conditions creates runaway calls.}
-\paragraph{MCQ-0516 [medium]} Which explanation would be strongest in a system-design interview about Agent loop?
-\begin{enumerate}[label=\Alph*.]
-\item A sandbox isolates untrusted code with resource limits, scoped files, network policy, timeouts, and audit logs.
-\item Explicit states and transitions constrain allowed agent behavior and make recovery inspectable.
-\item Context engineering selects instructions, memory, evidence, tools, schemas, and state for each model turn.
-\item An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping.
-\end{enumerate}
-\noindent\textbf{Answer.} An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping.
-\par\textit{An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping. Tradeoff: Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows. Watch for: Omitting hard budgets and stop conditions creates runaway calls.}
-\paragraph{MCQ-0517 [hard]} Which production warning is most directly associated with Agent loop?
-\begin{enumerate}[label=\Alph*.]
-\item Omitting hard budgets and stop conditions creates runaway calls.
-\item Appending everything causes attention dilution and instruction conflicts.
-\item Encoding side effects inside transition guards breaks replay safety.

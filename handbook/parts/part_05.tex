@@ -1,3 +1,211 @@
+\par\textit{Tradeoff: It improves domain logic and multi-hop control at substantial modeling and maintenance cost. Pitfall: Adopting KAG without stable domain schema simply relocates ambiguity.}
+\paragraph{LA-0490 [hard]} Explain KAG from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Knowledge Augmented Generation combines schema-aware graphs, chunk mutual indexing, alignment, and logical-form-guided reasoning. Make the tradeoff explicit: It improves domain logic and multi-hop control at substantial modeling and maintenance cost. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Adopting KAG without stable domain schema simply relocates ambiguity.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-0491 [medium]} Which statement best describes Graph quality evaluation?
+\begin{enumerate}[label=\Alph*.]
+\item Cypher expresses graph patterns, predicates, paths, updates, and aggregation for property graphs.
+\item Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value.
+\item Facts carry validity intervals, event time, and version history so queries can reason about change.
+\item Construction extracts entities and relations, resolves identities, applies schema, validates facts, and records provenance.
+\end{enumerate}
+\noindent\textbf{Answer.} Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value.
+\par\textit{Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value. Tradeoff: Intrinsic graph metrics catch construction defects but may not predict application utility. Watch for: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.}
+\paragraph{MCQ-0492 [hard]} What is the central engineering tradeoff of Graph quality evaluation?
+\begin{enumerate}[label=\Alph*.]
+\item Automation scales coverage but introduces extraction and entity-resolution errors.
+\item Declarative queries are readable, while unbounded path patterns can be expensive.
+\item Intrinsic graph metrics catch construction defects but may not predict application utility.
+\item Temporal accuracy improves, while updates, conflicts, and query logic become harder.
+\end{enumerate}
+\noindent\textbf{Answer.} Intrinsic graph metrics catch construction defects but may not predict application utility.
+\par\textit{Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value. Tradeoff: Intrinsic graph metrics catch construction defects but may not predict application utility. Watch for: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.}
+\paragraph{MCQ-0493 [hard]} Which failure mode should an interviewer expect you to identify for Graph quality evaluation?
+\begin{enumerate}[label=\Alph*.]
+\item Allowing generated edges without source spans prevents later verification.
+\item Omitting labels or relationship types can trigger broad scans.
+\item Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.
+\item Overwriting old facts destroys the ability to answer as-of questions.
+\end{enumerate}
+\noindent\textbf{Answer.} Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.
+\par\textit{Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value. Tradeoff: Intrinsic graph metrics catch construction defects but may not predict application utility. Watch for: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.}
+\paragraph{MCQ-0494 [medium]} A design review is specifically concerned with this risk: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Knowledge graph construction
+\item Temporal knowledge graphs
+\item Cypher
+\item Graph quality evaluation
+\end{enumerate}
+\noindent\textbf{Answer.} Graph quality evaluation
+\par\textit{Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value. Tradeoff: Intrinsic graph metrics catch construction defects but may not predict application utility. Watch for: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.}
+\paragraph{MCQ-0495 [hard]} Which design note most accurately balances the benefits and costs of Graph quality evaluation?
+\begin{enumerate}[label=\Alph*.]
+\item Automation scales coverage but introduces extraction and entity-resolution errors.
+\item Declarative queries are readable, while unbounded path patterns can be expensive.
+\item Intrinsic graph metrics catch construction defects but may not predict application utility.
+\item Temporal accuracy improves, while updates, conflicts, and query logic become harder.
+\end{enumerate}
+\noindent\textbf{Answer.} Intrinsic graph metrics catch construction defects but may not predict application utility.
+\par\textit{Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value. Tradeoff: Intrinsic graph metrics catch construction defects but may not predict application utility. Watch for: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.}
+\paragraph{MCQ-0496 [medium]} Which explanation would be strongest in a system-design interview about Graph quality evaluation?
+\begin{enumerate}[label=\Alph*.]
+\item Facts carry validity intervals, event time, and version history so queries can reason about change.
+\item Cypher expresses graph patterns, predicates, paths, updates, and aggregation for property graphs.
+\item Construction extracts entities and relations, resolves identities, applies schema, validates facts, and records provenance.
+\item Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value.
+\end{enumerate}
+\noindent\textbf{Answer.} Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value.
+\par\textit{Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value. Tradeoff: Intrinsic graph metrics catch construction defects but may not predict application utility. Watch for: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.}
+\paragraph{MCQ-0497 [hard]} Which production warning is most directly associated with Graph quality evaluation?
+\begin{enumerate}[label=\Alph*.]
+\item Overwriting old facts destroys the ability to answer as-of questions.
+\item Omitting labels or relationship types can trigger broad scans.
+\item Allowing generated edges without source spans prevents later verification.
+\item Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.
+\end{enumerate}
+\noindent\textbf{Answer.} Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.
+\par\textit{Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value. Tradeoff: Intrinsic graph metrics catch construction defects but may not predict application utility. Watch for: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.}
+\paragraph{FC-0498 [medium]} Define Graph quality evaluation in interview-ready language.
+\noindent\textbf{Answer.} Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value.
+\par\textit{Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value.}
+\paragraph{FC-0499 [hard]} State the main tradeoff and production pitfall for Graph quality evaluation.
+\noindent\textbf{Answer.} Tradeoff: Intrinsic graph metrics catch construction defects but may not predict application utility. Pitfall: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.
+\par\textit{Tradeoff: Intrinsic graph metrics catch construction defects but may not predict application utility. Pitfall: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.}
+\paragraph{LA-0500 [hard]} Explain Graph quality evaluation from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value. Make the tradeoff explicit: Intrinsic graph metrics catch construction defects but may not predict application utility. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-0501 [medium]} Which statement best describes Temporal knowledge graphs?
+\begin{enumerate}[label=\Alph*.]
+\item Local search expands from query-relevant entities through nearby relationships and associated text.
+\item RDF triples plus vocabularies such as RDFS or OWL provide globally identified semantics and inference rules.
+\item Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value.
+\item Facts carry validity intervals, event time, and version history so queries can reason about change.
+\end{enumerate}
+\noindent\textbf{Answer.} Facts carry validity intervals, event time, and version history so queries can reason about change.
+\par\textit{Facts carry validity intervals, event time, and version history so queries can reason about change. Tradeoff: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Watch for: Overwriting old facts destroys the ability to answer as-of questions.}
+\paragraph{MCQ-0502 [hard]} What is the central engineering tradeoff of Temporal knowledge graphs?
+\begin{enumerate}[label=\Alph*.]
+\item Intrinsic graph metrics catch construction defects but may not predict application utility.
+\item Temporal accuracy improves, while updates, conflicts, and query logic become harder.
+\item It supports entity-centric multi-hop questions but depends on extraction and linking quality.
+\item Formal interoperability grows, with more modeling and reasoning complexity.
+\end{enumerate}
+\noindent\textbf{Answer.} Temporal accuracy improves, while updates, conflicts, and query logic become harder.
+\par\textit{Facts carry validity intervals, event time, and version history so queries can reason about change. Tradeoff: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Watch for: Overwriting old facts destroys the ability to answer as-of questions.}
+\paragraph{MCQ-0503 [hard]} Which failure mode should an interviewer expect you to identify for Temporal knowledge graphs?
+\begin{enumerate}[label=\Alph*.]
+\item Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.
+\item Overwriting old facts destroys the ability to answer as-of questions.
+\item Confusing open-world semantics with database constraints produces invalid assumptions.
+\item Unbounded neighborhood expansion floods context with high-degree hubs.
+\end{enumerate}
+\noindent\textbf{Answer.} Overwriting old facts destroys the ability to answer as-of questions.
+\par\textit{Facts carry validity intervals, event time, and version history so queries can reason about change. Tradeoff: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Watch for: Overwriting old facts destroys the ability to answer as-of questions.}
+\paragraph{MCQ-0504 [medium]} A design review is specifically concerned with this risk: Overwriting old facts destroys the ability to answer as-of questions. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item GraphRAG local search
+\item Graph quality evaluation
+\item RDF and ontologies
+\item Temporal knowledge graphs
+\end{enumerate}
+\noindent\textbf{Answer.} Temporal knowledge graphs
+\par\textit{Facts carry validity intervals, event time, and version history so queries can reason about change. Tradeoff: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Watch for: Overwriting old facts destroys the ability to answer as-of questions.}
+\paragraph{MCQ-0505 [hard]} Which design note most accurately balances the benefits and costs of Temporal knowledge graphs?
+\begin{enumerate}[label=\Alph*.]
+\item It supports entity-centric multi-hop questions but depends on extraction and linking quality.
+\item Temporal accuracy improves, while updates, conflicts, and query logic become harder.
+\item Formal interoperability grows, with more modeling and reasoning complexity.
+\item Intrinsic graph metrics catch construction defects but may not predict application utility.
+\end{enumerate}
+\noindent\textbf{Answer.} Temporal accuracy improves, while updates, conflicts, and query logic become harder.
+\par\textit{Facts carry validity intervals, event time, and version history so queries can reason about change. Tradeoff: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Watch for: Overwriting old facts destroys the ability to answer as-of questions.}
+\paragraph{MCQ-0506 [medium]} Which explanation would be strongest in a system-design interview about Temporal knowledge graphs?
+\begin{enumerate}[label=\Alph*.]
+\item Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value.
+\item RDF triples plus vocabularies such as RDFS or OWL provide globally identified semantics and inference rules.
+\item Local search expands from query-relevant entities through nearby relationships and associated text.
+\item Facts carry validity intervals, event time, and version history so queries can reason about change.
+\end{enumerate}
+\noindent\textbf{Answer.} Facts carry validity intervals, event time, and version history so queries can reason about change.
+\par\textit{Facts carry validity intervals, event time, and version history so queries can reason about change. Tradeoff: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Watch for: Overwriting old facts destroys the ability to answer as-of questions.}
+\paragraph{MCQ-0507 [hard]} Which production warning is most directly associated with Temporal knowledge graphs?
+\begin{enumerate}[label=\Alph*.]
+\item Unbounded neighborhood expansion floods context with high-degree hubs.
+\item Overwriting old facts destroys the ability to answer as-of questions.
+\item Confusing open-world semantics with database constraints produces invalid assumptions.
+\item Reporting only downstream answer scores can hide a brittle graph with unverifiable facts.
+\end{enumerate}
+\noindent\textbf{Answer.} Overwriting old facts destroys the ability to answer as-of questions.
+\par\textit{Facts carry validity intervals, event time, and version history so queries can reason about change. Tradeoff: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Watch for: Overwriting old facts destroys the ability to answer as-of questions.}
+\paragraph{FC-0508 [medium]} Define Temporal knowledge graphs in interview-ready language.
+\noindent\textbf{Answer.} Facts carry validity intervals, event time, and version history so queries can reason about change.
+\par\textit{Facts carry validity intervals, event time, and version history so queries can reason about change.}
+\paragraph{FC-0509 [hard]} State the main tradeoff and production pitfall for Temporal knowledge graphs.
+\noindent\textbf{Answer.} Tradeoff: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Pitfall: Overwriting old facts destroys the ability to answer as-of questions.
+\par\textit{Tradeoff: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Pitfall: Overwriting old facts destroys the ability to answer as-of questions.}
+\paragraph{LA-0510 [hard]} Explain Temporal knowledge graphs from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Facts carry validity intervals, event time, and version history so queries can reason about change. Make the tradeoff explicit: Temporal accuracy improves, while updates, conflicts, and query logic become harder. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Overwriting old facts destroys the ability to answer as-of questions.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\subsection{Agents, MCP, and Control}
+\paragraph{MCQ-0511 [medium]} Which statement best describes Agent loop?
+\begin{enumerate}[label=\Alph*.]
+\item Context engineering selects instructions, memory, evidence, tools, schemas, and state for each model turn.
+\item Explicit states and transitions constrain allowed agent behavior and make recovery inspectable.
+\item A sandbox isolates untrusted code with resource limits, scoped files, network policy, timeouts, and audit logs.
+\item An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping.
+\end{enumerate}
+\noindent\textbf{Answer.} An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping.
+\par\textit{An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping. Tradeoff: Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows. Watch for: Omitting hard budgets and stop conditions creates runaway calls.}
+\paragraph{MCQ-0512 [hard]} What is the central engineering tradeoff of Agent loop?
+\begin{enumerate}[label=\Alph*.]
+\item Isolation enables capability while imposing startup and compatibility overhead.
+\item Targeted context improves reliability and cost, but selection logic becomes core application code.
+\item Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows.
+\item Predictability and testability improve at the cost of less open-ended autonomy.
+\end{enumerate}
+\noindent\textbf{Answer.} Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows.
+\par\textit{An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping. Tradeoff: Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows. Watch for: Omitting hard budgets and stop conditions creates runaway calls.}
+\paragraph{MCQ-0513 [hard]} Which failure mode should an interviewer expect you to identify for Agent loop?
+\begin{enumerate}[label=\Alph*.]
+\item Omitting hard budgets and stop conditions creates runaway calls.
+\item Encoding side effects inside transition guards breaks replay safety.
+\item A container without kernel, credential, and network boundaries is not a sufficient sandbox.
+\item Appending everything causes attention dilution and instruction conflicts.
+\end{enumerate}
+\noindent\textbf{Answer.} Omitting hard budgets and stop conditions creates runaway calls.
+\par\textit{An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping. Tradeoff: Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows. Watch for: Omitting hard budgets and stop conditions creates runaway calls.}
+\paragraph{MCQ-0514 [medium]} A design review is specifically concerned with this risk: Omitting hard budgets and stop conditions creates runaway calls. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Agent loop
+\item State machines
+\item Context engineering
+\item Sandbox runs
+\end{enumerate}
+\noindent\textbf{Answer.} Agent loop
+\par\textit{An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping. Tradeoff: Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows. Watch for: Omitting hard budgets and stop conditions creates runaway calls.}
+\paragraph{MCQ-0515 [hard]} Which design note most accurately balances the benefits and costs of Agent loop?
+\begin{enumerate}[label=\Alph*.]
+\item Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows.
+\item Isolation enables capability while imposing startup and compatibility overhead.
+\item Targeted context improves reliability and cost, but selection logic becomes core application code.
+\item Predictability and testability improve at the cost of less open-ended autonomy.
+\end{enumerate}
+\noindent\textbf{Answer.} Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows.
+\par\textit{An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping. Tradeoff: Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows. Watch for: Omitting hard budgets and stop conditions creates runaway calls.}
+\paragraph{MCQ-0516 [medium]} Which explanation would be strongest in a system-design interview about Agent loop?
+\begin{enumerate}[label=\Alph*.]
+\item A sandbox isolates untrusted code with resource limits, scoped files, network policy, timeouts, and audit logs.
+\item Explicit states and transitions constrain allowed agent behavior and make recovery inspectable.
+\item Context engineering selects instructions, memory, evidence, tools, schemas, and state for each model turn.
+\item An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping.
+\end{enumerate}
+\noindent\textbf{Answer.} An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping.
+\par\textit{An agent repeatedly observes state, chooses an action, invokes a tool, and incorporates the result until stopping. Tradeoff: Flexibility handles open-ended tasks, but loop length and behavior are less predictable than workflows. Watch for: Omitting hard budgets and stop conditions creates runaway calls.}
+\paragraph{MCQ-0517 [hard]} Which production warning is most directly associated with Agent loop?
+\begin{enumerate}[label=\Alph*.]
+\item Omitting hard budgets and stop conditions creates runaway calls.
+\item Appending everything causes attention dilution and instruction conflicts.
+\item Encoding side effects inside transition guards breaks replay safety.
 \item A container without kernel, credential, and network boundaries is not a sufficient sandbox.
 \end{enumerate}
 \noindent\textbf{Answer.} Omitting hard budgets and stop conditions creates runaway calls.
@@ -2608,207 +2816,3 @@
 \subsection{Serving, Deployment, and LLMOps}
 \paragraph{MCQ-0881 [medium]} Which statement best describes vLLM?
 \begin{enumerate}[label=\Alph*.]
-\item llama.cpp runs quantized models efficiently on CPUs and varied local accelerators through a portable C++ stack.
-\item LLM autoscaling should consider queue depth, time-to-first-token, tokens per second, memory, and startup time.
-\item SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism.
-\item vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs.
-\end{enumerate}
-\noindent\textbf{Answer.} vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs.
-\par\textit{vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs. Tradeoff: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Watch for: Benchmarking only one concurrency level hides latency-throughput collapse points.}
-\paragraph{MCQ-0882 [hard]} What is the central engineering tradeoff of vLLM?
-\begin{enumerate}[label=\Alph*.]
-\item Throughput and memory utilization improve, while model and kernel compatibility must be verified.
-\item Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions.
-\item Extra replicas reduce latency but GPUs are costly and slow to warm.
-\item Edge privacy and low dependency count trade off against datacenter throughput and model size.
-\end{enumerate}
-\noindent\textbf{Answer.} Throughput and memory utilization improve, while model and kernel compatibility must be verified.
-\par\textit{vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs. Tradeoff: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Watch for: Benchmarking only one concurrency level hides latency-throughput collapse points.}
-\paragraph{MCQ-0883 [hard]} Which failure mode should an interviewer expect you to identify for vLLM?
-\begin{enumerate}[label=\Alph*.]
-\item Benchmarking only one concurrency level hides latency-throughput collapse points.
-\item Selecting a quantization by file size alone ignores accuracy and hardware kernels.
-\item CPU-based autoscaling reacts late or incorrectly to GPU saturation.
-\item Assuming every structured program benefits equally from cache reuse leads to poor capacity models.
-\end{enumerate}
-\noindent\textbf{Answer.} Benchmarking only one concurrency level hides latency-throughput collapse points.
-\par\textit{vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs. Tradeoff: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Watch for: Benchmarking only one concurrency level hides latency-throughput collapse points.}
-\paragraph{MCQ-0884 [medium]} A design review is specifically concerned with this risk: Benchmarking only one concurrency level hides latency-throughput collapse points. Which topic should be reviewed first?
-\begin{enumerate}[label=\Alph*.]
-\item SGLang
-\item llama.cpp
-\item vLLM
-\item Autoscaling for LLMs
-\end{enumerate}
-\noindent\textbf{Answer.} vLLM
-\par\textit{vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs. Tradeoff: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Watch for: Benchmarking only one concurrency level hides latency-throughput collapse points.}
-\paragraph{MCQ-0885 [hard]} Which design note most accurately balances the benefits and costs of vLLM?
-\begin{enumerate}[label=\Alph*.]
-\item Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions.
-\item Edge privacy and low dependency count trade off against datacenter throughput and model size.
-\item Throughput and memory utilization improve, while model and kernel compatibility must be verified.
-\item Extra replicas reduce latency but GPUs are costly and slow to warm.
-\end{enumerate}
-\noindent\textbf{Answer.} Throughput and memory utilization improve, while model and kernel compatibility must be verified.
-\par\textit{vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs. Tradeoff: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Watch for: Benchmarking only one concurrency level hides latency-throughput collapse points.}
-\paragraph{MCQ-0886 [medium]} Which explanation would be strongest in a system-design interview about vLLM?
-\begin{enumerate}[label=\Alph*.]
-\item llama.cpp runs quantized models efficiently on CPUs and varied local accelerators through a portable C++ stack.
-\item vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs.
-\item SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism.
-\item LLM autoscaling should consider queue depth, time-to-first-token, tokens per second, memory, and startup time.
-\end{enumerate}
-\noindent\textbf{Answer.} vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs.
-\par\textit{vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs. Tradeoff: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Watch for: Benchmarking only one concurrency level hides latency-throughput collapse points.}
-\paragraph{MCQ-0887 [hard]} Which production warning is most directly associated with vLLM?
-\begin{enumerate}[label=\Alph*.]
-\item Assuming every structured program benefits equally from cache reuse leads to poor capacity models.
-\item Selecting a quantization by file size alone ignores accuracy and hardware kernels.
-\item CPU-based autoscaling reacts late or incorrectly to GPU saturation.
-\item Benchmarking only one concurrency level hides latency-throughput collapse points.
-\end{enumerate}
-\noindent\textbf{Answer.} Benchmarking only one concurrency level hides latency-throughput collapse points.
-\par\textit{vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs. Tradeoff: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Watch for: Benchmarking only one concurrency level hides latency-throughput collapse points.}
-\paragraph{FC-0888 [medium]} Define vLLM in interview-ready language.
-\noindent\textbf{Answer.} vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs.
-\par\textit{vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs.}
-\paragraph{FC-0889 [hard]} State the main tradeoff and production pitfall for vLLM.
-\noindent\textbf{Answer.} Tradeoff: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Pitfall: Benchmarking only one concurrency level hides latency-throughput collapse points.
-\par\textit{Tradeoff: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Pitfall: Benchmarking only one concurrency level hides latency-throughput collapse points.}
-\paragraph{LA-0890 [hard]} Explain vLLM from first principles, then show how you would evaluate and operate it in production.
-\noindent\textbf{Answer.} Start with the mechanism: vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs. Make the tradeoff explicit: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Benchmarking only one concurrency level hides latency-throughput collapse points.
-\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
-\paragraph{MCQ-0891 [medium]} Which statement best describes SGLang?
-\begin{enumerate}[label=\Alph*.]
-\item llama.cpp runs quantized models efficiently on CPUs and varied local accelerators through a portable C++ stack.
-\item Gateways normalize provider APIs and add routing, budgets, rate limits, fallbacks, caching, and audit policy.
-\item SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism.
-\item LLM autoscaling should consider queue depth, time-to-first-token, tokens per second, memory, and startup time.
-\end{enumerate}
-\noindent\textbf{Answer.} SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism.
-\par\textit{SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism. Tradeoff: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Watch for: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.}
-\paragraph{MCQ-0892 [hard]} What is the central engineering tradeoff of SGLang?
-\begin{enumerate}[label=\Alph*.]
-\item Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions.
-\item Extra replicas reduce latency but GPUs are costly and slow to warm.
-\item Edge privacy and low dependency count trade off against datacenter throughput and model size.
-\item Central control improves governance but becomes a high-impact availability and security dependency.
-\end{enumerate}
-\noindent\textbf{Answer.} Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions.
-\par\textit{SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism. Tradeoff: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Watch for: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.}
-\paragraph{MCQ-0893 [hard]} Which failure mode should an interviewer expect you to identify for SGLang?
-\begin{enumerate}[label=\Alph*.]
-\item Selecting a quantization by file size alone ignores accuracy and hardware kernels.
-\item Automatic fallback across non-equivalent models can silently change behavior.
-\item CPU-based autoscaling reacts late or incorrectly to GPU saturation.
-\item Assuming every structured program benefits equally from cache reuse leads to poor capacity models.
-\end{enumerate}
-\noindent\textbf{Answer.} Assuming every structured program benefits equally from cache reuse leads to poor capacity models.
-\par\textit{SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism. Tradeoff: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Watch for: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.}
-\paragraph{MCQ-0894 [medium]} A design review is specifically concerned with this risk: Assuming every structured program benefits equally from cache reuse leads to poor capacity models. Which topic should be reviewed first?
-\begin{enumerate}[label=\Alph*.]
-\item llama.cpp
-\item LLM gateways
-\item SGLang
-\item Autoscaling for LLMs
-\end{enumerate}
-\noindent\textbf{Answer.} SGLang
-\par\textit{SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism. Tradeoff: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Watch for: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.}
-\paragraph{MCQ-0895 [hard]} Which design note most accurately balances the benefits and costs of SGLang?
-\begin{enumerate}[label=\Alph*.]
-\item Central control improves governance but becomes a high-impact availability and security dependency.
-\item Extra replicas reduce latency but GPUs are costly and slow to warm.
-\item Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions.
-\item Edge privacy and low dependency count trade off against datacenter throughput and model size.
-\end{enumerate}
-\noindent\textbf{Answer.} Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions.
-\par\textit{SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism. Tradeoff: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Watch for: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.}
-\paragraph{MCQ-0896 [medium]} Which explanation would be strongest in a system-design interview about SGLang?
-\begin{enumerate}[label=\Alph*.]
-\item LLM autoscaling should consider queue depth, time-to-first-token, tokens per second, memory, and startup time.
-\item SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism.
-\item Gateways normalize provider APIs and add routing, budgets, rate limits, fallbacks, caching, and audit policy.
-\item llama.cpp runs quantized models efficiently on CPUs and varied local accelerators through a portable C++ stack.
-\end{enumerate}
-\noindent\textbf{Answer.} SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism.
-\par\textit{SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism. Tradeoff: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Watch for: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.}
-\paragraph{MCQ-0897 [hard]} Which production warning is most directly associated with SGLang?
-\begin{enumerate}[label=\Alph*.]
-\item Assuming every structured program benefits equally from cache reuse leads to poor capacity models.
-\item Selecting a quantization by file size alone ignores accuracy and hardware kernels.
-\item Automatic fallback across non-equivalent models can silently change behavior.
-\item CPU-based autoscaling reacts late or incorrectly to GPU saturation.
-\end{enumerate}
-\noindent\textbf{Answer.} Assuming every structured program benefits equally from cache reuse leads to poor capacity models.
-\par\textit{SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism. Tradeoff: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Watch for: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.}
-\paragraph{FC-0898 [medium]} Define SGLang in interview-ready language.
-\noindent\textbf{Answer.} SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism.
-\par\textit{SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism.}
-\paragraph{FC-0899 [hard]} State the main tradeoff and production pitfall for SGLang.
-\noindent\textbf{Answer.} Tradeoff: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Pitfall: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.
-\par\textit{Tradeoff: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Pitfall: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.}
-\paragraph{LA-0900 [hard]} Explain SGLang from first principles, then show how you would evaluate and operate it in production.
-\noindent\textbf{Answer.} Start with the mechanism: SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism. Make the tradeoff explicit: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.
-\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
-\paragraph{MCQ-0901 [medium]} Which statement best describes Text Generation Inference?
-\begin{enumerate}[label=\Alph*.]
-\item A registry versions model artifacts, lineage, signatures, evaluation evidence, aliases, and promotion state.
-\item Gateways normalize provider APIs and add routing, budgets, rate limits, fallbacks, caching, and audit policy.
-\item llama.cpp runs quantized models efficiently on CPUs and varied local accelerators through a portable C++ stack.
-\item TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support.
-\end{enumerate}
-\noindent\textbf{Answer.} TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support.
-\par\textit{TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support. Tradeoff: Ecosystem integration is strong, while supported optimization paths vary by model and hardware. Watch for: Enabling quantization without quality and kernel tests can reduce both accuracy and speed.}
-\paragraph{MCQ-0902 [hard]} What is the central engineering tradeoff of Text Generation Inference?
-\begin{enumerate}[label=\Alph*.]
-\item Governance and rollback improve but approval gates can slow iteration.
-\item Central control improves governance but becomes a high-impact availability and security dependency.
-\item Ecosystem integration is strong, while supported optimization paths vary by model and hardware.
-\item Edge privacy and low dependency count trade off against datacenter throughput and model size.
-\end{enumerate}
-\noindent\textbf{Answer.} Ecosystem integration is strong, while supported optimization paths vary by model and hardware.
-\par\textit{TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support. Tradeoff: Ecosystem integration is strong, while supported optimization paths vary by model and hardware. Watch for: Enabling quantization without quality and kernel tests can reduce both accuracy and speed.}
-\paragraph{MCQ-0903 [hard]} Which failure mode should an interviewer expect you to identify for Text Generation Inference?
-\begin{enumerate}[label=\Alph*.]
-\item Automatic fallback across non-equivalent models can silently change behavior.
-\item Enabling quantization without quality and kernel tests can reduce both accuracy and speed.
-\item Selecting a quantization by file size alone ignores accuracy and hardware kernels.
-\item Using mutable stage names without immutable digests makes rollbacks uncertain.
-\end{enumerate}
-\noindent\textbf{Answer.} Enabling quantization without quality and kernel tests can reduce both accuracy and speed.
-\par\textit{TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support. Tradeoff: Ecosystem integration is strong, while supported optimization paths vary by model and hardware. Watch for: Enabling quantization without quality and kernel tests can reduce both accuracy and speed.}
-\paragraph{MCQ-0904 [medium]} A design review is specifically concerned with this risk: Enabling quantization without quality and kernel tests can reduce both accuracy and speed. Which topic should be reviewed first?
-\begin{enumerate}[label=\Alph*.]
-\item Text Generation Inference
-\item llama.cpp
-\item LLM gateways
-\item Model registry
-\end{enumerate}
-\noindent\textbf{Answer.} Text Generation Inference
-\par\textit{TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support. Tradeoff: Ecosystem integration is strong, while supported optimization paths vary by model and hardware. Watch for: Enabling quantization without quality and kernel tests can reduce both accuracy and speed.}
-\paragraph{MCQ-0905 [hard]} Which design note most accurately balances the benefits and costs of Text Generation Inference?
-\begin{enumerate}[label=\Alph*.]
-\item Edge privacy and low dependency count trade off against datacenter throughput and model size.
-\item Governance and rollback improve but approval gates can slow iteration.
-\item Central control improves governance but becomes a high-impact availability and security dependency.
-\item Ecosystem integration is strong, while supported optimization paths vary by model and hardware.
-\end{enumerate}
-\noindent\textbf{Answer.} Ecosystem integration is strong, while supported optimization paths vary by model and hardware.
-\par\textit{TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support. Tradeoff: Ecosystem integration is strong, while supported optimization paths vary by model and hardware. Watch for: Enabling quantization without quality and kernel tests can reduce both accuracy and speed.}
-\paragraph{MCQ-0906 [medium]} Which explanation would be strongest in a system-design interview about Text Generation Inference?
-\begin{enumerate}[label=\Alph*.]
-\item A registry versions model artifacts, lineage, signatures, evaluation evidence, aliases, and promotion state.
-\item TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support.
-\item llama.cpp runs quantized models efficiently on CPUs and varied local accelerators through a portable C++ stack.
-\item Gateways normalize provider APIs and add routing, budgets, rate limits, fallbacks, caching, and audit policy.
-\end{enumerate}
-\noindent\textbf{Answer.} TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support.
-\par\textit{TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support. Tradeoff: Ecosystem integration is strong, while supported optimization paths vary by model and hardware. Watch for: Enabling quantization without quality and kernel tests can reduce both accuracy and speed.}
-\paragraph{MCQ-0907 [hard]} Which production warning is most directly associated with Text Generation Inference?
-\begin{enumerate}[label=\Alph*.]
-\item Automatic fallback across non-equivalent models can silently change behavior.
-\item Selecting a quantization by file size alone ignores accuracy and hardware kernels.
-\item Enabling quantization without quality and kernel tests can reduce both accuracy and speed.
-\item Using mutable stage names without immutable digests makes rollbacks uncertain.
-\end{enumerate}
-\noindent\textbf{Answer.} Enabling quantization without quality and kernel tests can reduce both accuracy and speed.

@@ -1,0 +1,587 @@
+[
+  {
+    "id": "retrieval-saturation",
+    "category": "Retrieval and Search Theory",
+    "topic_ids": [
+      "bm25",
+      "tf-idf",
+      "retrieval-metrics"
+    ],
+    "kind": "plot",
+    "title": "Why BM25 saturates repeated terms",
+    "kicker": "RANKING INTUITION",
+    "intuition": "The first matching term is strong evidence. Each repetition adds less information, so the score bends toward a ceiling instead of growing forever.",
+    "x_label": "term frequency",
+    "y_label": "relative contribution",
+    "x_labels": [
+      "1",
+      "2",
+      "4",
+      "8",
+      "16",
+      "32"
+    ],
+    "series": [
+      {
+        "label": "linear count",
+        "values": [
+          3,
+          6,
+          13,
+          25,
+          50,
+          100
+        ]
+      },
+      {
+        "label": "BM25-like saturation",
+        "values": [
+          47,
+          65,
+          80,
+          90,
+          96,
+          100
+        ]
+      }
+    ],
+    "takeaway": "If a document repeats a query token 32 times, it should not automatically outrank a concise document with better coverage."
+  },
+  {
+    "id": "ann-recall-latency",
+    "category": "Vector Databases and Search Engines",
+    "topic_ids": [
+      "hnsw",
+      "ann-recall",
+      "ivf-and-pq"
+    ],
+    "kind": "plot",
+    "title": "ANN search moves along a frontier",
+    "kicker": "INDEX TUNING",
+    "intuition": "Searching more candidates usually improves recall, but tail latency and compute rise. The useful operating point is a measured frontier, not a universal index setting.",
+    "x_label": "search effort",
+    "y_label": "normalized percent",
+    "x_labels": [
+      "tiny",
+      "low",
+      "medium",
+      "high",
+      "max"
+    ],
+    "series": [
+      {
+        "label": "recall",
+        "values": [
+          58,
+          74,
+          86,
+          94,
+          98
+        ]
+      },
+      {
+        "label": "latency cost",
+        "values": [
+          12,
+          21,
+          37,
+          66,
+          100
+        ]
+      }
+    ],
+    "takeaway": "Tune filtered recall and p95 latency together on representative queries; either number alone can hide a bad index configuration."
+  },
+  {
+    "id": "rag-evidence-loop",
+    "category": "RAG Architecture and Evaluation",
+    "topic_ids": [
+      "document-ingestion",
+      "rag-evaluation",
+      "faithfulness"
+    ],
+    "kind": "flow",
+    "title": "RAG is an evidence supply chain",
+    "kicker": "DATA + MODEL FLOW",
+    "intuition": "A correct-looking answer can fail in five different places. Preserve identifiers so a bad claim can be traced backward to retrieval, source version, and parsing.",
+    "steps": [
+      {
+        "label": "Source",
+        "detail": "version + ACL"
+      },
+      {
+        "label": "Chunk",
+        "detail": "span + metadata"
+      },
+      {
+        "label": "Retrieve",
+        "detail": "candidate + score"
+      },
+      {
+        "label": "Generate",
+        "detail": "claim + citation"
+      },
+      {
+        "label": "Evaluate",
+        "detail": "localize failure"
+      }
+    ],
+    "takeaway": "Measure retriever recall, context quality, claim support, and answer usefulness separately."
+  },
+  {
+    "id": "graph-abstraction-ladder",
+    "category": "Knowledge Graphs and GraphRAG",
+    "topic_ids": [
+      "property-graphs",
+      "knowledge-graph-construction",
+      "graphrag-global-search"
+    ],
+    "kind": "flow",
+    "title": "Graphs add structure in layers",
+    "kicker": "GRAPH INTUITION",
+    "intuition": "A knowledge graph is not merely another vector index. It turns mentions into resolved entities, explicit relationships, communities, and queryable summaries.",
+    "steps": [
+      {
+        "label": "Mentions",
+        "detail": "raw spans"
+      },
+      {
+        "label": "Entities",
+        "detail": "resolved identity"
+      },
+      {
+        "label": "Relations",
+        "detail": "typed edges"
+      },
+      {
+        "label": "Communities",
+        "detail": "global structure"
+      },
+      {
+        "label": "Answers",
+        "detail": "traceable paths"
+      }
+    ],
+    "takeaway": "Each higher layer adds reasoning power and a new source of extraction or resolution error."
+  },
+  {
+    "id": "agent-control-loop",
+    "category": "Agents, MCP, and Control",
+    "topic_ids": [
+      "agent-loop",
+      "tool-calling",
+      "sandbox-runs"
+    ],
+    "kind": "flow",
+    "loop": true,
+    "title": "An agent is a controlled feedback loop",
+    "kicker": "CONTROL FLOW",
+    "intuition": "The model proposes; policy authorizes; a typed tool changes the world; observation updates state. The loop must have budgets and deterministic stop conditions.",
+    "steps": [
+      {
+        "label": "Observe",
+        "detail": "state + evidence"
+      },
+      {
+        "label": "Propose",
+        "detail": "structured action"
+      },
+      {
+        "label": "Authorize",
+        "detail": "policy + approval"
+      },
+      {
+        "label": "Execute",
+        "detail": "idempotent tool"
+      },
+      {
+        "label": "Record",
+        "detail": "result + audit"
+      }
+    ],
+    "takeaway": "Do not let natural-language intent bypass authorization or make an external effect invisible to the state machine."
+  },
+  {
+    "id": "durable-orchestration",
+    "category": "Orchestration Frameworks",
+    "topic_ids": [
+      "langgraph",
+      "temporal",
+      "state-machines"
+    ],
+    "kind": "flow",
+    "loop": true,
+    "title": "Durability separates decisions from effects",
+    "kicker": "WORKFLOW STATE",
+    "intuition": "Persist state before and after risky effects. A retry should replay a decision safely or reuse a recorded result, not duplicate the side effect.",
+    "steps": [
+      {
+        "label": "State",
+        "detail": "checkpoint"
+      },
+      {
+        "label": "Decision",
+        "detail": "pure transition"
+      },
+      {
+        "label": "Effect",
+        "detail": "idempotency key"
+      },
+      {
+        "label": "Result",
+        "detail": "durable record"
+      },
+      {
+        "label": "Resume",
+        "detail": "continue safely"
+      }
+    ],
+    "takeaway": "Crash recovery is a data-model property before it is a framework feature."
+  },
+  {
+    "id": "trace-waterfall",
+    "category": "Observability and Monitoring",
+    "topic_ids": [
+      "opentelemetry",
+      "distributed-tracing",
+      "llm-tracing"
+    ],
+    "kind": "timeline",
+    "title": "A trace explains where latency went",
+    "kicker": "REQUEST WATERFALL",
+    "intuition": "End-to-end latency is a composition of queueing, retrieval, model prefill, decoding, tools, and retries. A single aggregate hides the critical path.",
+    "steps": [
+      {
+        "label": "Queue",
+        "detail": "0-80 ms"
+      },
+      {
+        "label": "Retrieve",
+        "detail": "80-210 ms"
+      },
+      {
+        "label": "Prefill",
+        "detail": "210-430 ms"
+      },
+      {
+        "label": "Decode",
+        "detail": "430-1250 ms"
+      },
+      {
+        "label": "Tool",
+        "detail": "overlap/retry"
+      }
+    ],
+    "takeaway": "Correlate traces with quality, cost, model version, prompt version, and user cohort."
+  },
+  {
+    "id": "batching-frontier",
+    "category": "Serving, Deployment, and LLMOps",
+    "topic_ids": [
+      "vllm",
+      "autoscaling-for-llms",
+      "continuous-batching"
+    ],
+    "kind": "plot",
+    "title": "Batching trades latency for utilization",
+    "kicker": "SERVING FRONTIER",
+    "intuition": "Larger effective batches fill the accelerator and raise throughput, but waiting and head-of-line blocking eventually dominate request latency.",
+    "x_label": "effective batch",
+    "y_label": "normalized percent",
+    "x_labels": [
+      "1",
+      "2",
+      "4",
+      "8",
+      "16",
+      "32"
+    ],
+    "series": [
+      {
+        "label": "throughput",
+        "values": [
+          12,
+          23,
+          43,
+          68,
+          86,
+          92
+        ]
+      },
+      {
+        "label": "p95 latency",
+        "values": [
+          8,
+          12,
+          19,
+          31,
+          55,
+          94
+        ]
+      }
+    ],
+    "takeaway": "Choose a workload-specific knee using TTFT, decode rate, queue time, and quality-qualified cost."
+  },
+  {
+    "id": "lineage-chain",
+    "category": "Data and ML Lifecycle",
+    "topic_ids": [
+      "data-lineage",
+      "dvc",
+      "experiment-tracking"
+    ],
+    "kind": "flow",
+    "title": "Reproducibility is a chain of identities",
+    "kicker": "LINEAGE",
+    "intuition": "A model version is insufficient. You need immutable links among data, code, parameters, environment, prompts, evaluations, and the deployed artifact.",
+    "steps": [
+      {
+        "label": "Data",
+        "detail": "snapshot"
+      },
+      {
+        "label": "Code",
+        "detail": "commit"
+      },
+      {
+        "label": "Run",
+        "detail": "params + env"
+      },
+      {
+        "label": "Artifact",
+        "detail": "content hash"
+      },
+      {
+        "label": "Release",
+        "detail": "evidence + rollback"
+      }
+    ],
+    "takeaway": "When one link is mutable, exact reproduction and impact analysis become guesses."
+  },
+  {
+    "id": "attention-grid",
+    "category": "Transformer Theory and Training",
+    "topic_ids": [
+      "self-attention-math",
+      "multi-head-attention",
+      "causal-language-modeling"
+    ],
+    "kind": "matrix",
+    "title": "Attention builds a token-to-token routing table",
+    "kicker": "TENSOR SHAPES",
+    "intuition": "Queries choose where to read; keys advertise what each position contains; softmax turns similarities into routing weights; values carry the information mixed into the output.",
+    "steps": [
+      {
+        "label": "QK^T",
+        "detail": "n by n scores"
+      },
+      {
+        "label": "Scale",
+        "detail": "divide by sqrt(d)"
+      },
+      {
+        "label": "Mask",
+        "detail": "hide future tokens"
+      },
+      {
+        "label": "Softmax",
+        "detail": "row probabilities"
+      },
+      {
+        "label": "Multiply V",
+        "detail": "weighted content"
+      }
+    ],
+    "takeaway": "Track the n-by-n score matrix separately from the n-by-d token representation."
+  },
+  {
+    "id": "kv-memory-growth",
+    "category": "Inference Optimization",
+    "topic_ids": [
+      "kv-caching",
+      "pagedattention",
+      "gqa-and-mqa"
+    ],
+    "kind": "plot",
+    "title": "KV memory grows linearly with live context",
+    "kicker": "MEMORY MODEL",
+    "intuition": "Caching avoids recomputing old keys and values, but every live token consumes memory in every layer. GQA lowers the slope; paging reduces fragmentation, not live tensor bytes.",
+    "x_label": "context tokens (thousands)",
+    "y_label": "relative KV memory",
+    "x_labels": [
+      "1",
+      "2",
+      "4",
+      "8",
+      "16"
+    ],
+    "series": [
+      {
+        "label": "multi-head KV",
+        "values": [
+          6,
+          13,
+          25,
+          50,
+          100
+        ]
+      },
+      {
+        "label": "grouped-query KV",
+        "values": [
+          2,
+          3,
+          6,
+          13,
+          25
+        ]
+      }
+    ],
+    "takeaway": "Capacity planning must use the distribution of concurrent sequence lengths, not one advertised context maximum."
+  },
+  {
+    "id": "backpressure-path",
+    "category": "Backend, APIs, and Microservices",
+    "topic_ids": [
+      "rest-api-design",
+      "websockets-and-sse",
+      "rate-limiting"
+    ],
+    "kind": "flow",
+    "title": "Backpressure must travel toward the caller",
+    "kicker": "SERVICE FLOW",
+    "intuition": "When downstream work saturates, bounded queues, deadlines, admission control, and cancellation prevent hidden overload from becoming an outage.",
+    "steps": [
+      {
+        "label": "Client",
+        "detail": "deadline"
+      },
+      {
+        "label": "Gateway",
+        "detail": "admit/reject"
+      },
+      {
+        "label": "Queue",
+        "detail": "bounded"
+      },
+      {
+        "label": "Worker",
+        "detail": "cancelable"
+      },
+      {
+        "label": "Dependency",
+        "detail": "timeout + breaker"
+      }
+    ],
+    "takeaway": "An unbounded queue converts visible rejection into invisible latency and memory growth."
+  },
+  {
+    "id": "python-concurrency",
+    "category": "Python Engineering",
+    "topic_ids": [
+      "python-threading-and-the-gil",
+      "asyncio",
+      "multiprocessing"
+    ],
+    "kind": "timeline",
+    "title": "Choose concurrency from the waiting pattern",
+    "kicker": "EXECUTION MODEL",
+    "intuition": "Asyncio overlaps many cooperative waits, threads overlap blocking I/O with shared memory, and processes provide CPU parallelism with serialization and coordination costs.",
+    "steps": [
+      {
+        "label": "Asyncio",
+        "detail": "many waits, one loop"
+      },
+      {
+        "label": "Threads",
+        "detail": "blocking I/O"
+      },
+      {
+        "label": "Processes",
+        "detail": "CPU parallelism"
+      },
+      {
+        "label": "Queues",
+        "detail": "ownership boundary"
+      },
+      {
+        "label": "Cancel",
+        "detail": "structured cleanup"
+      }
+    ],
+    "takeaway": "Start with whether work is CPU-bound, blocking, or awaitable; syntax comes afterward."
+  },
+  {
+    "id": "trust-boundaries",
+    "category": "Security, Safety, and Governance",
+    "topic_ids": [
+      "prompt-injection",
+      "tool-authorization",
+      "sandboxing"
+    ],
+    "kind": "layers",
+    "title": "Authority narrows at every trust boundary",
+    "kicker": "DEFENSE IN DEPTH",
+    "intuition": "Prompts, retrieved text, and model outputs are untrusted data. Capabilities come from deterministic policy, scoped credentials, sandbox limits, and explicit approval.",
+    "steps": [
+      {
+        "label": "Untrusted text",
+        "detail": "no authority"
+      },
+      {
+        "label": "Typed proposal",
+        "detail": "schema validation"
+      },
+      {
+        "label": "Policy",
+        "detail": "allowlist + limits"
+      },
+      {
+        "label": "Sandbox",
+        "detail": "isolated effect"
+      },
+      {
+        "label": "Audit",
+        "detail": "evidence + revocation"
+      }
+    ],
+    "takeaway": "A stronger prompt is not a security boundary; enforce effects outside the model."
+  },
+  {
+    "id": "reliability-feedback",
+    "category": "Distributed Systems and Reliability",
+    "topic_ids": [
+      "queues-and-backpressure",
+      "retries-and-timeouts",
+      "fault-isolation"
+    ],
+    "kind": "flow",
+    "loop": true,
+    "title": "Reliability controls form a stabilizing loop",
+    "kicker": "OVERLOAD CONTROL",
+    "intuition": "Measure saturation, shed excess work, isolate failures, recover gradually, and feed the outcome into safer limits. Retries without this loop amplify overload.",
+    "steps": [
+      {
+        "label": "Measure",
+        "detail": "queue + tails"
+      },
+      {
+        "label": "Admit",
+        "detail": "budgeted load"
+      },
+      {
+        "label": "Isolate",
+        "detail": "bulkhead"
+      },
+      {
+        "label": "Recover",
+        "detail": "backoff + probe"
+      },
+      {
+        "label": "Learn",
+        "detail": "update limits"
+      }
+    ],
+    "takeaway": "Design for bounded degradation rather than assuming every dependency remains healthy."
+  }
+]

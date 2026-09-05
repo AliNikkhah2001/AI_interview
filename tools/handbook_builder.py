@@ -5,7 +5,54 @@ from __future__ import annotations
 from pathlib import Path
 
 
-def build_handbook(root: Path, topics, questions, core, designs, refs, tutorials, formulas, roadmap, latex_escape):
+def visual_latex(visual, latex_escape):
+    """Render one canonical visual as native vector LaTeX/TikZ."""
+    lines = [
+        r"\subsection{" + latex_escape(visual["title"]) + "}",
+        r"\badge{" + latex_escape(visual["kicker"]) + r"} \quad " + latex_escape(visual["intuition"]),
+    ]
+    if visual["kind"] == "plot":
+        labels = visual["x_labels"]
+        series = visual["series"]
+        max_x = max(1, len(labels) - 1)
+        lines += [
+            r"\begin{center}\begin{tikzpicture}[x=1.32cm,y=0.047cm]",
+            rf"\draw[->,draw=navy] (0,0)--({max_x + .45},0) node[right]{{\scriptsize {latex_escape(visual['x_label'])}}};",
+            rf"\draw[->,draw=navy] (0,0)--(0,108) node[above]{{\scriptsize {latex_escape(visual['y_label'])}}};",
+        ]
+        for y in [25, 50, 75, 100]:
+            lines.append(rf"\draw[draw=gray!25,dashed] (0,{y})--({max_x},{y}) node[left]{{\scriptsize {y}}};")
+        colors = ["cyan", "amber"]
+        for series_index, item in enumerate(series):
+            coordinates = " ".join(f"({i},{value})" for i, value in enumerate(item["values"]))
+            color = colors[series_index % len(colors)]
+            lines.append(rf"\draw[very thick,draw={color}] plot coordinates {{{coordinates}}};")
+            for i, value in enumerate(item["values"]):
+                lines.append(rf"\fill[{color}] ({i},{value}) circle (1.5pt);")
+        for i, label in enumerate(labels):
+            lines.append(rf"\node[below,font=\scriptsize] at ({i},0) {{{latex_escape(label)}}};")
+        legend = r"\quad ".join(rf"\textcolor{{{colors[i % len(colors)]}}}{{\rule{{5mm}}{{1.2pt}}}} {latex_escape(item['label'])}" for i, item in enumerate(series))
+        lines += [r"\end{tikzpicture}\par\smallskip " + legend + r"\end{center}"]
+    else:
+        lines.append(r"\begin{center}\begin{tikzpicture}[visual/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=25mm,minimum height=12mm,font=\small},arr/.style={-{Stealth},thick,draw=blue},node distance=7mm]")
+        for i, step in enumerate(visual["steps"]):
+            anchor = "" if i == 0 else f",right=of v{i-1}"
+            lines.append(
+                r"\node[visual" + anchor + f"] (v{i}) "
+                + r"{\textbf{" + latex_escape(step["label"]) + r"}\\{\scriptsize "
+                + latex_escape(step["detail"]) + r"}};"
+            )
+        for i in range(len(visual["steps"]) - 1):
+            lines.append(rf"\draw[arr] (v{i})--(v{i+1});")
+        if visual.get("loop"):
+            last = len(visual["steps"]) - 1
+            lines.append(rf"\draw[arr] (v{last}.south) to[bend left=32] node[below,font=\scriptsize]{{feedback}} (v0.south);")
+        lines.append(r"\end{tikzpicture}\end{center}")
+    lines.append(r"\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Remember.} " + latex_escape(visual["takeaway"]) + "}}")
+    return lines
+
+
+def build_handbook(root: Path, topics, questions, core, designs, refs, tutorials, formulas, roadmap, visuals, latex_escape):
     formula_by_id = {f["id"]: f for f in formulas}
     lines = [
         r"\documentclass[10pt]{article}",
@@ -30,10 +77,10 @@ def build_handbook(root: Path, topics, questions, core, designs, refs, tutorials
         r"\newcommand{\mathblock}[1]{\begin{center}\begin{adjustbox}{max width=\linewidth}$\displaystyle #1$\end{adjustbox}\end{center}}",
         r"\newenvironment{derivation}{\begin{quote}\small\color{navy}}{\end{quote}}",
         r"\begin{document}",
-        r"\begin{titlepage}\pagecolor{navy}\color{white}\vspace*{1.1in}{\Huge\bfseries AI Engineering\\Interview Atlas\par}\vspace{.35in}{\Large Mathematical tutorials, systems, and 1,000+ questions\par}\vspace{.35in}{\large " + str(len(formulas)) + r" derivations \textbullet\ " + str(len(tutorials)) + r" deep lessons \textbullet\ " + str(len(roadmap)) + r" roadmap phases\par}\vfill{\large Research snapshot: 2 September 2026\par}\vspace{.15in}{\normalsize Primary papers, official documentation, specifications, and standards\par}\vspace{.7in}{\color{cyan}\rule{\textwidth}{3pt}}\end{titlepage}\nopagecolor\color{black}",
+        r"\begin{titlepage}\pagecolor{navy}\color{white}\vspace*{1.1in}{\Huge\bfseries AI Engineering\\Interview Atlas\par}\vspace{.35in}{\Large Mathematical tutorials, systems, and 1,000+ questions\par}\vspace{.35in}{\large " + str(len(formulas)) + r" derivations \textbullet\ " + str(len(visuals)) + r" visual models \textbullet\ " + str(len(tutorials)) + r" deep lessons \textbullet\ " + str(len(roadmap)) + r" roadmap phases\par}\vfill{\large Research snapshot: 2 September 2026\par}\vspace{.15in}{\normalsize Primary papers, official documentation, specifications, and standards\par}\vspace{.7in}{\color{cyan}\rule{\textwidth}{3pt}}\end{titlepage}\nopagecolor\color{black}",
         r"\tableofcontents\newpage",
         r"\section{How to use this handbook}",
-        "This handbook contains " + str(len(topics)) + " complete topic tutorials, " + str(len(questions)) + " generated practice questions, 50 core interview questions, " + str(len(designs)) + " progressive system-design challenges, and " + str(len(formulas)) + " mathematical modules. The tutorials are deliberately written to cover the definition, tradeoff, failure, scenario, design, and production reasoning tested by the question bank.",
+        "This handbook contains " + str(len(topics)) + " complete topic tutorials, " + str(len(questions)) + " generated practice questions, 50 core interview questions, " + str(len(designs)) + " progressive system-design challenges, " + str(len(visuals)) + " visual intuition models, and " + str(len(formulas)) + " mathematical modules. The browser resumes the last unfinished chapter, records five reading checkpoints, unlocks a five-question exam, and advances after a score of at least 80 percent.",
         r"\subsection{The interview answer loop}",
         r"Answer in seven moves: \textbf{mechanism $\rightarrow$ assumptions $\rightarrow$ quantitative model $\rightarrow$ alternative $\rightarrow$ experiment $\rightarrow$ operation $\rightarrow$ recovery}. For a short answer, compress the same structure rather than replacing it with product slogans.",
         r"\subsection{How to study a derivation}",
@@ -57,7 +104,10 @@ def build_handbook(root: Path, topics, questions, core, designs, refs, tutorials
         lines.append(r"\node[phase%s](p%d){\textbf{%02d. %s}\hfill %dh};" % (anchor, idx, phase["order"], latex_escape(phase["title"]), phase["hours"]))
     for i in range(len(roadmap)-1):
         lines.append(rf"\draw[arr](p{i})--(p{i+1});")
-    lines += [r"\end{tikzpicture}\end{center}"]
+    lines += [r"\end{tikzpicture}\end{center}",
+              r"\subsection{The guided learning loop}",
+              r"\begin{center}\begin{tikzpicture}[visual/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=30mm,minimum height=11mm,font=\small},arr/.style={-{Stealth},thick,draw=blue},node distance=8mm]\node[visual](resume){Resume last\\unfinished};\node[visual,right=of resume](teach){Read five\\lesson parts};\node[visual,right=of teach](exam){Pass topic exam\\at 80\%};\node[visual,below=of exam](mark){Mark chapter\\and phase};\node[visual,left=of mark](next){Open next\\chapter};\draw[arr](resume)--(teach);\draw[arr](teach)--(exam);\draw[arr](exam)--(mark);\draw[arr](mark)--(next);\draw[arr](next.west) to[bend left=26] (resume.south);\end{tikzpicture}\end{center}",
+              r"The website stores the last opened chapter, reading checkpoints, exam attempts, best scores, chapter mastery, and automatically completed lesson-bearing phases in browser storage. A chapter is learned only after all five parts have been reached and its exam has been passed."]
     for phase in roadmap:
         prereq = ", ".join(phase["prerequisites"]) or "none"
         lines += [
@@ -69,6 +119,11 @@ def build_handbook(root: Path, topics, questions, core, designs, refs, tutorials
             r"\textbf{Milestone.} " + latex_escape(phase["milestone"]),
             r"\textbf{Practice.} " + latex_escape(phase["practice"]),
         ]
+
+    lines += [r"\clearpage\section{Visual intuition atlas}",
+              r"Use each picture to predict behavior before memorizing terminology. Curves are normalized teaching models unless a unit is stated; benchmark real systems on representative workloads."]
+    for visual in visuals:
+        lines += visual_latex(visual, latex_escape)
 
     # Formula reference chapter with explicit derivations.
     lines += [r"\clearpage\section{Mathematical formula and derivation reference}",

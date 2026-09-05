@@ -1,3 +1,220 @@
+\item Typed models improve boundaries but validation can add runtime cost.
+\item Refactoring and contracts improve, while runtime behavior is unchanged unless validated.
+\item High connection concurrency is efficient, while blocking functions freeze the loop.
+\item Central handling simplifies APIs, while overly broad catches erase actionable context.
+\end{enumerate}
+\noindent\textbf{Answer.} Refactoring and contracts improve, while runtime behavior is unchanged unless validated.
+\par\textit{Type hints support static analysis; Protocol defines structural interfaces without inheritance. Tradeoff: Refactoring and contracts improve, while runtime behavior is unchanged unless validated. Watch for: Assuming type annotations enforce production inputs creates vulnerabilities.}
+\paragraph{MCQ-1673 [hard]} Which failure mode should an interviewer expect you to identify for Type hints and protocols?
+\begin{enumerate}[label=\Alph*.]
+\item Catching Exception and returning None turns failures into corrupt state.
+\item Treating parsed external input as semantically authorized is unsafe.
+\item Creating coroutines without awaiting them silently drops work.
+\item Assuming type annotations enforce production inputs creates vulnerabilities.
+\end{enumerate}
+\noindent\textbf{Answer.} Assuming type annotations enforce production inputs creates vulnerabilities.
+\par\textit{Type hints support static analysis; Protocol defines structural interfaces without inheritance. Tradeoff: Refactoring and contracts improve, while runtime behavior is unchanged unless validated. Watch for: Assuming type annotations enforce production inputs creates vulnerabilities.}
+\paragraph{MCQ-1674 [medium]} A design review is specifically concerned with this risk: Assuming type annotations enforce production inputs creates vulnerabilities. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Type hints and protocols
+\item Dataclasses and Pydantic
+\item Exceptions
+\item Asyncio
+\end{enumerate}
+\noindent\textbf{Answer.} Type hints and protocols
+\par\textit{Type hints support static analysis; Protocol defines structural interfaces without inheritance. Tradeoff: Refactoring and contracts improve, while runtime behavior is unchanged unless validated. Watch for: Assuming type annotations enforce production inputs creates vulnerabilities.}
+\paragraph{MCQ-1675 [hard]} Which design note most accurately balances the benefits and costs of Type hints and protocols?
+\begin{enumerate}[label=\Alph*.]
+\item Central handling simplifies APIs, while overly broad catches erase actionable context.
+\item High connection concurrency is efficient, while blocking functions freeze the loop.
+\item Typed models improve boundaries but validation can add runtime cost.
+\item Refactoring and contracts improve, while runtime behavior is unchanged unless validated.
+\end{enumerate}
+\noindent\textbf{Answer.} Refactoring and contracts improve, while runtime behavior is unchanged unless validated.
+\par\textit{Type hints support static analysis; Protocol defines structural interfaces without inheritance. Tradeoff: Refactoring and contracts improve, while runtime behavior is unchanged unless validated. Watch for: Assuming type annotations enforce production inputs creates vulnerabilities.}
+\paragraph{MCQ-1676 [medium]} Which explanation would be strongest in a system-design interview about Type hints and protocols?
+\begin{enumerate}[label=\Alph*.]
+\item Dataclasses reduce class boilerplate; Pydantic adds parsing, validation, serialization, and schema generation.
+\item Type hints support static analysis; Protocol defines structural interfaces without inheritance.
+\item Exceptions separate error propagation from normal return values and can preserve causal chains.
+\item Asyncio cooperatively schedules coroutines on an event loop around awaitable I/O.
+\end{enumerate}
+\noindent\textbf{Answer.} Type hints support static analysis; Protocol defines structural interfaces without inheritance.
+\par\textit{Type hints support static analysis; Protocol defines structural interfaces without inheritance. Tradeoff: Refactoring and contracts improve, while runtime behavior is unchanged unless validated. Watch for: Assuming type annotations enforce production inputs creates vulnerabilities.}
+\paragraph{MCQ-1677 [hard]} Which production warning is most directly associated with Type hints and protocols?
+\begin{enumerate}[label=\Alph*.]
+\item Creating coroutines without awaiting them silently drops work.
+\item Treating parsed external input as semantically authorized is unsafe.
+\item Catching Exception and returning None turns failures into corrupt state.
+\item Assuming type annotations enforce production inputs creates vulnerabilities.
+\end{enumerate}
+\noindent\textbf{Answer.} Assuming type annotations enforce production inputs creates vulnerabilities.
+\par\textit{Type hints support static analysis; Protocol defines structural interfaces without inheritance. Tradeoff: Refactoring and contracts improve, while runtime behavior is unchanged unless validated. Watch for: Assuming type annotations enforce production inputs creates vulnerabilities.}
+\paragraph{FC-1678 [medium]} Define Type hints and protocols in interview-ready language.
+\noindent\textbf{Answer.} Type hints support static analysis; Protocol defines structural interfaces without inheritance.
+\par\textit{Type hints support static analysis; Protocol defines structural interfaces without inheritance.}
+\paragraph{FC-1679 [hard]} State the main tradeoff and production pitfall for Type hints and protocols.
+\noindent\textbf{Answer.} Tradeoff: Refactoring and contracts improve, while runtime behavior is unchanged unless validated. Pitfall: Assuming type annotations enforce production inputs creates vulnerabilities.
+\par\textit{Tradeoff: Refactoring and contracts improve, while runtime behavior is unchanged unless validated. Pitfall: Assuming type annotations enforce production inputs creates vulnerabilities.}
+\paragraph{LA-1680 [hard]} Explain Type hints and protocols from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Type hints support static analysis; Protocol defines structural interfaces without inheritance. Make the tradeoff explicit: Refactoring and contracts improve, while runtime behavior is unchanged unless validated. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Assuming type annotations enforce production inputs creates vulnerabilities.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1681 [medium]} Which statement best describes Exceptions?
+\begin{enumerate}[label=\Alph*.]
+\item Descriptors define attribute access; properties provide managed getter, setter, and deleter behavior.
+\item Type hints support static analysis; Protocol defines structural interfaces without inheritance.
+\item pyproject.toml, lockfiles, wheels, virtual environments, and reproducible builds define deliverable Python software.
+\item Exceptions separate error propagation from normal return values and can preserve causal chains.
+\end{enumerate}
+\noindent\textbf{Answer.} Exceptions separate error propagation from normal return values and can preserve causal chains.
+\par\textit{Exceptions separate error propagation from normal return values and can preserve causal chains. Tradeoff: Central handling simplifies APIs, while overly broad catches erase actionable context. Watch for: Catching Exception and returning None turns failures into corrupt state.}
+\paragraph{MCQ-1682 [hard]} What is the central engineering tradeoff of Exceptions?
+\begin{enumerate}[label=\Alph*.]
+\item Validation and lazy access fit attribute syntax but may hide expensive operations.
+\item Isolation prevents dependency drift but needs platform and supply-chain controls.
+\item Central handling simplifies APIs, while overly broad catches erase actionable context.
+\item Refactoring and contracts improve, while runtime behavior is unchanged unless validated.
+\end{enumerate}
+\noindent\textbf{Answer.} Central handling simplifies APIs, while overly broad catches erase actionable context.
+\par\textit{Exceptions separate error propagation from normal return values and can preserve causal chains. Tradeoff: Central handling simplifies APIs, while overly broad catches erase actionable context. Watch for: Catching Exception and returning None turns failures into corrupt state.}
+\paragraph{MCQ-1683 [hard]} Which failure mode should an interviewer expect you to identify for Exceptions?
+\begin{enumerate}[label=\Alph*.]
+\item Assuming type annotations enforce production inputs creates vulnerabilities.
+\item Loose version ranges in production make rebuilds non-reproducible.
+\item Performing network I/O in a property surprises callers and tooling.
+\item Catching Exception and returning None turns failures into corrupt state.
+\end{enumerate}
+\noindent\textbf{Answer.} Catching Exception and returning None turns failures into corrupt state.
+\par\textit{Exceptions separate error propagation from normal return values and can preserve causal chains. Tradeoff: Central handling simplifies APIs, while overly broad catches erase actionable context. Watch for: Catching Exception and returning None turns failures into corrupt state.}
+\paragraph{MCQ-1684 [medium]} A design review is specifically concerned with this risk: Catching Exception and returning None turns failures into corrupt state. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Packaging and environments
+\item Type hints and protocols
+\item Exceptions
+\item Descriptors and properties
+\end{enumerate}
+\noindent\textbf{Answer.} Exceptions
+\par\textit{Exceptions separate error propagation from normal return values and can preserve causal chains. Tradeoff: Central handling simplifies APIs, while overly broad catches erase actionable context. Watch for: Catching Exception and returning None turns failures into corrupt state.}
+\paragraph{MCQ-1685 [hard]} Which design note most accurately balances the benefits and costs of Exceptions?
+\begin{enumerate}[label=\Alph*.]
+\item Isolation prevents dependency drift but needs platform and supply-chain controls.
+\item Validation and lazy access fit attribute syntax but may hide expensive operations.
+\item Refactoring and contracts improve, while runtime behavior is unchanged unless validated.
+\item Central handling simplifies APIs, while overly broad catches erase actionable context.
+\end{enumerate}
+\noindent\textbf{Answer.} Central handling simplifies APIs, while overly broad catches erase actionable context.
+\par\textit{Exceptions separate error propagation from normal return values and can preserve causal chains. Tradeoff: Central handling simplifies APIs, while overly broad catches erase actionable context. Watch for: Catching Exception and returning None turns failures into corrupt state.}
+\paragraph{MCQ-1686 [medium]} Which explanation would be strongest in a system-design interview about Exceptions?
+\begin{enumerate}[label=\Alph*.]
+\item Exceptions separate error propagation from normal return values and can preserve causal chains.
+\item pyproject.toml, lockfiles, wheels, virtual environments, and reproducible builds define deliverable Python software.
+\item Type hints support static analysis; Protocol defines structural interfaces without inheritance.
+\item Descriptors define attribute access; properties provide managed getter, setter, and deleter behavior.
+\end{enumerate}
+\noindent\textbf{Answer.} Exceptions separate error propagation from normal return values and can preserve causal chains.
+\par\textit{Exceptions separate error propagation from normal return values and can preserve causal chains. Tradeoff: Central handling simplifies APIs, while overly broad catches erase actionable context. Watch for: Catching Exception and returning None turns failures into corrupt state.}
+\paragraph{MCQ-1687 [hard]} Which production warning is most directly associated with Exceptions?
+\begin{enumerate}[label=\Alph*.]
+\item Loose version ranges in production make rebuilds non-reproducible.
+\item Catching Exception and returning None turns failures into corrupt state.
+\item Performing network I/O in a property surprises callers and tooling.
+\item Assuming type annotations enforce production inputs creates vulnerabilities.
+\end{enumerate}
+\noindent\textbf{Answer.} Catching Exception and returning None turns failures into corrupt state.
+\par\textit{Exceptions separate error propagation from normal return values and can preserve causal chains. Tradeoff: Central handling simplifies APIs, while overly broad catches erase actionable context. Watch for: Catching Exception and returning None turns failures into corrupt state.}
+\paragraph{FC-1688 [medium]} Define Exceptions in interview-ready language.
+\noindent\textbf{Answer.} Exceptions separate error propagation from normal return values and can preserve causal chains.
+\par\textit{Exceptions separate error propagation from normal return values and can preserve causal chains.}
+\paragraph{FC-1689 [hard]} State the main tradeoff and production pitfall for Exceptions.
+\noindent\textbf{Answer.} Tradeoff: Central handling simplifies APIs, while overly broad catches erase actionable context. Pitfall: Catching Exception and returning None turns failures into corrupt state.
+\par\textit{Tradeoff: Central handling simplifies APIs, while overly broad catches erase actionable context. Pitfall: Catching Exception and returning None turns failures into corrupt state.}
+\paragraph{LA-1690 [hard]} Explain Exceptions from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Exceptions separate error propagation from normal return values and can preserve causal chains. Make the tradeoff explicit: Central handling simplifies APIs, while overly broad catches erase actionable context. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Catching Exception and returning None turns failures into corrupt state.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1691 [medium]} Which statement best describes Memory management?
+\begin{enumerate}[label=\Alph*.]
+\item CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory.
+\item ThreadPoolExecutor and ProcessPoolExecutor expose a common future-based API for concurrent callables.
+\item Descriptors define attribute access; properties provide managed getter, setter, and deleter behavior.
+\item Context managers guarantee paired setup and cleanup through with, \_\_enter\_\_/\_\_exit\_\_, or contextlib.
+\end{enumerate}
+\noindent\textbf{Answer.} CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory.
+\par\textit{CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory. Tradeoff: Automatic cleanup is convenient, while cycles and caches can retain large objects. Watch for: Watching only Python heap misses tensors allocated in native or GPU memory.}
+\paragraph{MCQ-1692 [hard]} What is the central engineering tradeoff of Memory management?
+\begin{enumerate}[label=\Alph*.]
+\item Integration is simple, but cancellation and process serialization have limits.
+\item Validation and lazy access fit attribute syntax but may hide expensive operations.
+\item Automatic cleanup is convenient, while cycles and caches can retain large objects.
+\item Resource safety improves and exceptions are localized.
+\end{enumerate}
+\noindent\textbf{Answer.} Automatic cleanup is convenient, while cycles and caches can retain large objects.
+\par\textit{CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory. Tradeoff: Automatic cleanup is convenient, while cycles and caches can retain large objects. Watch for: Watching only Python heap misses tensors allocated in native or GPU memory.}
+\paragraph{MCQ-1693 [hard]} Which failure mode should an interviewer expect you to identify for Memory management?
+\begin{enumerate}[label=\Alph*.]
+\item Performing network I/O in a property surprises callers and tooling.
+\item Swallowing exceptions unintentionally in \_\_exit\_\_ hides failures.
+\item Watching only Python heap misses tensors allocated in native or GPU memory.
+\item Submitting unbounded tasks creates memory pressure and queue latency.
+\end{enumerate}
+\noindent\textbf{Answer.} Watching only Python heap misses tensors allocated in native or GPU memory.
+\par\textit{CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory. Tradeoff: Automatic cleanup is convenient, while cycles and caches can retain large objects. Watch for: Watching only Python heap misses tensors allocated in native or GPU memory.}
+\paragraph{MCQ-1694 [medium]} A design review is specifically concerned with this risk: Watching only Python heap misses tensors allocated in native or GPU memory. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Memory management
+\item Concurrent futures
+\item Context managers
+\item Descriptors and properties
+\end{enumerate}
+\noindent\textbf{Answer.} Memory management
+\par\textit{CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory. Tradeoff: Automatic cleanup is convenient, while cycles and caches can retain large objects. Watch for: Watching only Python heap misses tensors allocated in native or GPU memory.}
+\paragraph{MCQ-1695 [hard]} Which design note most accurately balances the benefits and costs of Memory management?
+\begin{enumerate}[label=\Alph*.]
+\item Resource safety improves and exceptions are localized.
+\item Automatic cleanup is convenient, while cycles and caches can retain large objects.
+\item Integration is simple, but cancellation and process serialization have limits.
+\item Validation and lazy access fit attribute syntax but may hide expensive operations.
+\end{enumerate}
+\noindent\textbf{Answer.} Automatic cleanup is convenient, while cycles and caches can retain large objects.
+\par\textit{CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory. Tradeoff: Automatic cleanup is convenient, while cycles and caches can retain large objects. Watch for: Watching only Python heap misses tensors allocated in native or GPU memory.}
+\paragraph{MCQ-1696 [medium]} Which explanation would be strongest in a system-design interview about Memory management?
+\begin{enumerate}[label=\Alph*.]
+\item Descriptors define attribute access; properties provide managed getter, setter, and deleter behavior.
+\item Context managers guarantee paired setup and cleanup through with, \_\_enter\_\_/\_\_exit\_\_, or contextlib.
+\item ThreadPoolExecutor and ProcessPoolExecutor expose a common future-based API for concurrent callables.
+\item CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory.
+\end{enumerate}
+\noindent\textbf{Answer.} CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory.
+\par\textit{CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory. Tradeoff: Automatic cleanup is convenient, while cycles and caches can retain large objects. Watch for: Watching only Python heap misses tensors allocated in native or GPU memory.}
+\paragraph{MCQ-1697 [hard]} Which production warning is most directly associated with Memory management?
+\begin{enumerate}[label=\Alph*.]
+\item Watching only Python heap misses tensors allocated in native or GPU memory.
+\item Submitting unbounded tasks creates memory pressure and queue latency.
+\item Performing network I/O in a property surprises callers and tooling.
+\item Swallowing exceptions unintentionally in \_\_exit\_\_ hides failures.
+\end{enumerate}
+\noindent\textbf{Answer.} Watching only Python heap misses tensors allocated in native or GPU memory.
+\par\textit{CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory. Tradeoff: Automatic cleanup is convenient, while cycles and caches can retain large objects. Watch for: Watching only Python heap misses tensors allocated in native or GPU memory.}
+\paragraph{FC-1698 [medium]} Define Memory management in interview-ready language.
+\noindent\textbf{Answer.} CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory.
+\par\textit{CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory.}
+\paragraph{FC-1699 [hard]} State the main tradeoff and production pitfall for Memory management.
+\noindent\textbf{Answer.} Tradeoff: Automatic cleanup is convenient, while cycles and caches can retain large objects. Pitfall: Watching only Python heap misses tensors allocated in native or GPU memory.
+\par\textit{Tradeoff: Automatic cleanup is convenient, while cycles and caches can retain large objects. Pitfall: Watching only Python heap misses tensors allocated in native or GPU memory.}
+\paragraph{LA-1700 [hard]} Explain Memory management from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory. Make the tradeoff explicit: Automatic cleanup is convenient, while cycles and caches can retain large objects. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Watching only Python heap misses tensors allocated in native or GPU memory.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1701 [medium]} Which statement best describes Testing and mocking?
+\begin{enumerate}[label=\Alph*.]
+\item Type hints support static analysis; Protocol defines structural interfaces without inheritance.
+\item Decorators wrap or replace functions or classes to add behavior while preserving a callable interface.
+\item Unit, integration, property, contract, and load tests cover different risks; mocks isolate only well-understood boundaries.
+\item Separate processes bypass the GIL and isolate memory while communicating through serialization or shared memory.
+\end{enumerate}
+\noindent\textbf{Answer.} Unit, integration, property, contract, and load tests cover different risks; mocks isolate only well-understood boundaries.
+\par\textit{Unit, integration, property, contract, and load tests cover different risks; mocks isolate only well-understood boundaries. Tradeoff: Fast tests aid iteration, while excessive mocking tests implementation rather than behavior. Watch for: Mocking the model, database, and network in the same test proves little about integration.}
+\paragraph{MCQ-1702 [hard]} What is the central engineering tradeoff of Testing and mocking?
+\begin{enumerate}[label=\Alph*.]
+\item Cross-cutting concerns become reusable, but hidden control flow complicates debugging.
 \item CPU parallelism improves at startup, memory, and coordination cost.
 \item Fast tests aid iteration, while excessive mocking tests implementation rather than behavior.
 \item Refactoring and contracts improve, while runtime behavior is unchanged unless validated.

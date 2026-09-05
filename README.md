@@ -6,9 +6,9 @@ A research-grounded practice repository for AI engineering, LLM systems, RAG, ag
 
 ## Use the atlas
 
-- Open `index.html` through GitHub Pages for the ordered roadmap, progress tracking, mathematical tutorials, search, flashcards, and design drills.
+- Open `index.html` through GitHub Pages for the guided resume -> read -> exam -> advance course, ordered roadmap, mathematical tutorials, search, flashcards, and design drills.
 - Read `output/pdf/ai_engineering_interview_handbook.pdf` for the complete printable handbook.
-- Use `data/tutorials.json`, `data/formulas.json`, `data/roadmap.json`, and the sharded question files for custom study tools.
+- Use `data/tutorials.json`, `data/formulas.json`, `data/visuals.json`, `data/roadmap.json`, and the sharded question files for custom study tools.
 
 ## Curriculum map
 
@@ -89,11 +89,11 @@ flowchart TD
   S --> M[Mock interviews]
 ```
 
-The browser records roadmap phases, mastered tutorials, and reviewed questions locally on the device. It always highlights the first incomplete phase as the current study position.
+The browser resumes the last unfinished lesson, records five reading checkpoints, unlocks a five-question topic exam, and advances after an 80% passing score. Roadmap phases with lessons complete automatically when every chapter in the phase is passed.
 
-## Mathematical coverage
+## Visual and mathematical coverage
 
-The handbook and site include 33 formula modules with assumptions, variable definitions, derivations, and worked interpretations. Browser equations use MathJax; the source handbook uses native LaTeX with `amsmath`, `amssymb`, and `mathtools`.
+The handbook and site include 15 instructional diagrams and plots plus 33 formula modules with assumptions, variable definitions, derivations, and worked interpretations. Browser equations use MathJax; the source handbook uses native LaTeX with `amsmath`, `amssymb`, `mathtools`, and TikZ.
 
 ## Source policy
 

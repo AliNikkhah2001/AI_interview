@@ -206,7 +206,7 @@
     "topic_ids": [
       "faithfulness",
       "grounded-generation",
-      "citation-correctness"
+      "rag-evaluation"
     ],
     "latex": "F=\\frac{\\sum_{i=1}^{m}w_i\\,\\mathbf 1[\\operatorname{entailed}(c_i,E)]}{\\sum_{i=1}^{m}w_i}",
     "variables": [
@@ -228,7 +228,7 @@
     "topic_ids": [
       "entity-resolution",
       "knowledge-graph-construction",
-      "graph-evaluation"
+      "graph-quality-evaluation"
     ],
     "latex": "P=\\frac{TP}{TP+FP},\\quad R=\\frac{TP}{TP+FN},\\quad F_1=\\frac{2PR}{P+R}",
     "variables": [
@@ -248,9 +248,9 @@
     "id": "attention",
     "title": "Scaled dot-product attention",
     "topic_ids": [
-      "self-attention",
+      "self-attention-math",
       "multi-head-attention",
-      "attention-complexity"
+      "flashattention"
     ],
     "latex": "\\operatorname{Attention}(Q,K,V)=\\operatorname{softmax}\\left(\\frac{QK^\\top}{\\sqrt{d_k}}+M\\right)V",
     "variables": [
@@ -274,8 +274,8 @@
     "id": "softmax",
     "title": "Softmax and its gradient",
     "topic_ids": [
-      "self-attention",
-      "language-modeling-objective"
+      "self-attention-math",
+      "causal-language-modeling"
     ],
     "latex": "p_i=\\frac{e^{z_i}}{\\sum_j e^{z_j}},\\qquad \\frac{\\partial p_i}{\\partial z_j}=p_i(\\delta_{ij}-p_j)",
     "variables": [
@@ -334,8 +334,8 @@
     "id": "cross-entropy",
     "title": "Cross-entropy and perplexity",
     "topic_ids": [
-      "language-modeling-objective",
-      "training-data-quality"
+      "causal-language-modeling",
+      "cross-entropy-and-perplexity"
     ],
     "latex": "\\mathcal L=-\\frac1T\\sum_{t=1}^{T}\\log p_\\theta(x_t\\mid x_{<t}),\\qquad \\operatorname{PPL}=e^{\\mathcal L}",
     "variables": [
@@ -355,7 +355,7 @@
     "id": "dpo",
     "title": "Direct Preference Optimization",
     "topic_ids": [
-      "rlhf-and-dpo"
+      "dpo"
     ],
     "latex": "\\mathcal L_{DPO}=-\\log\\sigma\\left(\\beta\\left[\\log\\frac{\\pi_\\theta(y_w\\mid x)}{\\pi_{ref}(y_w\\mid x)}-\\log\\frac{\\pi_\\theta(y_l\\mid x)}{\\pi_{ref}(y_l\\mid x)}\\right]\\right)",
     "variables": [
@@ -375,7 +375,7 @@
     "id": "ppo",
     "title": "PPO clipped objective",
     "topic_ids": [
-      "rlhf-and-dpo"
+      "rlhf-and-ppo"
     ],
     "latex": "L^{clip}=\\mathbb E_t\\left[\\min\\left(r_tA_t,\\operatorname{clip}(r_t,1-\\epsilon,1+\\epsilon)A_t\\right)\\right],\\quad r_t=\\frac{\\pi_\\theta(a_t\\mid s_t)}{\\pi_{old}(a_t\\mid s_t)}",
     "variables": [
@@ -416,9 +416,9 @@
     "id": "kv-cache",
     "title": "KV-cache memory",
     "topic_ids": [
-      "kv-cache",
+      "kv-caching",
       "pagedattention",
-      "multi-query-and-grouped-query-attention",
+      "gqa-and-mqa",
       "capacity-planning"
     ],
     "latex": "M_{KV}=B\\,L\\,S\\,2\\,H_{kv}\\,D_h\\,b",
@@ -443,7 +443,7 @@
     "id": "attention-complexity",
     "title": "Attention compute and memory",
     "topic_ids": [
-      "attention-complexity",
+      "self-attention-math",
       "flashattention"
     ],
     "latex": "\\operatorname{FLOPs}(QK^\\top)\\approx2n^2d,\\qquad M_{scores}=\\Theta(n^2),\\qquad M_{Flash}=\\Theta(nd)\\ \\text{auxiliary}",
@@ -463,7 +463,8 @@
     "id": "gqa-reduction",
     "title": "GQA KV reduction",
     "topic_ids": [
-      "multi-query-and-grouped-query-attention"
+      "gqa-and-mqa",
+      "kv-caching"
     ],
     "latex": "\\frac{M_{KV}^{GQA}}{M_{KV}^{MHA}}=\\frac{H_{kv}}{H_q}",
     "variables": [
@@ -527,7 +528,7 @@
       "capacity-planning",
       "queues-and-backpressure",
       "continuous-batching",
-      "async-io"
+      "asyncio"
     ],
     "latex": "L=\\lambda W",
     "variables": [
@@ -547,7 +548,6 @@
     "id": "availability",
     "title": "Availability composition",
     "topic_ids": [
-      "high-availability",
       "multi-region-design",
       "fault-isolation"
     ],
@@ -570,7 +570,7 @@
     "title": "Exponential backoff with jitter",
     "topic_ids": [
       "retries-and-timeouts",
-      "durable-execution"
+      "temporal"
     ],
     "latex": "d_n\\sim U\\left(0,\\min(d_{max},d_0 2^n)\\right),\\qquad N_{attempts}\\le 1+\\left\\lfloor\\frac{B}{C_{attempt}}\\right\\rfloor",
     "variables": [
@@ -614,7 +614,7 @@
       "multiprocessing",
       "tensor-parallelism",
       "pipeline-parallelism",
-      "data-parallelism"
+      "data-parallel-inference"
     ],
     "latex": "S(N)=\\frac{1}{(1-p)+p/N}",
     "variables": [
@@ -635,7 +635,7 @@
     "title": "LLM request cost",
     "topic_ids": [
       "cost-observability",
-      "model-routing",
+      "llm-gateways",
       "capacity-planning"
     ],
     "latex": "C_{req}=\\frac{T_{in}P_{in}+T_{out}P_{out}}{10^6}+C_{retrieval}+C_{tools}+C_{infra}",
@@ -656,9 +656,9 @@
     "id": "slo-error-budget",
     "title": "SLO error budget",
     "topic_ids": [
-      "slos-for-llm-systems",
-      "alerts-and-incident-response",
-      "high-availability"
+      "metrics-and-slos",
+      "evaluation-in-production",
+      "fault-isolation"
     ],
     "latex": "B_{error}=N(1-SLO),\\qquad \\operatorname{burn}=\\frac{\\text{observed bad-event fraction}}{1-SLO}",
     "variables": [
@@ -678,9 +678,8 @@
     "id": "drift",
     "title": "Distribution drift with KL and JS divergence",
     "topic_ids": [
-      "data-drift",
-      "quality-drift",
-      "embedding-drift"
+      "prompt-and-model-drift",
+      "online-rag-monitoring"
     ],
     "latex": "D_{KL}(P\\|Q)=\\sum_i P_i\\log\\frac{P_i}{Q_i},\\qquad JS(P,Q)=\\frac12D_{KL}(P\\|M)+\\frac12D_{KL}(Q\\|M),\\ M=\\frac{P+Q}{2}",
     "variables": [
@@ -700,7 +699,8 @@
     "id": "sampling",
     "title": "Temperature and top-p sampling",
     "topic_ids": [
-      "decoding-strategies"
+      "causal-language-modeling",
+      "streaming-generation"
     ],
     "latex": "p_i(T)=\\frac{\\exp(z_i/T)}{\\sum_j\\exp(z_j/T)},\\qquad \\mathcal V_p=\\min\\left\\{V:\\sum_{i\\in V}p_i\\ge p\\right\\}",
     "variables": [

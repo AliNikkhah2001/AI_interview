@@ -1,3 +1,207 @@
+\item llama.cpp runs quantized models efficiently on CPUs and varied local accelerators through a portable C++ stack.
+\item LLM autoscaling should consider queue depth, time-to-first-token, tokens per second, memory, and startup time.
+\item SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism.
+\item vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs.
+\end{enumerate}
+\noindent\textbf{Answer.} vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs.
+\par\textit{vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs. Tradeoff: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Watch for: Benchmarking only one concurrency level hides latency-throughput collapse points.}
+\paragraph{MCQ-0882 [hard]} What is the central engineering tradeoff of vLLM?
+\begin{enumerate}[label=\Alph*.]
+\item Throughput and memory utilization improve, while model and kernel compatibility must be verified.
+\item Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions.
+\item Extra replicas reduce latency but GPUs are costly and slow to warm.
+\item Edge privacy and low dependency count trade off against datacenter throughput and model size.
+\end{enumerate}
+\noindent\textbf{Answer.} Throughput and memory utilization improve, while model and kernel compatibility must be verified.
+\par\textit{vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs. Tradeoff: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Watch for: Benchmarking only one concurrency level hides latency-throughput collapse points.}
+\paragraph{MCQ-0883 [hard]} Which failure mode should an interviewer expect you to identify for vLLM?
+\begin{enumerate}[label=\Alph*.]
+\item Benchmarking only one concurrency level hides latency-throughput collapse points.
+\item Selecting a quantization by file size alone ignores accuracy and hardware kernels.
+\item CPU-based autoscaling reacts late or incorrectly to GPU saturation.
+\item Assuming every structured program benefits equally from cache reuse leads to poor capacity models.
+\end{enumerate}
+\noindent\textbf{Answer.} Benchmarking only one concurrency level hides latency-throughput collapse points.
+\par\textit{vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs. Tradeoff: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Watch for: Benchmarking only one concurrency level hides latency-throughput collapse points.}
+\paragraph{MCQ-0884 [medium]} A design review is specifically concerned with this risk: Benchmarking only one concurrency level hides latency-throughput collapse points. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item SGLang
+\item llama.cpp
+\item vLLM
+\item Autoscaling for LLMs
+\end{enumerate}
+\noindent\textbf{Answer.} vLLM
+\par\textit{vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs. Tradeoff: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Watch for: Benchmarking only one concurrency level hides latency-throughput collapse points.}
+\paragraph{MCQ-0885 [hard]} Which design note most accurately balances the benefits and costs of vLLM?
+\begin{enumerate}[label=\Alph*.]
+\item Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions.
+\item Edge privacy and low dependency count trade off against datacenter throughput and model size.
+\item Throughput and memory utilization improve, while model and kernel compatibility must be verified.
+\item Extra replicas reduce latency but GPUs are costly and slow to warm.
+\end{enumerate}
+\noindent\textbf{Answer.} Throughput and memory utilization improve, while model and kernel compatibility must be verified.
+\par\textit{vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs. Tradeoff: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Watch for: Benchmarking only one concurrency level hides latency-throughput collapse points.}
+\paragraph{MCQ-0886 [medium]} Which explanation would be strongest in a system-design interview about vLLM?
+\begin{enumerate}[label=\Alph*.]
+\item llama.cpp runs quantized models efficiently on CPUs and varied local accelerators through a portable C++ stack.
+\item vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs.
+\item SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism.
+\item LLM autoscaling should consider queue depth, time-to-first-token, tokens per second, memory, and startup time.
+\end{enumerate}
+\noindent\textbf{Answer.} vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs.
+\par\textit{vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs. Tradeoff: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Watch for: Benchmarking only one concurrency level hides latency-throughput collapse points.}
+\paragraph{MCQ-0887 [hard]} Which production warning is most directly associated with vLLM?
+\begin{enumerate}[label=\Alph*.]
+\item Assuming every structured program benefits equally from cache reuse leads to poor capacity models.
+\item Selecting a quantization by file size alone ignores accuracy and hardware kernels.
+\item CPU-based autoscaling reacts late or incorrectly to GPU saturation.
+\item Benchmarking only one concurrency level hides latency-throughput collapse points.
+\end{enumerate}
+\noindent\textbf{Answer.} Benchmarking only one concurrency level hides latency-throughput collapse points.
+\par\textit{vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs. Tradeoff: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Watch for: Benchmarking only one concurrency level hides latency-throughput collapse points.}
+\paragraph{FC-0888 [medium]} Define vLLM in interview-ready language.
+\noindent\textbf{Answer.} vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs.
+\par\textit{vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs.}
+\paragraph{FC-0889 [hard]} State the main tradeoff and production pitfall for vLLM.
+\noindent\textbf{Answer.} Tradeoff: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Pitfall: Benchmarking only one concurrency level hides latency-throughput collapse points.
+\par\textit{Tradeoff: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Pitfall: Benchmarking only one concurrency level hides latency-throughput collapse points.}
+\paragraph{LA-0890 [hard]} Explain vLLM from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: vLLM is a high-throughput inference server using PagedAttention, continuous batching, parallelism, and OpenAI-compatible APIs. Make the tradeoff explicit: Throughput and memory utilization improve, while model and kernel compatibility must be verified. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Benchmarking only one concurrency level hides latency-throughput collapse points.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-0891 [medium]} Which statement best describes SGLang?
+\begin{enumerate}[label=\Alph*.]
+\item llama.cpp runs quantized models efficiently on CPUs and varied local accelerators through a portable C++ stack.
+\item Gateways normalize provider APIs and add routing, budgets, rate limits, fallbacks, caching, and audit policy.
+\item SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism.
+\item LLM autoscaling should consider queue depth, time-to-first-token, tokens per second, memory, and startup time.
+\end{enumerate}
+\noindent\textbf{Answer.} SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism.
+\par\textit{SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism. Tradeoff: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Watch for: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.}
+\paragraph{MCQ-0892 [hard]} What is the central engineering tradeoff of SGLang?
+\begin{enumerate}[label=\Alph*.]
+\item Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions.
+\item Extra replicas reduce latency but GPUs are costly and slow to warm.
+\item Edge privacy and low dependency count trade off against datacenter throughput and model size.
+\item Central control improves governance but becomes a high-impact availability and security dependency.
+\end{enumerate}
+\noindent\textbf{Answer.} Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions.
+\par\textit{SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism. Tradeoff: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Watch for: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.}
+\paragraph{MCQ-0893 [hard]} Which failure mode should an interviewer expect you to identify for SGLang?
+\begin{enumerate}[label=\Alph*.]
+\item Selecting a quantization by file size alone ignores accuracy and hardware kernels.
+\item Automatic fallback across non-equivalent models can silently change behavior.
+\item CPU-based autoscaling reacts late or incorrectly to GPU saturation.
+\item Assuming every structured program benefits equally from cache reuse leads to poor capacity models.
+\end{enumerate}
+\noindent\textbf{Answer.} Assuming every structured program benefits equally from cache reuse leads to poor capacity models.
+\par\textit{SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism. Tradeoff: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Watch for: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.}
+\paragraph{MCQ-0894 [medium]} A design review is specifically concerned with this risk: Assuming every structured program benefits equally from cache reuse leads to poor capacity models. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item llama.cpp
+\item LLM gateways
+\item SGLang
+\item Autoscaling for LLMs
+\end{enumerate}
+\noindent\textbf{Answer.} SGLang
+\par\textit{SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism. Tradeoff: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Watch for: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.}
+\paragraph{MCQ-0895 [hard]} Which design note most accurately balances the benefits and costs of SGLang?
+\begin{enumerate}[label=\Alph*.]
+\item Central control improves governance but becomes a high-impact availability and security dependency.
+\item Extra replicas reduce latency but GPUs are costly and slow to warm.
+\item Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions.
+\item Edge privacy and low dependency count trade off against datacenter throughput and model size.
+\end{enumerate}
+\noindent\textbf{Answer.} Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions.
+\par\textit{SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism. Tradeoff: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Watch for: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.}
+\paragraph{MCQ-0896 [medium]} Which explanation would be strongest in a system-design interview about SGLang?
+\begin{enumerate}[label=\Alph*.]
+\item LLM autoscaling should consider queue depth, time-to-first-token, tokens per second, memory, and startup time.
+\item SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism.
+\item Gateways normalize provider APIs and add routing, budgets, rate limits, fallbacks, caching, and audit policy.
+\item llama.cpp runs quantized models efficiently on CPUs and varied local accelerators through a portable C++ stack.
+\end{enumerate}
+\noindent\textbf{Answer.} SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism.
+\par\textit{SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism. Tradeoff: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Watch for: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.}
+\paragraph{MCQ-0897 [hard]} Which production warning is most directly associated with SGLang?
+\begin{enumerate}[label=\Alph*.]
+\item Assuming every structured program benefits equally from cache reuse leads to poor capacity models.
+\item Selecting a quantization by file size alone ignores accuracy and hardware kernels.
+\item Automatic fallback across non-equivalent models can silently change behavior.
+\item CPU-based autoscaling reacts late or incorrectly to GPU saturation.
+\end{enumerate}
+\noindent\textbf{Answer.} Assuming every structured program benefits equally from cache reuse leads to poor capacity models.
+\par\textit{SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism. Tradeoff: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Watch for: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.}
+\paragraph{FC-0898 [medium]} Define SGLang in interview-ready language.
+\noindent\textbf{Answer.} SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism.
+\par\textit{SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism.}
+\paragraph{FC-0899 [hard]} State the main tradeoff and production pitfall for SGLang.
+\noindent\textbf{Answer.} Tradeoff: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Pitfall: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.
+\par\textit{Tradeoff: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Pitfall: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.}
+\paragraph{LA-0900 [hard]} Explain SGLang from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: SGLang combines a structured generation runtime with optimized model serving, prefix reuse, batching, and parallelism. Make the tradeoff explicit: Tight runtime-serving integration can accelerate agentic workloads but changes application abstractions. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Assuming every structured program benefits equally from cache reuse leads to poor capacity models.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-0901 [medium]} Which statement best describes Text Generation Inference?
+\begin{enumerate}[label=\Alph*.]
+\item A registry versions model artifacts, lineage, signatures, evaluation evidence, aliases, and promotion state.
+\item Gateways normalize provider APIs and add routing, budgets, rate limits, fallbacks, caching, and audit policy.
+\item llama.cpp runs quantized models efficiently on CPUs and varied local accelerators through a portable C++ stack.
+\item TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support.
+\end{enumerate}
+\noindent\textbf{Answer.} TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support.
+\par\textit{TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support. Tradeoff: Ecosystem integration is strong, while supported optimization paths vary by model and hardware. Watch for: Enabling quantization without quality and kernel tests can reduce both accuracy and speed.}
+\paragraph{MCQ-0902 [hard]} What is the central engineering tradeoff of Text Generation Inference?
+\begin{enumerate}[label=\Alph*.]
+\item Governance and rollback improve but approval gates can slow iteration.
+\item Central control improves governance but becomes a high-impact availability and security dependency.
+\item Ecosystem integration is strong, while supported optimization paths vary by model and hardware.
+\item Edge privacy and low dependency count trade off against datacenter throughput and model size.
+\end{enumerate}
+\noindent\textbf{Answer.} Ecosystem integration is strong, while supported optimization paths vary by model and hardware.
+\par\textit{TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support. Tradeoff: Ecosystem integration is strong, while supported optimization paths vary by model and hardware. Watch for: Enabling quantization without quality and kernel tests can reduce both accuracy and speed.}
+\paragraph{MCQ-0903 [hard]} Which failure mode should an interviewer expect you to identify for Text Generation Inference?
+\begin{enumerate}[label=\Alph*.]
+\item Automatic fallback across non-equivalent models can silently change behavior.
+\item Enabling quantization without quality and kernel tests can reduce both accuracy and speed.
+\item Selecting a quantization by file size alone ignores accuracy and hardware kernels.
+\item Using mutable stage names without immutable digests makes rollbacks uncertain.
+\end{enumerate}
+\noindent\textbf{Answer.} Enabling quantization without quality and kernel tests can reduce both accuracy and speed.
+\par\textit{TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support. Tradeoff: Ecosystem integration is strong, while supported optimization paths vary by model and hardware. Watch for: Enabling quantization without quality and kernel tests can reduce both accuracy and speed.}
+\paragraph{MCQ-0904 [medium]} A design review is specifically concerned with this risk: Enabling quantization without quality and kernel tests can reduce both accuracy and speed. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Text Generation Inference
+\item llama.cpp
+\item LLM gateways
+\item Model registry
+\end{enumerate}
+\noindent\textbf{Answer.} Text Generation Inference
+\par\textit{TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support. Tradeoff: Ecosystem integration is strong, while supported optimization paths vary by model and hardware. Watch for: Enabling quantization without quality and kernel tests can reduce both accuracy and speed.}
+\paragraph{MCQ-0905 [hard]} Which design note most accurately balances the benefits and costs of Text Generation Inference?
+\begin{enumerate}[label=\Alph*.]
+\item Edge privacy and low dependency count trade off against datacenter throughput and model size.
+\item Governance and rollback improve but approval gates can slow iteration.
+\item Central control improves governance but becomes a high-impact availability and security dependency.
+\item Ecosystem integration is strong, while supported optimization paths vary by model and hardware.
+\end{enumerate}
+\noindent\textbf{Answer.} Ecosystem integration is strong, while supported optimization paths vary by model and hardware.
+\par\textit{TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support. Tradeoff: Ecosystem integration is strong, while supported optimization paths vary by model and hardware. Watch for: Enabling quantization without quality and kernel tests can reduce both accuracy and speed.}
+\paragraph{MCQ-0906 [medium]} Which explanation would be strongest in a system-design interview about Text Generation Inference?
+\begin{enumerate}[label=\Alph*.]
+\item A registry versions model artifacts, lineage, signatures, evaluation evidence, aliases, and promotion state.
+\item TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support.
+\item llama.cpp runs quantized models efficiently on CPUs and varied local accelerators through a portable C++ stack.
+\item Gateways normalize provider APIs and add routing, budgets, rate limits, fallbacks, caching, and audit policy.
+\end{enumerate}
+\noindent\textbf{Answer.} TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support.
+\par\textit{TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support. Tradeoff: Ecosystem integration is strong, while supported optimization paths vary by model and hardware. Watch for: Enabling quantization without quality and kernel tests can reduce both accuracy and speed.}
+\paragraph{MCQ-0907 [hard]} Which production warning is most directly associated with Text Generation Inference?
+\begin{enumerate}[label=\Alph*.]
+\item Automatic fallback across non-equivalent models can silently change behavior.
+\item Selecting a quantization by file size alone ignores accuracy and hardware kernels.
+\item Enabling quantization without quality and kernel tests can reduce both accuracy and speed.
+\item Using mutable stage names without immutable digests makes rollbacks uncertain.
+\end{enumerate}
+\noindent\textbf{Answer.} Enabling quantization without quality and kernel tests can reduce both accuracy and speed.
 \par\textit{TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support. Tradeoff: Ecosystem integration is strong, while supported optimization paths vary by model and hardware. Watch for: Enabling quantization without quality and kernel tests can reduce both accuracy and speed.}
 \paragraph{FC-0908 [medium]} Define Text Generation Inference in interview-ready language.
 \noindent\textbf{Answer.} TGI is a Hugging Face server for transformer inference with streaming, batching, quantization, and distributed support.
@@ -2619,215 +2823,3 @@
 \item Memory and storage fall, while rank and target-module choices limit expressiveness.
 \end{enumerate}
 \noindent\textbf{Answer.} Memory and storage fall, while rank and target-module choices limit expressiveness.
-\par\textit{LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation. Tradeoff: Memory and storage fall, while rank and target-module choices limit expressiveness. Watch for: Merging incompatible adapters without evaluation creates interference.}
-\paragraph{MCQ-1273 [hard]} Which failure mode should an interviewer expect you to identify for LoRA?
-\begin{enumerate}[label=\Alph*.]
-\item Omitting the square-root head-dimension scale saturates softmax gradients.
-\item Training on conflicting instructions without provenance makes behavior unstable.
-\item Merging incompatible adapters without evaluation creates interference.
-\item Extending context without validating the position scheme can collapse quality.
-\end{enumerate}
-\noindent\textbf{Answer.} Merging incompatible adapters without evaluation creates interference.
-\par\textit{LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation. Tradeoff: Memory and storage fall, while rank and target-module choices limit expressiveness. Watch for: Merging incompatible adapters without evaluation creates interference.}
-\paragraph{MCQ-1274 [medium]} A design review is specifically concerned with this risk: Merging incompatible adapters without evaluation creates interference. Which topic should be reviewed first?
-\begin{enumerate}[label=\Alph*.]
-\item Self-attention math
-\item Positional encoding
-\item SFT
-\item LoRA
-\end{enumerate}
-\noindent\textbf{Answer.} LoRA
-\par\textit{LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation. Tradeoff: Memory and storage fall, while rank and target-module choices limit expressiveness. Watch for: Merging incompatible adapters without evaluation creates interference.}
-\paragraph{MCQ-1275 [hard]} Which design note most accurately balances the benefits and costs of LoRA?
-\begin{enumerate}[label=\Alph*.]
-\item Relative methods extrapolate differently, while implementation and scaling choices affect long context.
-\item Every token can interact directly, while standard sequence cost grows quadratically.
-\item It is direct and stable but can overfit style and inherit annotation errors.
-\item Memory and storage fall, while rank and target-module choices limit expressiveness.
-\end{enumerate}
-\noindent\textbf{Answer.} Memory and storage fall, while rank and target-module choices limit expressiveness.
-\par\textit{LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation. Tradeoff: Memory and storage fall, while rank and target-module choices limit expressiveness. Watch for: Merging incompatible adapters without evaluation creates interference.}
-\paragraph{MCQ-1276 [medium]} Which explanation would be strongest in a system-design interview about LoRA?
-\begin{enumerate}[label=\Alph*.]
-\item Attention computes scaled query-key scores, applies masking and softmax, then mixes value vectors.
-\item Position signals break permutation invariance using absolute, relative, rotary, or bias-based schemes.
-\item Supervised fine-tuning teaches instruction-response behavior from curated demonstrations.
-\item LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation.
-\end{enumerate}
-\noindent\textbf{Answer.} LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation.
-\par\textit{LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation. Tradeoff: Memory and storage fall, while rank and target-module choices limit expressiveness. Watch for: Merging incompatible adapters without evaluation creates interference.}
-\paragraph{MCQ-1277 [hard]} Which production warning is most directly associated with LoRA?
-\begin{enumerate}[label=\Alph*.]
-\item Merging incompatible adapters without evaluation creates interference.
-\item Extending context without validating the position scheme can collapse quality.
-\item Training on conflicting instructions without provenance makes behavior unstable.
-\item Omitting the square-root head-dimension scale saturates softmax gradients.
-\end{enumerate}
-\noindent\textbf{Answer.} Merging incompatible adapters without evaluation creates interference.
-\par\textit{LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation. Tradeoff: Memory and storage fall, while rank and target-module choices limit expressiveness. Watch for: Merging incompatible adapters without evaluation creates interference.}
-\paragraph{FC-1278 [medium]} Define LoRA in interview-ready language.
-\noindent\textbf{Answer.} LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation.
-\par\textit{LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation.}
-\paragraph{FC-1279 [hard]} State the main tradeoff and production pitfall for LoRA.
-\noindent\textbf{Answer.} Tradeoff: Memory and storage fall, while rank and target-module choices limit expressiveness. Pitfall: Merging incompatible adapters without evaluation creates interference.
-\par\textit{Tradeoff: Memory and storage fall, while rank and target-module choices limit expressiveness. Pitfall: Merging incompatible adapters without evaluation creates interference.}
-\paragraph{LA-1280 [hard]} Explain LoRA from first principles, then show how you would evaluate and operate it in production.
-\noindent\textbf{Answer.} Start with the mechanism: LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation. Make the tradeoff explicit: Memory and storage fall, while rank and target-module choices limit expressiveness. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Merging incompatible adapters without evaluation creates interference.
-\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
-\paragraph{MCQ-1281 [medium]} Which statement best describes QLoRA?
-\begin{enumerate}[label=\Alph*.]
-\item Rotary position embeddings rotate query and key coordinates so dot products encode relative offsets.
-\item QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques.
-\item Attention computes scaled query-key scores, applies masking and softmax, then mixes value vectors.
-\item Cross-entropy is negative log likelihood; perplexity exponentiates average token loss.
-\end{enumerate}
-\noindent\textbf{Answer.} QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques.
-\par\textit{QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques. Tradeoff: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Watch for: Confusing training quantization with final serving quantization produces wrong expectations.}
-\paragraph{MCQ-1282 [hard]} What is the central engineering tradeoff of QLoRA?
-\begin{enumerate}[label=\Alph*.]
-\item Every token can interact directly, while standard sequence cost grows quadratically.
-\item It is stable for model comparison on the same tokenization and data, not across arbitrary setups.
-\item RoPE integrates cleanly with attention but long-context scaling needs careful frequency treatment.
-\item Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability.
-\end{enumerate}
-\noindent\textbf{Answer.} Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability.
-\par\textit{QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques. Tradeoff: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Watch for: Confusing training quantization with final serving quantization produces wrong expectations.}
-\paragraph{MCQ-1283 [hard]} Which failure mode should an interviewer expect you to identify for QLoRA?
-\begin{enumerate}[label=\Alph*.]
-\item Naively increasing the maximum length does not preserve trained frequency behavior.
-\item Confusing training quantization with final serving quantization produces wrong expectations.
-\item Omitting the square-root head-dimension scale saturates softmax gradients.
-\item Comparing perplexity across vocabularies or tokenizers is misleading.
-\end{enumerate}
-\noindent\textbf{Answer.} Confusing training quantization with final serving quantization produces wrong expectations.
-\par\textit{QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques. Tradeoff: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Watch for: Confusing training quantization with final serving quantization produces wrong expectations.}
-\paragraph{MCQ-1284 [medium]} A design review is specifically concerned with this risk: Confusing training quantization with final serving quantization produces wrong expectations. Which topic should be reviewed first?
-\begin{enumerate}[label=\Alph*.]
-\item RoPE
-\item QLoRA
-\item Self-attention math
-\item Cross-entropy and perplexity
-\end{enumerate}
-\noindent\textbf{Answer.} QLoRA
-\par\textit{QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques. Tradeoff: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Watch for: Confusing training quantization with final serving quantization produces wrong expectations.}
-\paragraph{MCQ-1285 [hard]} Which design note most accurately balances the benefits and costs of QLoRA?
-\begin{enumerate}[label=\Alph*.]
-\item Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability.
-\item It is stable for model comparison on the same tokenization and data, not across arbitrary setups.
-\item Every token can interact directly, while standard sequence cost grows quadratically.
-\item RoPE integrates cleanly with attention but long-context scaling needs careful frequency treatment.
-\end{enumerate}
-\noindent\textbf{Answer.} Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability.
-\par\textit{QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques. Tradeoff: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Watch for: Confusing training quantization with final serving quantization produces wrong expectations.}
-\paragraph{MCQ-1286 [medium]} Which explanation would be strongest in a system-design interview about QLoRA?
-\begin{enumerate}[label=\Alph*.]
-\item Cross-entropy is negative log likelihood; perplexity exponentiates average token loss.
-\item Rotary position embeddings rotate query and key coordinates so dot products encode relative offsets.
-\item Attention computes scaled query-key scores, applies masking and softmax, then mixes value vectors.
-\item QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques.
-\end{enumerate}
-\noindent\textbf{Answer.} QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques.
-\par\textit{QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques. Tradeoff: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Watch for: Confusing training quantization with final serving quantization produces wrong expectations.}
-\paragraph{MCQ-1287 [hard]} Which production warning is most directly associated with QLoRA?
-\begin{enumerate}[label=\Alph*.]
-\item Naively increasing the maximum length does not preserve trained frequency behavior.
-\item Omitting the square-root head-dimension scale saturates softmax gradients.
-\item Confusing training quantization with final serving quantization produces wrong expectations.
-\item Comparing perplexity across vocabularies or tokenizers is misleading.
-\end{enumerate}
-\noindent\textbf{Answer.} Confusing training quantization with final serving quantization produces wrong expectations.
-\par\textit{QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques. Tradeoff: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Watch for: Confusing training quantization with final serving quantization produces wrong expectations.}
-\paragraph{FC-1288 [medium]} Define QLoRA in interview-ready language.
-\noindent\textbf{Answer.} QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques.
-\par\textit{QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques.}
-\paragraph{FC-1289 [hard]} State the main tradeoff and production pitfall for QLoRA.
-\noindent\textbf{Answer.} Tradeoff: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Pitfall: Confusing training quantization with final serving quantization produces wrong expectations.
-\par\textit{Tradeoff: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Pitfall: Confusing training quantization with final serving quantization produces wrong expectations.}
-\paragraph{LA-1290 [hard]} Explain QLoRA from first principles, then show how you would evaluate and operate it in production.
-\noindent\textbf{Answer.} Start with the mechanism: QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques. Make the tradeoff explicit: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Confusing training quantization with final serving quantization produces wrong expectations.
-\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
-\paragraph{MCQ-1291 [medium]} Which statement best describes Knowledge distillation?
-\begin{enumerate}[label=\Alph*.]
-\item Multiple heads project attention into separate subspaces before concatenation and output projection.
-\item QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques.
-\item LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation.
-\item A student learns from teacher probabilities, generated data, rationales, or intermediate representations.
-\end{enumerate}
-\noindent\textbf{Answer.} A student learns from teacher probabilities, generated data, rationales, or intermediate representations.
-\par\textit{A student learns from teacher probabilities, generated data, rationales, or intermediate representations. Tradeoff: Serving cost falls but rare capabilities and calibration may be lost. Watch for: Distilling only easy teacher outputs creates a deceptively strong narrow model.}
-\paragraph{MCQ-1292 [hard]} What is the central engineering tradeoff of Knowledge distillation?
-\begin{enumerate}[label=\Alph*.]
-\item Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability.
-\item Memory and storage fall, while rank and target-module choices limit expressiveness.
-\item Serving cost falls but rare capabilities and calibration may be lost.
-\item Diverse interactions improve capacity but add projections and KV memory.
-\end{enumerate}
-\noindent\textbf{Answer.} Serving cost falls but rare capabilities and calibration may be lost.
-\par\textit{A student learns from teacher probabilities, generated data, rationales, or intermediate representations. Tradeoff: Serving cost falls but rare capabilities and calibration may be lost. Watch for: Distilling only easy teacher outputs creates a deceptively strong narrow model.}
-\paragraph{MCQ-1293 [hard]} Which failure mode should an interviewer expect you to identify for Knowledge distillation?
-\begin{enumerate}[label=\Alph*.]
-\item Merging incompatible adapters without evaluation creates interference.
-\item Distilling only easy teacher outputs creates a deceptively strong narrow model.
-\item Assuming heads are independently interpretable can overstate mechanistic conclusions.
-\item Confusing training quantization with final serving quantization produces wrong expectations.
-\end{enumerate}
-\noindent\textbf{Answer.} Distilling only easy teacher outputs creates a deceptively strong narrow model.
-\par\textit{A student learns from teacher probabilities, generated data, rationales, or intermediate representations. Tradeoff: Serving cost falls but rare capabilities and calibration may be lost. Watch for: Distilling only easy teacher outputs creates a deceptively strong narrow model.}
-\paragraph{MCQ-1294 [medium]} A design review is specifically concerned with this risk: Distilling only easy teacher outputs creates a deceptively strong narrow model. Which topic should be reviewed first?
-\begin{enumerate}[label=\Alph*.]
-\item QLoRA
-\item LoRA
-\item Knowledge distillation
-\item Multi-head attention
-\end{enumerate}
-\noindent\textbf{Answer.} Knowledge distillation
-\par\textit{A student learns from teacher probabilities, generated data, rationales, or intermediate representations. Tradeoff: Serving cost falls but rare capabilities and calibration may be lost. Watch for: Distilling only easy teacher outputs creates a deceptively strong narrow model.}
-\paragraph{MCQ-1295 [hard]} Which design note most accurately balances the benefits and costs of Knowledge distillation?
-\begin{enumerate}[label=\Alph*.]
-\item Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability.
-\item Serving cost falls but rare capabilities and calibration may be lost.
-\item Diverse interactions improve capacity but add projections and KV memory.
-\item Memory and storage fall, while rank and target-module choices limit expressiveness.
-\end{enumerate}
-\noindent\textbf{Answer.} Serving cost falls but rare capabilities and calibration may be lost.
-\par\textit{A student learns from teacher probabilities, generated data, rationales, or intermediate representations. Tradeoff: Serving cost falls but rare capabilities and calibration may be lost. Watch for: Distilling only easy teacher outputs creates a deceptively strong narrow model.}
-\paragraph{MCQ-1296 [medium]} Which explanation would be strongest in a system-design interview about Knowledge distillation?
-\begin{enumerate}[label=\Alph*.]
-\item A student learns from teacher probabilities, generated data, rationales, or intermediate representations.
-\item LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation.
-\item QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques.
-\item Multiple heads project attention into separate subspaces before concatenation and output projection.
-\end{enumerate}
-\noindent\textbf{Answer.} A student learns from teacher probabilities, generated data, rationales, or intermediate representations.
-\par\textit{A student learns from teacher probabilities, generated data, rationales, or intermediate representations. Tradeoff: Serving cost falls but rare capabilities and calibration may be lost. Watch for: Distilling only easy teacher outputs creates a deceptively strong narrow model.}
-\paragraph{MCQ-1297 [hard]} Which production warning is most directly associated with Knowledge distillation?
-\begin{enumerate}[label=\Alph*.]
-\item Assuming heads are independently interpretable can overstate mechanistic conclusions.
-\item Merging incompatible adapters without evaluation creates interference.
-\item Distilling only easy teacher outputs creates a deceptively strong narrow model.
-\item Confusing training quantization with final serving quantization produces wrong expectations.
-\end{enumerate}
-\noindent\textbf{Answer.} Distilling only easy teacher outputs creates a deceptively strong narrow model.
-\par\textit{A student learns from teacher probabilities, generated data, rationales, or intermediate representations. Tradeoff: Serving cost falls but rare capabilities and calibration may be lost. Watch for: Distilling only easy teacher outputs creates a deceptively strong narrow model.}
-\paragraph{FC-1298 [medium]} Define Knowledge distillation in interview-ready language.
-\noindent\textbf{Answer.} A student learns from teacher probabilities, generated data, rationales, or intermediate representations.
-\par\textit{A student learns from teacher probabilities, generated data, rationales, or intermediate representations.}
-\paragraph{FC-1299 [hard]} State the main tradeoff and production pitfall for Knowledge distillation.
-\noindent\textbf{Answer.} Tradeoff: Serving cost falls but rare capabilities and calibration may be lost. Pitfall: Distilling only easy teacher outputs creates a deceptively strong narrow model.
-\par\textit{Tradeoff: Serving cost falls but rare capabilities and calibration may be lost. Pitfall: Distilling only easy teacher outputs creates a deceptively strong narrow model.}
-\paragraph{LA-1300 [hard]} Explain Knowledge distillation from first principles, then show how you would evaluate and operate it in production.
-\noindent\textbf{Answer.} Start with the mechanism: A student learns from teacher probabilities, generated data, rationales, or intermediate representations. Make the tradeoff explicit: Serving cost falls but rare capabilities and calibration may be lost. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Distilling only easy teacher outputs creates a deceptively strong narrow model.
-\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
-\subsection{Inference Optimization}
-\paragraph{MCQ-1301 [medium]} Which statement best describes KV caching?
-\begin{enumerate}[label=\Alph*.]
-\item Requests join and leave a running decode batch at iteration boundaries rather than waiting for a fixed batch.
-\item Pipeline parallelism assigns layer stages to devices and streams microbatches through them.
-\item MoE experts are distributed across devices and tokens are routed with all-to-all communication.
-\item Autoregressive decoding stores prior keys and values so each new token avoids recomputing attention over the entire prefix.
-\end{enumerate}
-\noindent\textbf{Answer.} Autoregressive decoding stores prior keys and values so each new token avoids recomputing attention over the entire prefix.
-\par\textit{Autoregressive decoding stores prior keys and values so each new token avoids recomputing attention over the entire prefix. Tradeoff: Decode speed improves while cache memory grows with layers, sequence, batch, and KV heads. Watch for: Capacity planning only model weights causes out-of-memory failures at long context.}
-\paragraph{MCQ-1302 [hard]} What is the central engineering tradeoff of KV caching?
-\begin{enumerate}[label=\Alph*.]
-\item It scales model depth but creates bubbles and per-request latency.

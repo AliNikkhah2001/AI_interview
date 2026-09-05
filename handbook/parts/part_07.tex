@@ -1,3 +1,215 @@
+\par\textit{LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation. Tradeoff: Memory and storage fall, while rank and target-module choices limit expressiveness. Watch for: Merging incompatible adapters without evaluation creates interference.}
+\paragraph{MCQ-1273 [hard]} Which failure mode should an interviewer expect you to identify for LoRA?
+\begin{enumerate}[label=\Alph*.]
+\item Omitting the square-root head-dimension scale saturates softmax gradients.
+\item Training on conflicting instructions without provenance makes behavior unstable.
+\item Merging incompatible adapters without evaluation creates interference.
+\item Extending context without validating the position scheme can collapse quality.
+\end{enumerate}
+\noindent\textbf{Answer.} Merging incompatible adapters without evaluation creates interference.
+\par\textit{LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation. Tradeoff: Memory and storage fall, while rank and target-module choices limit expressiveness. Watch for: Merging incompatible adapters without evaluation creates interference.}
+\paragraph{MCQ-1274 [medium]} A design review is specifically concerned with this risk: Merging incompatible adapters without evaluation creates interference. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item Self-attention math
+\item Positional encoding
+\item SFT
+\item LoRA
+\end{enumerate}
+\noindent\textbf{Answer.} LoRA
+\par\textit{LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation. Tradeoff: Memory and storage fall, while rank and target-module choices limit expressiveness. Watch for: Merging incompatible adapters without evaluation creates interference.}
+\paragraph{MCQ-1275 [hard]} Which design note most accurately balances the benefits and costs of LoRA?
+\begin{enumerate}[label=\Alph*.]
+\item Relative methods extrapolate differently, while implementation and scaling choices affect long context.
+\item Every token can interact directly, while standard sequence cost grows quadratically.
+\item It is direct and stable but can overfit style and inherit annotation errors.
+\item Memory and storage fall, while rank and target-module choices limit expressiveness.
+\end{enumerate}
+\noindent\textbf{Answer.} Memory and storage fall, while rank and target-module choices limit expressiveness.
+\par\textit{LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation. Tradeoff: Memory and storage fall, while rank and target-module choices limit expressiveness. Watch for: Merging incompatible adapters without evaluation creates interference.}
+\paragraph{MCQ-1276 [medium]} Which explanation would be strongest in a system-design interview about LoRA?
+\begin{enumerate}[label=\Alph*.]
+\item Attention computes scaled query-key scores, applies masking and softmax, then mixes value vectors.
+\item Position signals break permutation invariance using absolute, relative, rotary, or bias-based schemes.
+\item Supervised fine-tuning teaches instruction-response behavior from curated demonstrations.
+\item LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation.
+\end{enumerate}
+\noindent\textbf{Answer.} LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation.
+\par\textit{LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation. Tradeoff: Memory and storage fall, while rank and target-module choices limit expressiveness. Watch for: Merging incompatible adapters without evaluation creates interference.}
+\paragraph{MCQ-1277 [hard]} Which production warning is most directly associated with LoRA?
+\begin{enumerate}[label=\Alph*.]
+\item Merging incompatible adapters without evaluation creates interference.
+\item Extending context without validating the position scheme can collapse quality.
+\item Training on conflicting instructions without provenance makes behavior unstable.
+\item Omitting the square-root head-dimension scale saturates softmax gradients.
+\end{enumerate}
+\noindent\textbf{Answer.} Merging incompatible adapters without evaluation creates interference.
+\par\textit{LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation. Tradeoff: Memory and storage fall, while rank and target-module choices limit expressiveness. Watch for: Merging incompatible adapters without evaluation creates interference.}
+\paragraph{FC-1278 [medium]} Define LoRA in interview-ready language.
+\noindent\textbf{Answer.} LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation.
+\par\textit{LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation.}
+\paragraph{FC-1279 [hard]} State the main tradeoff and production pitfall for LoRA.
+\noindent\textbf{Answer.} Tradeoff: Memory and storage fall, while rank and target-module choices limit expressiveness. Pitfall: Merging incompatible adapters without evaluation creates interference.
+\par\textit{Tradeoff: Memory and storage fall, while rank and target-module choices limit expressiveness. Pitfall: Merging incompatible adapters without evaluation creates interference.}
+\paragraph{LA-1280 [hard]} Explain LoRA from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation. Make the tradeoff explicit: Memory and storage fall, while rank and target-module choices limit expressiveness. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Merging incompatible adapters without evaluation creates interference.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1281 [medium]} Which statement best describes QLoRA?
+\begin{enumerate}[label=\Alph*.]
+\item Rotary position embeddings rotate query and key coordinates so dot products encode relative offsets.
+\item QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques.
+\item Attention computes scaled query-key scores, applies masking and softmax, then mixes value vectors.
+\item Cross-entropy is negative log likelihood; perplexity exponentiates average token loss.
+\end{enumerate}
+\noindent\textbf{Answer.} QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques.
+\par\textit{QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques. Tradeoff: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Watch for: Confusing training quantization with final serving quantization produces wrong expectations.}
+\paragraph{MCQ-1282 [hard]} What is the central engineering tradeoff of QLoRA?
+\begin{enumerate}[label=\Alph*.]
+\item Every token can interact directly, while standard sequence cost grows quadratically.
+\item It is stable for model comparison on the same tokenization and data, not across arbitrary setups.
+\item RoPE integrates cleanly with attention but long-context scaling needs careful frequency treatment.
+\item Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability.
+\end{enumerate}
+\noindent\textbf{Answer.} Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability.
+\par\textit{QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques. Tradeoff: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Watch for: Confusing training quantization with final serving quantization produces wrong expectations.}
+\paragraph{MCQ-1283 [hard]} Which failure mode should an interviewer expect you to identify for QLoRA?
+\begin{enumerate}[label=\Alph*.]
+\item Naively increasing the maximum length does not preserve trained frequency behavior.
+\item Confusing training quantization with final serving quantization produces wrong expectations.
+\item Omitting the square-root head-dimension scale saturates softmax gradients.
+\item Comparing perplexity across vocabularies or tokenizers is misleading.
+\end{enumerate}
+\noindent\textbf{Answer.} Confusing training quantization with final serving quantization produces wrong expectations.
+\par\textit{QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques. Tradeoff: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Watch for: Confusing training quantization with final serving quantization produces wrong expectations.}
+\paragraph{MCQ-1284 [medium]} A design review is specifically concerned with this risk: Confusing training quantization with final serving quantization produces wrong expectations. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item RoPE
+\item QLoRA
+\item Self-attention math
+\item Cross-entropy and perplexity
+\end{enumerate}
+\noindent\textbf{Answer.} QLoRA
+\par\textit{QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques. Tradeoff: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Watch for: Confusing training quantization with final serving quantization produces wrong expectations.}
+\paragraph{MCQ-1285 [hard]} Which design note most accurately balances the benefits and costs of QLoRA?
+\begin{enumerate}[label=\Alph*.]
+\item Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability.
+\item It is stable for model comparison on the same tokenization and data, not across arbitrary setups.
+\item Every token can interact directly, while standard sequence cost grows quadratically.
+\item RoPE integrates cleanly with attention but long-context scaling needs careful frequency treatment.
+\end{enumerate}
+\noindent\textbf{Answer.} Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability.
+\par\textit{QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques. Tradeoff: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Watch for: Confusing training quantization with final serving quantization produces wrong expectations.}
+\paragraph{MCQ-1286 [medium]} Which explanation would be strongest in a system-design interview about QLoRA?
+\begin{enumerate}[label=\Alph*.]
+\item Cross-entropy is negative log likelihood; perplexity exponentiates average token loss.
+\item Rotary position embeddings rotate query and key coordinates so dot products encode relative offsets.
+\item Attention computes scaled query-key scores, applies masking and softmax, then mixes value vectors.
+\item QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques.
+\end{enumerate}
+\noindent\textbf{Answer.} QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques.
+\par\textit{QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques. Tradeoff: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Watch for: Confusing training quantization with final serving quantization produces wrong expectations.}
+\paragraph{MCQ-1287 [hard]} Which production warning is most directly associated with QLoRA?
+\begin{enumerate}[label=\Alph*.]
+\item Naively increasing the maximum length does not preserve trained frequency behavior.
+\item Omitting the square-root head-dimension scale saturates softmax gradients.
+\item Confusing training quantization with final serving quantization produces wrong expectations.
+\item Comparing perplexity across vocabularies or tokenizers is misleading.
+\end{enumerate}
+\noindent\textbf{Answer.} Confusing training quantization with final serving quantization produces wrong expectations.
+\par\textit{QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques. Tradeoff: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Watch for: Confusing training quantization with final serving quantization produces wrong expectations.}
+\paragraph{FC-1288 [medium]} Define QLoRA in interview-ready language.
+\noindent\textbf{Answer.} QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques.
+\par\textit{QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques.}
+\paragraph{FC-1289 [hard]} State the main tradeoff and production pitfall for QLoRA.
+\noindent\textbf{Answer.} Tradeoff: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Pitfall: Confusing training quantization with final serving quantization produces wrong expectations.
+\par\textit{Tradeoff: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Pitfall: Confusing training quantization with final serving quantization produces wrong expectations.}
+\paragraph{LA-1290 [hard]} Explain QLoRA from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques. Make the tradeoff explicit: Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Confusing training quantization with final serving quantization produces wrong expectations.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1291 [medium]} Which statement best describes Knowledge distillation?
+\begin{enumerate}[label=\Alph*.]
+\item Multiple heads project attention into separate subspaces before concatenation and output projection.
+\item QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques.
+\item LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation.
+\item A student learns from teacher probabilities, generated data, rationales, or intermediate representations.
+\end{enumerate}
+\noindent\textbf{Answer.} A student learns from teacher probabilities, generated data, rationales, or intermediate representations.
+\par\textit{A student learns from teacher probabilities, generated data, rationales, or intermediate representations. Tradeoff: Serving cost falls but rare capabilities and calibration may be lost. Watch for: Distilling only easy teacher outputs creates a deceptively strong narrow model.}
+\paragraph{MCQ-1292 [hard]} What is the central engineering tradeoff of Knowledge distillation?
+\begin{enumerate}[label=\Alph*.]
+\item Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability.
+\item Memory and storage fall, while rank and target-module choices limit expressiveness.
+\item Serving cost falls but rare capabilities and calibration may be lost.
+\item Diverse interactions improve capacity but add projections and KV memory.
+\end{enumerate}
+\noindent\textbf{Answer.} Serving cost falls but rare capabilities and calibration may be lost.
+\par\textit{A student learns from teacher probabilities, generated data, rationales, or intermediate representations. Tradeoff: Serving cost falls but rare capabilities and calibration may be lost. Watch for: Distilling only easy teacher outputs creates a deceptively strong narrow model.}
+\paragraph{MCQ-1293 [hard]} Which failure mode should an interviewer expect you to identify for Knowledge distillation?
+\begin{enumerate}[label=\Alph*.]
+\item Merging incompatible adapters without evaluation creates interference.
+\item Distilling only easy teacher outputs creates a deceptively strong narrow model.
+\item Assuming heads are independently interpretable can overstate mechanistic conclusions.
+\item Confusing training quantization with final serving quantization produces wrong expectations.
+\end{enumerate}
+\noindent\textbf{Answer.} Distilling only easy teacher outputs creates a deceptively strong narrow model.
+\par\textit{A student learns from teacher probabilities, generated data, rationales, or intermediate representations. Tradeoff: Serving cost falls but rare capabilities and calibration may be lost. Watch for: Distilling only easy teacher outputs creates a deceptively strong narrow model.}
+\paragraph{MCQ-1294 [medium]} A design review is specifically concerned with this risk: Distilling only easy teacher outputs creates a deceptively strong narrow model. Which topic should be reviewed first?
+\begin{enumerate}[label=\Alph*.]
+\item QLoRA
+\item LoRA
+\item Knowledge distillation
+\item Multi-head attention
+\end{enumerate}
+\noindent\textbf{Answer.} Knowledge distillation
+\par\textit{A student learns from teacher probabilities, generated data, rationales, or intermediate representations. Tradeoff: Serving cost falls but rare capabilities and calibration may be lost. Watch for: Distilling only easy teacher outputs creates a deceptively strong narrow model.}
+\paragraph{MCQ-1295 [hard]} Which design note most accurately balances the benefits and costs of Knowledge distillation?
+\begin{enumerate}[label=\Alph*.]
+\item Fine-tuning large models becomes cheaper, while kernels and quantization settings affect stability.
+\item Serving cost falls but rare capabilities and calibration may be lost.
+\item Diverse interactions improve capacity but add projections and KV memory.
+\item Memory and storage fall, while rank and target-module choices limit expressiveness.
+\end{enumerate}
+\noindent\textbf{Answer.} Serving cost falls but rare capabilities and calibration may be lost.
+\par\textit{A student learns from teacher probabilities, generated data, rationales, or intermediate representations. Tradeoff: Serving cost falls but rare capabilities and calibration may be lost. Watch for: Distilling only easy teacher outputs creates a deceptively strong narrow model.}
+\paragraph{MCQ-1296 [medium]} Which explanation would be strongest in a system-design interview about Knowledge distillation?
+\begin{enumerate}[label=\Alph*.]
+\item A student learns from teacher probabilities, generated data, rationales, or intermediate representations.
+\item LoRA trains low-rank update matrices while freezing base weights for parameter-efficient adaptation.
+\item QLoRA backpropagates through a frozen quantized base model into LoRA adapters using memory-saving quantization techniques.
+\item Multiple heads project attention into separate subspaces before concatenation and output projection.
+\end{enumerate}
+\noindent\textbf{Answer.} A student learns from teacher probabilities, generated data, rationales, or intermediate representations.
+\par\textit{A student learns from teacher probabilities, generated data, rationales, or intermediate representations. Tradeoff: Serving cost falls but rare capabilities and calibration may be lost. Watch for: Distilling only easy teacher outputs creates a deceptively strong narrow model.}
+\paragraph{MCQ-1297 [hard]} Which production warning is most directly associated with Knowledge distillation?
+\begin{enumerate}[label=\Alph*.]
+\item Assuming heads are independently interpretable can overstate mechanistic conclusions.
+\item Merging incompatible adapters without evaluation creates interference.
+\item Distilling only easy teacher outputs creates a deceptively strong narrow model.
+\item Confusing training quantization with final serving quantization produces wrong expectations.
+\end{enumerate}
+\noindent\textbf{Answer.} Distilling only easy teacher outputs creates a deceptively strong narrow model.
+\par\textit{A student learns from teacher probabilities, generated data, rationales, or intermediate representations. Tradeoff: Serving cost falls but rare capabilities and calibration may be lost. Watch for: Distilling only easy teacher outputs creates a deceptively strong narrow model.}
+\paragraph{FC-1298 [medium]} Define Knowledge distillation in interview-ready language.
+\noindent\textbf{Answer.} A student learns from teacher probabilities, generated data, rationales, or intermediate representations.
+\par\textit{A student learns from teacher probabilities, generated data, rationales, or intermediate representations.}
+\paragraph{FC-1299 [hard]} State the main tradeoff and production pitfall for Knowledge distillation.
+\noindent\textbf{Answer.} Tradeoff: Serving cost falls but rare capabilities and calibration may be lost. Pitfall: Distilling only easy teacher outputs creates a deceptively strong narrow model.
+\par\textit{Tradeoff: Serving cost falls but rare capabilities and calibration may be lost. Pitfall: Distilling only easy teacher outputs creates a deceptively strong narrow model.}
+\paragraph{LA-1300 [hard]} Explain Knowledge distillation from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: A student learns from teacher probabilities, generated data, rationales, or intermediate representations. Make the tradeoff explicit: Serving cost falls but rare capabilities and calibration may be lost. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Distilling only easy teacher outputs creates a deceptively strong narrow model.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\subsection{Inference Optimization}
+\paragraph{MCQ-1301 [medium]} Which statement best describes KV caching?
+\begin{enumerate}[label=\Alph*.]
+\item Requests join and leave a running decode batch at iteration boundaries rather than waiting for a fixed batch.
+\item Pipeline parallelism assigns layer stages to devices and streams microbatches through them.
+\item MoE experts are distributed across devices and tokens are routed with all-to-all communication.
+\item Autoregressive decoding stores prior keys and values so each new token avoids recomputing attention over the entire prefix.
+\end{enumerate}
+\noindent\textbf{Answer.} Autoregressive decoding stores prior keys and values so each new token avoids recomputing attention over the entire prefix.
+\par\textit{Autoregressive decoding stores prior keys and values so each new token avoids recomputing attention over the entire prefix. Tradeoff: Decode speed improves while cache memory grows with layers, sequence, batch, and KV heads. Watch for: Capacity planning only model weights causes out-of-memory failures at long context.}
+\paragraph{MCQ-1302 [hard]} What is the central engineering tradeoff of KV caching?
+\begin{enumerate}[label=\Alph*.]
+\item It scales model depth but creates bubbles and per-request latency.
 \item Parameter capacity scales, while communication and load balance determine performance.
 \item Throughput and utilization rise, while scheduling fairness and latency isolation become harder.
 \item Decode speed improves while cache memory grows with layers, sequence, batch, and KV heads.
@@ -2663,220 +2875,3 @@
 \par\textit{Type hints support static analysis; Protocol defines structural interfaces without inheritance. Tradeoff: Refactoring and contracts improve, while runtime behavior is unchanged unless validated. Watch for: Assuming type annotations enforce production inputs creates vulnerabilities.}
 \paragraph{MCQ-1672 [hard]} What is the central engineering tradeoff of Type hints and protocols?
 \begin{enumerate}[label=\Alph*.]
-\item Typed models improve boundaries but validation can add runtime cost.
-\item Refactoring and contracts improve, while runtime behavior is unchanged unless validated.
-\item High connection concurrency is efficient, while blocking functions freeze the loop.
-\item Central handling simplifies APIs, while overly broad catches erase actionable context.
-\end{enumerate}
-\noindent\textbf{Answer.} Refactoring and contracts improve, while runtime behavior is unchanged unless validated.
-\par\textit{Type hints support static analysis; Protocol defines structural interfaces without inheritance. Tradeoff: Refactoring and contracts improve, while runtime behavior is unchanged unless validated. Watch for: Assuming type annotations enforce production inputs creates vulnerabilities.}
-\paragraph{MCQ-1673 [hard]} Which failure mode should an interviewer expect you to identify for Type hints and protocols?
-\begin{enumerate}[label=\Alph*.]
-\item Catching Exception and returning None turns failures into corrupt state.
-\item Treating parsed external input as semantically authorized is unsafe.
-\item Creating coroutines without awaiting them silently drops work.
-\item Assuming type annotations enforce production inputs creates vulnerabilities.
-\end{enumerate}
-\noindent\textbf{Answer.} Assuming type annotations enforce production inputs creates vulnerabilities.
-\par\textit{Type hints support static analysis; Protocol defines structural interfaces without inheritance. Tradeoff: Refactoring and contracts improve, while runtime behavior is unchanged unless validated. Watch for: Assuming type annotations enforce production inputs creates vulnerabilities.}
-\paragraph{MCQ-1674 [medium]} A design review is specifically concerned with this risk: Assuming type annotations enforce production inputs creates vulnerabilities. Which topic should be reviewed first?
-\begin{enumerate}[label=\Alph*.]
-\item Type hints and protocols
-\item Dataclasses and Pydantic
-\item Exceptions
-\item Asyncio
-\end{enumerate}
-\noindent\textbf{Answer.} Type hints and protocols
-\par\textit{Type hints support static analysis; Protocol defines structural interfaces without inheritance. Tradeoff: Refactoring and contracts improve, while runtime behavior is unchanged unless validated. Watch for: Assuming type annotations enforce production inputs creates vulnerabilities.}
-\paragraph{MCQ-1675 [hard]} Which design note most accurately balances the benefits and costs of Type hints and protocols?
-\begin{enumerate}[label=\Alph*.]
-\item Central handling simplifies APIs, while overly broad catches erase actionable context.
-\item High connection concurrency is efficient, while blocking functions freeze the loop.
-\item Typed models improve boundaries but validation can add runtime cost.
-\item Refactoring and contracts improve, while runtime behavior is unchanged unless validated.
-\end{enumerate}
-\noindent\textbf{Answer.} Refactoring and contracts improve, while runtime behavior is unchanged unless validated.
-\par\textit{Type hints support static analysis; Protocol defines structural interfaces without inheritance. Tradeoff: Refactoring and contracts improve, while runtime behavior is unchanged unless validated. Watch for: Assuming type annotations enforce production inputs creates vulnerabilities.}
-\paragraph{MCQ-1676 [medium]} Which explanation would be strongest in a system-design interview about Type hints and protocols?
-\begin{enumerate}[label=\Alph*.]
-\item Dataclasses reduce class boilerplate; Pydantic adds parsing, validation, serialization, and schema generation.
-\item Type hints support static analysis; Protocol defines structural interfaces without inheritance.
-\item Exceptions separate error propagation from normal return values and can preserve causal chains.
-\item Asyncio cooperatively schedules coroutines on an event loop around awaitable I/O.
-\end{enumerate}
-\noindent\textbf{Answer.} Type hints support static analysis; Protocol defines structural interfaces without inheritance.
-\par\textit{Type hints support static analysis; Protocol defines structural interfaces without inheritance. Tradeoff: Refactoring and contracts improve, while runtime behavior is unchanged unless validated. Watch for: Assuming type annotations enforce production inputs creates vulnerabilities.}
-\paragraph{MCQ-1677 [hard]} Which production warning is most directly associated with Type hints and protocols?
-\begin{enumerate}[label=\Alph*.]
-\item Creating coroutines without awaiting them silently drops work.
-\item Treating parsed external input as semantically authorized is unsafe.
-\item Catching Exception and returning None turns failures into corrupt state.
-\item Assuming type annotations enforce production inputs creates vulnerabilities.
-\end{enumerate}
-\noindent\textbf{Answer.} Assuming type annotations enforce production inputs creates vulnerabilities.
-\par\textit{Type hints support static analysis; Protocol defines structural interfaces without inheritance. Tradeoff: Refactoring and contracts improve, while runtime behavior is unchanged unless validated. Watch for: Assuming type annotations enforce production inputs creates vulnerabilities.}
-\paragraph{FC-1678 [medium]} Define Type hints and protocols in interview-ready language.
-\noindent\textbf{Answer.} Type hints support static analysis; Protocol defines structural interfaces without inheritance.
-\par\textit{Type hints support static analysis; Protocol defines structural interfaces without inheritance.}
-\paragraph{FC-1679 [hard]} State the main tradeoff and production pitfall for Type hints and protocols.
-\noindent\textbf{Answer.} Tradeoff: Refactoring and contracts improve, while runtime behavior is unchanged unless validated. Pitfall: Assuming type annotations enforce production inputs creates vulnerabilities.
-\par\textit{Tradeoff: Refactoring and contracts improve, while runtime behavior is unchanged unless validated. Pitfall: Assuming type annotations enforce production inputs creates vulnerabilities.}
-\paragraph{LA-1680 [hard]} Explain Type hints and protocols from first principles, then show how you would evaluate and operate it in production.
-\noindent\textbf{Answer.} Start with the mechanism: Type hints support static analysis; Protocol defines structural interfaces without inheritance. Make the tradeoff explicit: Refactoring and contracts improve, while runtime behavior is unchanged unless validated. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Assuming type annotations enforce production inputs creates vulnerabilities.
-\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
-\paragraph{MCQ-1681 [medium]} Which statement best describes Exceptions?
-\begin{enumerate}[label=\Alph*.]
-\item Descriptors define attribute access; properties provide managed getter, setter, and deleter behavior.
-\item Type hints support static analysis; Protocol defines structural interfaces without inheritance.
-\item pyproject.toml, lockfiles, wheels, virtual environments, and reproducible builds define deliverable Python software.
-\item Exceptions separate error propagation from normal return values and can preserve causal chains.
-\end{enumerate}
-\noindent\textbf{Answer.} Exceptions separate error propagation from normal return values and can preserve causal chains.
-\par\textit{Exceptions separate error propagation from normal return values and can preserve causal chains. Tradeoff: Central handling simplifies APIs, while overly broad catches erase actionable context. Watch for: Catching Exception and returning None turns failures into corrupt state.}
-\paragraph{MCQ-1682 [hard]} What is the central engineering tradeoff of Exceptions?
-\begin{enumerate}[label=\Alph*.]
-\item Validation and lazy access fit attribute syntax but may hide expensive operations.
-\item Isolation prevents dependency drift but needs platform and supply-chain controls.
-\item Central handling simplifies APIs, while overly broad catches erase actionable context.
-\item Refactoring and contracts improve, while runtime behavior is unchanged unless validated.
-\end{enumerate}
-\noindent\textbf{Answer.} Central handling simplifies APIs, while overly broad catches erase actionable context.
-\par\textit{Exceptions separate error propagation from normal return values and can preserve causal chains. Tradeoff: Central handling simplifies APIs, while overly broad catches erase actionable context. Watch for: Catching Exception and returning None turns failures into corrupt state.}
-\paragraph{MCQ-1683 [hard]} Which failure mode should an interviewer expect you to identify for Exceptions?
-\begin{enumerate}[label=\Alph*.]
-\item Assuming type annotations enforce production inputs creates vulnerabilities.
-\item Loose version ranges in production make rebuilds non-reproducible.
-\item Performing network I/O in a property surprises callers and tooling.
-\item Catching Exception and returning None turns failures into corrupt state.
-\end{enumerate}
-\noindent\textbf{Answer.} Catching Exception and returning None turns failures into corrupt state.
-\par\textit{Exceptions separate error propagation from normal return values and can preserve causal chains. Tradeoff: Central handling simplifies APIs, while overly broad catches erase actionable context. Watch for: Catching Exception and returning None turns failures into corrupt state.}
-\paragraph{MCQ-1684 [medium]} A design review is specifically concerned with this risk: Catching Exception and returning None turns failures into corrupt state. Which topic should be reviewed first?
-\begin{enumerate}[label=\Alph*.]
-\item Packaging and environments
-\item Type hints and protocols
-\item Exceptions
-\item Descriptors and properties
-\end{enumerate}
-\noindent\textbf{Answer.} Exceptions
-\par\textit{Exceptions separate error propagation from normal return values and can preserve causal chains. Tradeoff: Central handling simplifies APIs, while overly broad catches erase actionable context. Watch for: Catching Exception and returning None turns failures into corrupt state.}
-\paragraph{MCQ-1685 [hard]} Which design note most accurately balances the benefits and costs of Exceptions?
-\begin{enumerate}[label=\Alph*.]
-\item Isolation prevents dependency drift but needs platform and supply-chain controls.
-\item Validation and lazy access fit attribute syntax but may hide expensive operations.
-\item Refactoring and contracts improve, while runtime behavior is unchanged unless validated.
-\item Central handling simplifies APIs, while overly broad catches erase actionable context.
-\end{enumerate}
-\noindent\textbf{Answer.} Central handling simplifies APIs, while overly broad catches erase actionable context.
-\par\textit{Exceptions separate error propagation from normal return values and can preserve causal chains. Tradeoff: Central handling simplifies APIs, while overly broad catches erase actionable context. Watch for: Catching Exception and returning None turns failures into corrupt state.}
-\paragraph{MCQ-1686 [medium]} Which explanation would be strongest in a system-design interview about Exceptions?
-\begin{enumerate}[label=\Alph*.]
-\item Exceptions separate error propagation from normal return values and can preserve causal chains.
-\item pyproject.toml, lockfiles, wheels, virtual environments, and reproducible builds define deliverable Python software.
-\item Type hints support static analysis; Protocol defines structural interfaces without inheritance.
-\item Descriptors define attribute access; properties provide managed getter, setter, and deleter behavior.
-\end{enumerate}
-\noindent\textbf{Answer.} Exceptions separate error propagation from normal return values and can preserve causal chains.
-\par\textit{Exceptions separate error propagation from normal return values and can preserve causal chains. Tradeoff: Central handling simplifies APIs, while overly broad catches erase actionable context. Watch for: Catching Exception and returning None turns failures into corrupt state.}
-\paragraph{MCQ-1687 [hard]} Which production warning is most directly associated with Exceptions?
-\begin{enumerate}[label=\Alph*.]
-\item Loose version ranges in production make rebuilds non-reproducible.
-\item Catching Exception and returning None turns failures into corrupt state.
-\item Performing network I/O in a property surprises callers and tooling.
-\item Assuming type annotations enforce production inputs creates vulnerabilities.
-\end{enumerate}
-\noindent\textbf{Answer.} Catching Exception and returning None turns failures into corrupt state.
-\par\textit{Exceptions separate error propagation from normal return values and can preserve causal chains. Tradeoff: Central handling simplifies APIs, while overly broad catches erase actionable context. Watch for: Catching Exception and returning None turns failures into corrupt state.}
-\paragraph{FC-1688 [medium]} Define Exceptions in interview-ready language.
-\noindent\textbf{Answer.} Exceptions separate error propagation from normal return values and can preserve causal chains.
-\par\textit{Exceptions separate error propagation from normal return values and can preserve causal chains.}
-\paragraph{FC-1689 [hard]} State the main tradeoff and production pitfall for Exceptions.
-\noindent\textbf{Answer.} Tradeoff: Central handling simplifies APIs, while overly broad catches erase actionable context. Pitfall: Catching Exception and returning None turns failures into corrupt state.
-\par\textit{Tradeoff: Central handling simplifies APIs, while overly broad catches erase actionable context. Pitfall: Catching Exception and returning None turns failures into corrupt state.}
-\paragraph{LA-1690 [hard]} Explain Exceptions from first principles, then show how you would evaluate and operate it in production.
-\noindent\textbf{Answer.} Start with the mechanism: Exceptions separate error propagation from normal return values and can preserve causal chains. Make the tradeoff explicit: Central handling simplifies APIs, while overly broad catches erase actionable context. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Catching Exception and returning None turns failures into corrupt state.
-\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
-\paragraph{MCQ-1691 [medium]} Which statement best describes Memory management?
-\begin{enumerate}[label=\Alph*.]
-\item CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory.
-\item ThreadPoolExecutor and ProcessPoolExecutor expose a common future-based API for concurrent callables.
-\item Descriptors define attribute access; properties provide managed getter, setter, and deleter behavior.
-\item Context managers guarantee paired setup and cleanup through with, \_\_enter\_\_/\_\_exit\_\_, or contextlib.
-\end{enumerate}
-\noindent\textbf{Answer.} CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory.
-\par\textit{CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory. Tradeoff: Automatic cleanup is convenient, while cycles and caches can retain large objects. Watch for: Watching only Python heap misses tensors allocated in native or GPU memory.}
-\paragraph{MCQ-1692 [hard]} What is the central engineering tradeoff of Memory management?
-\begin{enumerate}[label=\Alph*.]
-\item Integration is simple, but cancellation and process serialization have limits.
-\item Validation and lazy access fit attribute syntax but may hide expensive operations.
-\item Automatic cleanup is convenient, while cycles and caches can retain large objects.
-\item Resource safety improves and exceptions are localized.
-\end{enumerate}
-\noindent\textbf{Answer.} Automatic cleanup is convenient, while cycles and caches can retain large objects.
-\par\textit{CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory. Tradeoff: Automatic cleanup is convenient, while cycles and caches can retain large objects. Watch for: Watching only Python heap misses tensors allocated in native or GPU memory.}
-\paragraph{MCQ-1693 [hard]} Which failure mode should an interviewer expect you to identify for Memory management?
-\begin{enumerate}[label=\Alph*.]
-\item Performing network I/O in a property surprises callers and tooling.
-\item Swallowing exceptions unintentionally in \_\_exit\_\_ hides failures.
-\item Watching only Python heap misses tensors allocated in native or GPU memory.
-\item Submitting unbounded tasks creates memory pressure and queue latency.
-\end{enumerate}
-\noindent\textbf{Answer.} Watching only Python heap misses tensors allocated in native or GPU memory.
-\par\textit{CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory. Tradeoff: Automatic cleanup is convenient, while cycles and caches can retain large objects. Watch for: Watching only Python heap misses tensors allocated in native or GPU memory.}
-\paragraph{MCQ-1694 [medium]} A design review is specifically concerned with this risk: Watching only Python heap misses tensors allocated in native or GPU memory. Which topic should be reviewed first?
-\begin{enumerate}[label=\Alph*.]
-\item Memory management
-\item Concurrent futures
-\item Context managers
-\item Descriptors and properties
-\end{enumerate}
-\noindent\textbf{Answer.} Memory management
-\par\textit{CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory. Tradeoff: Automatic cleanup is convenient, while cycles and caches can retain large objects. Watch for: Watching only Python heap misses tensors allocated in native or GPU memory.}
-\paragraph{MCQ-1695 [hard]} Which design note most accurately balances the benefits and costs of Memory management?
-\begin{enumerate}[label=\Alph*.]
-\item Resource safety improves and exceptions are localized.
-\item Automatic cleanup is convenient, while cycles and caches can retain large objects.
-\item Integration is simple, but cancellation and process serialization have limits.
-\item Validation and lazy access fit attribute syntax but may hide expensive operations.
-\end{enumerate}
-\noindent\textbf{Answer.} Automatic cleanup is convenient, while cycles and caches can retain large objects.
-\par\textit{CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory. Tradeoff: Automatic cleanup is convenient, while cycles and caches can retain large objects. Watch for: Watching only Python heap misses tensors allocated in native or GPU memory.}
-\paragraph{MCQ-1696 [medium]} Which explanation would be strongest in a system-design interview about Memory management?
-\begin{enumerate}[label=\Alph*.]
-\item Descriptors define attribute access; properties provide managed getter, setter, and deleter behavior.
-\item Context managers guarantee paired setup and cleanup through with, \_\_enter\_\_/\_\_exit\_\_, or contextlib.
-\item ThreadPoolExecutor and ProcessPoolExecutor expose a common future-based API for concurrent callables.
-\item CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory.
-\end{enumerate}
-\noindent\textbf{Answer.} CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory.
-\par\textit{CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory. Tradeoff: Automatic cleanup is convenient, while cycles and caches can retain large objects. Watch for: Watching only Python heap misses tensors allocated in native or GPU memory.}
-\paragraph{MCQ-1697 [hard]} Which production warning is most directly associated with Memory management?
-\begin{enumerate}[label=\Alph*.]
-\item Watching only Python heap misses tensors allocated in native or GPU memory.
-\item Submitting unbounded tasks creates memory pressure and queue latency.
-\item Performing network I/O in a property surprises callers and tooling.
-\item Swallowing exceptions unintentionally in \_\_exit\_\_ hides failures.
-\end{enumerate}
-\noindent\textbf{Answer.} Watching only Python heap misses tensors allocated in native or GPU memory.
-\par\textit{CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory. Tradeoff: Automatic cleanup is convenient, while cycles and caches can retain large objects. Watch for: Watching only Python heap misses tensors allocated in native or GPU memory.}
-\paragraph{FC-1698 [medium]} Define Memory management in interview-ready language.
-\noindent\textbf{Answer.} CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory.
-\par\textit{CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory.}
-\paragraph{FC-1699 [hard]} State the main tradeoff and production pitfall for Memory management.
-\noindent\textbf{Answer.} Tradeoff: Automatic cleanup is convenient, while cycles and caches can retain large objects. Pitfall: Watching only Python heap misses tensors allocated in native or GPU memory.
-\par\textit{Tradeoff: Automatic cleanup is convenient, while cycles and caches can retain large objects. Pitfall: Watching only Python heap misses tensors allocated in native or GPU memory.}
-\paragraph{LA-1700 [hard]} Explain Memory management from first principles, then show how you would evaluate and operate it in production.
-\noindent\textbf{Answer.} Start with the mechanism: CPython combines reference counting with cyclic garbage collection; object graphs and native buffers affect real memory. Make the tradeoff explicit: Automatic cleanup is convenient, while cycles and caches can retain large objects. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Watching only Python heap misses tensors allocated in native or GPU memory.
-\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
-\paragraph{MCQ-1701 [medium]} Which statement best describes Testing and mocking?
-\begin{enumerate}[label=\Alph*.]
-\item Type hints support static analysis; Protocol defines structural interfaces without inheritance.
-\item Decorators wrap or replace functions or classes to add behavior while preserving a callable interface.
-\item Unit, integration, property, contract, and load tests cover different risks; mocks isolate only well-understood boundaries.
-\item Separate processes bypass the GIL and isolate memory while communicating through serialization or shared memory.
-\end{enumerate}
-\noindent\textbf{Answer.} Unit, integration, property, contract, and load tests cover different risks; mocks isolate only well-understood boundaries.
-\par\textit{Unit, integration, property, contract, and load tests cover different risks; mocks isolate only well-understood boundaries. Tradeoff: Fast tests aid iteration, while excessive mocking tests implementation rather than behavior. Watch for: Mocking the model, database, and network in the same test proves little about integration.}
-\paragraph{MCQ-1702 [hard]} What is the central engineering tradeoff of Testing and mocking?
-\begin{enumerate}[label=\Alph*.]
-\item Cross-cutting concerns become reusable, but hidden control flow complicates debugging.

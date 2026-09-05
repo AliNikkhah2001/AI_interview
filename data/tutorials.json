@@ -1624,7 +1624,8 @@
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For RAG evaluation, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
     "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
     "formula_ids": [
-      "retrieval-metrics"
+      "retrieval-metrics",
+      "faithfulness"
     ],
     "decision_reasoning": "Choose RAG evaluation when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Automated judges accelerate iteration but need human calibration and bias checks. Compare against the simplest viable baseline and make the decision reversible where possible.",
     "failure_reasoning": "The key production trap is: Collapsing all dimensions into one score hides compensating failures. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
@@ -1802,8 +1803,10 @@
     "objective": "Explain Online RAG monitoring from first principles, choose it for a stated workload, measure it, and recover when it fails.",
     "first_principles": "Production monitoring tracks retrieval gaps, unsupported claims, drift, feedback, latency, and cost by slice. Decompose RAG into ingestion, retrieval, packing, generation, and evaluation so a final-answer failure can be localized.",
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Online RAG monitoring, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
-    "quantitative_reasoning": "No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.",
-    "formula_ids": [],
+    "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
+    "formula_ids": [
+      "drift"
+    ],
     "decision_reasoning": "Choose Online RAG monitoring when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Rich telemetry improves diagnosis but raises privacy and storage obligations. Compare against the simplest viable baseline and make the decision reversible where possible.",
     "failure_reasoning": "The key production trap is: Logging full prompts and context without redaction can expose sensitive data. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
     "evaluation": [
@@ -2202,8 +2205,10 @@
     "objective": "Explain Graph quality evaluation from first principles, choose it for a stated workload, measure it, and recover when it fails.",
     "first_principles": "Evaluation checks entity precision, relation correctness, completeness, consistency, provenance, and downstream QA value. Use graphs when entities, relations, paths, communities, or temporal structure carry information that flat similarity loses.",
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Graph quality evaluation, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
-    "quantitative_reasoning": "No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.",
-    "formula_ids": [],
+    "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
+    "formula_ids": [
+      "graph-quality"
+    ],
     "decision_reasoning": "Choose Graph quality evaluation when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Intrinsic graph metrics catch construction defects but may not predict application utility. Compare against the simplest viable baseline and make the decision reversible where possible.",
     "failure_reasoning": "The key production trap is: Reporting only downstream answer scores can hide a brittle graph with unverifiable facts. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
     "evaluation": [
@@ -3250,8 +3255,10 @@
     "objective": "Explain Temporal from first principles, choose it for a stated workload, measure it, and recover when it fails.",
     "first_principles": "Temporal persists workflow history and replays deterministic workflow code around durable activities. Represent long-running work as explicit state and transitions, with durable checkpoints around nondeterministic or side-effecting boundaries.",
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Temporal, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
-    "quantitative_reasoning": "No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.",
-    "formula_ids": [],
+    "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
+    "formula_ids": [
+      "retry-backoff"
+    ],
     "decision_reasoning": "Choose Temporal when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It provides robust retries and long-running execution but requires deterministic workflow discipline. Compare against the simplest viable baseline and make the decision reversible where possible.",
     "failure_reasoning": "The key production trap is: Reading wall-clock time or random state directly in replayed code causes nondeterminism. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
     "evaluation": [
@@ -3468,8 +3475,10 @@
     "objective": "Explain Metrics and SLOs from first principles, choose it for a stated workload, measure it, and recover when it fails.",
     "first_principles": "Counters, histograms, gauges, service-level indicators, and objectives quantify reliability and performance. Connect request traces, semantic evaluation, infrastructure metrics, and business outcomes without treating any single signal as ground truth.",
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Metrics and SLOs, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
-    "quantitative_reasoning": "No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.",
-    "formula_ids": [],
+    "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
+    "formula_ids": [
+      "slo-error-budget"
+    ],
     "decision_reasoning": "Choose Metrics and SLOs when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Aggregate signals scale well but cannot explain individual semantic failures. Compare against the simplest viable baseline and make the decision reversible where possible.",
     "failure_reasoning": "The key production trap is: Averaging latency hides long-tail p95 and p99 user pain. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
     "evaluation": [
@@ -3776,8 +3785,10 @@
     "objective": "Explain Prompt and model drift from first principles, choose it for a stated workload, measure it, and recover when it fails.",
     "first_principles": "Drift monitoring detects changes in inputs, retrieved evidence, outputs, model versions, and user behavior. Connect request traces, semantic evaluation, infrastructure metrics, and business outcomes without treating any single signal as ground truth.",
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Prompt and model drift, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
-    "quantitative_reasoning": "No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.",
-    "formula_ids": [],
+    "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
+    "formula_ids": [
+      "drift"
+    ],
     "decision_reasoning": "Choose Prompt and model drift when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Alerts catch regressions but thresholds must distinguish seasonality from harm. Compare against the simplest viable baseline and make the decision reversible where possible.",
     "failure_reasoning": "The key production trap is: Measuring embedding distribution shift alone does not prove answer quality changed. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
     "evaluation": [
@@ -3866,8 +3877,10 @@
     "objective": "Explain Evaluation in production from first principles, choose it for a stated workload, measure it, and recover when it fails.",
     "first_principles": "Online evaluators combine sampled judges, deterministic checks, human feedback, and business outcomes. Connect request traces, semantic evaluation, infrastructure metrics, and business outcomes without treating any single signal as ground truth.",
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Evaluation in production, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
-    "quantitative_reasoning": "No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.",
-    "formula_ids": [],
+    "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
+    "formula_ids": [
+      "slo-error-budget"
+    ],
     "decision_reasoning": "Choose Evaluation in production when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Live coverage improves realism but evaluations must not expose or delay users. Compare against the simplest viable baseline and make the decision reversible where possible.",
     "failure_reasoning": "The key production trap is: Treating implicit clicks as unambiguous quality labels creates bias. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
     "evaluation": [
@@ -4350,8 +4363,10 @@
     "objective": "Explain LLM gateways from first principles, choose it for a stated workload, measure it, and recover when it fails.",
     "first_principles": "Gateways normalize provider APIs and add routing, budgets, rate limits, fallbacks, caching, and audit policy. Serving is a token-and-memory scheduling problem wrapped in release engineering, routing, and reliability controls.",
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For LLM gateways, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
-    "quantitative_reasoning": "No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.",
-    "formula_ids": [],
+    "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
+    "formula_ids": [
+      "cost-model"
+    ],
     "decision_reasoning": "Choose LLM gateways when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Central control improves governance but becomes a high-impact availability and security dependency. Compare against the simplest viable baseline and make the decision reversible where possible.",
     "failure_reasoning": "The key production trap is: Automatic fallback across non-equivalent models can silently change behavior. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
     "evaluation": [
@@ -5054,8 +5069,12 @@
     "objective": "Explain Self-attention math from first principles, choose it for a stated workload, measure it, and recover when it fails.",
     "first_principles": "Attention computes scaled query-key scores, applies masking and softmax, then mixes value vectors. Track tensor shapes, probability objectives, gradient paths, and memory movement; architecture names are shorthand for these mechanisms.",
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Self-attention math, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
-    "quantitative_reasoning": "No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.",
-    "formula_ids": [],
+    "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
+    "formula_ids": [
+      "attention",
+      "softmax",
+      "attention-complexity"
+    ],
     "decision_reasoning": "Choose Self-attention math when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Every token can interact directly, while standard sequence cost grows quadratically. Compare against the simplest viable baseline and make the decision reversible where possible.",
     "failure_reasoning": "The key production trap is: Omitting the square-root head-dimension scale saturates softmax gradients. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
     "evaluation": [
@@ -5414,8 +5433,12 @@
     "objective": "Explain Causal language modeling from first principles, choose it for a stated workload, measure it, and recover when it fails.",
     "first_principles": "Next-token training factorizes sequence likelihood from left to right under a causal mask. Track tensor shapes, probability objectives, gradient paths, and memory movement; architecture names are shorthand for these mechanisms.",
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Causal language modeling, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
-    "quantitative_reasoning": "No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.",
-    "formula_ids": [],
+    "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
+    "formula_ids": [
+      "softmax",
+      "cross-entropy",
+      "sampling"
+    ],
     "decision_reasoning": "Choose Causal language modeling when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It provides a simple scalable objective but does not directly optimize instruction usefulness or truth. Compare against the simplest viable baseline and make the decision reversible where possible.",
     "failure_reasoning": "The key production trap is: Interpreting low perplexity as safe task performance is invalid. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
     "evaluation": [
@@ -5458,8 +5481,10 @@
     "objective": "Explain Cross-entropy and perplexity from first principles, choose it for a stated workload, measure it, and recover when it fails.",
     "first_principles": "Cross-entropy is negative log likelihood; perplexity exponentiates average token loss. Track tensor shapes, probability objectives, gradient paths, and memory movement; architecture names are shorthand for these mechanisms.",
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Cross-entropy and perplexity, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
-    "quantitative_reasoning": "No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.",
-    "formula_ids": [],
+    "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
+    "formula_ids": [
+      "cross-entropy"
+    ],
     "decision_reasoning": "Choose Cross-entropy and perplexity when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It is stable for model comparison on the same tokenization and data, not across arbitrary setups. Compare against the simplest viable baseline and make the decision reversible where possible.",
     "failure_reasoning": "The key production trap is: Comparing perplexity across vocabularies or tokenizers is misleading. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
     "evaluation": [
@@ -5546,8 +5571,10 @@
     "objective": "Explain RLHF and PPO from first principles, choose it for a stated workload, measure it, and recover when it fails.",
     "first_principles": "A preference model supplies rewards while PPO constrains policy updates relative to a reference model. Track tensor shapes, probability objectives, gradient paths, and memory movement; architecture names are shorthand for these mechanisms.",
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For RLHF and PPO, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
-    "quantitative_reasoning": "No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.",
-    "formula_ids": [],
+    "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
+    "formula_ids": [
+      "ppo"
+    ],
     "decision_reasoning": "Choose RLHF and PPO when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It can optimize human preferences but adds reward hacking and training complexity. Compare against the simplest viable baseline and make the decision reversible where possible.",
     "failure_reasoning": "The key production trap is: A biased reward model can produce confidently optimized failure modes. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
     "evaluation": [
@@ -5590,8 +5617,10 @@
     "objective": "Explain DPO from first principles, choose it for a stated workload, measure it, and recover when it fails.",
     "first_principles": "Direct Preference Optimization fits preferred over rejected responses through a classification-style objective relative to a reference policy. Track tensor shapes, probability objectives, gradient paths, and memory movement; architecture names are shorthand for these mechanisms.",
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For DPO, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
-    "quantitative_reasoning": "No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.",
-    "formula_ids": [],
+    "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
+    "formula_ids": [
+      "dpo"
+    ],
     "decision_reasoning": "Choose DPO when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It simplifies preference training but still depends on pair quality and distribution coverage. Compare against the simplest viable baseline and make the decision reversible where possible.",
     "failure_reasoning": "The key production trap is: Treating implicit user choices as clean preferences introduces confounding. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
     "evaluation": [
@@ -5770,8 +5799,11 @@
     "objective": "Explain KV caching from first principles, choose it for a stated workload, measure it, and recover when it fails.",
     "first_principles": "Autoregressive decoding stores prior keys and values so each new token avoids recomputing attention over the entire prefix. Optimization changes compute, memory capacity, memory traffic, or scheduling; measure which bottleneck moved and what quality was lost.",
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For KV caching, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
-    "quantitative_reasoning": "No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.",
-    "formula_ids": [],
+    "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
+    "formula_ids": [
+      "kv-cache",
+      "gqa-reduction"
+    ],
     "decision_reasoning": "Choose KV caching when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Decode speed improves while cache memory grows with layers, sequence, batch, and KV heads. Compare against the simplest viable baseline and make the decision reversible where possible.",
     "failure_reasoning": "The key production trap is: Capacity planning only model weights causes out-of-memory failures at long context. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
     "evaluation": [
@@ -5952,6 +5984,7 @@
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For FlashAttention, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
     "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
     "formula_ids": [
+      "attention",
       "attention-complexity"
     ],
     "decision_reasoning": "Choose FlashAttention when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Wall-clock speed and memory improve without approximate attention, but kernels depend on shapes and hardware. Compare against the simplest viable baseline and make the decision reversible where possible.",
@@ -5996,8 +6029,11 @@
     "objective": "Explain GQA and MQA from first principles, choose it for a stated workload, measure it, and recover when it fails.",
     "first_principles": "Grouped-query and multi-query attention share key-value heads across query heads to shrink KV cache and memory bandwidth. Optimization changes compute, memory capacity, memory traffic, or scheduling; measure which bottleneck moved and what quality was lost.",
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For GQA and MQA, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
-    "quantitative_reasoning": "No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.",
-    "formula_ids": [],
+    "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
+    "formula_ids": [
+      "kv-cache",
+      "gqa-reduction"
+    ],
     "decision_reasoning": "Choose GQA and MQA when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Decode efficiency improves, with possible quality loss relative to full multi-head KV. Compare against the simplest viable baseline and make the decision reversible where possible.",
     "failure_reasoning": "The key production trap is: Converting weights naively after training does not reproduce a model trained for shared KV heads. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
     "evaluation": [
@@ -6224,8 +6260,10 @@
     "objective": "Explain Data parallel inference from first principles, choose it for a stated workload, measure it, and recover when it fails.",
     "first_principles": "Replicas serve independent requests and scale throughput with routing and load balancing. Optimization changes compute, memory capacity, memory traffic, or scheduling; measure which bottleneck moved and what quality was lost.",
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Data parallel inference, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
-    "quantitative_reasoning": "No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.",
-    "formula_ids": [],
+    "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
+    "formula_ids": [
+      "amdahl"
+    ],
     "decision_reasoning": "Choose Data parallel inference when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It is operationally simple but duplicates model weights on every replica. Compare against the simplest viable baseline and make the decision reversible where possible.",
     "failure_reasoning": "The key production trap is: Random routing ignores prefix-cache locality and uneven sequence lengths. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
     "evaluation": [
@@ -6356,8 +6394,10 @@
     "objective": "Explain Streaming generation from first principles, choose it for a stated workload, measure it, and recover when it fails.",
     "first_principles": "Servers emit tokens incrementally with backpressure, disconnect handling, and final usage accounting. Optimization changes compute, memory capacity, memory traffic, or scheduling; measure which bottleneck moved and what quality was lost.",
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Streaming generation, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
-    "quantitative_reasoning": "No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.",
-    "formula_ids": [],
+    "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
+    "formula_ids": [
+      "sampling"
+    ],
     "decision_reasoning": "Choose Streaming generation when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Perceived latency improves, but partial outputs complicate moderation and retries. Compare against the simplest viable baseline and make the decision reversible where possible.",
     "failure_reasoning": "The key production trap is: Retrying after visible partial output can duplicate text or side effects. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
     "evaluation": [
@@ -7104,8 +7144,10 @@
     "objective": "Explain Asyncio from first principles, choose it for a stated workload, measure it, and recover when it fails.",
     "first_principles": "Asyncio cooperatively schedules coroutines on an event loop around awaitable I/O. Reason from Python's object model, execution model, and concurrency boundaries rather than memorizing syntax trivia.",
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Asyncio, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
-    "quantitative_reasoning": "No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.",
-    "formula_ids": [],
+    "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
+    "formula_ids": [
+      "little-law"
+    ],
     "decision_reasoning": "Choose Asyncio when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: High connection concurrency is efficient, while blocking functions freeze the loop. Compare against the simplest viable baseline and make the decision reversible where possible.",
     "failure_reasoning": "The key production trap is: Creating coroutines without awaiting them silently drops work. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
     "evaluation": [
@@ -8319,7 +8361,8 @@
     "mental_model": "Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Fault isolation, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
     "quantitative_reasoning": "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.",
     "formula_ids": [
-      "availability"
+      "availability",
+      "slo-error-budget"
     ],
     "decision_reasoning": "Choose Fault isolation when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Blast radius shrinks at some efficiency cost. Compare against the simplest viable baseline and make the decision reversible where possible.",
     "failure_reasoning": "The key production trap is: A single global vector index or queue can defeat otherwise isolated services. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
