@@ -391,7 +391,11 @@ def build_handbook(root: Path, topics, questions, core, designs, refs, tutorials
     chunks, chunk, size = [], [], 0
     for line in body_lines:
         line_size = len(line.encode("utf-8")) + 1
-        if chunk and size + line_size > 320_000:
+        # A part file is an I/O shard, not a TeX scope. Split only before a
+        # semantic heading so tabularx, description, enumerate, and TikZ
+        # environments can never begin in one include and end in another.
+        safe_boundary = line.startswith((r"\section{", r"\subsection{", r"\subsubsection{"))
+        if chunk and size + line_size > 320_000 and safe_boundary:
             chunks.append(chunk); chunk=[]; size=0
         chunk.append(line); size += line_size
     if chunk:

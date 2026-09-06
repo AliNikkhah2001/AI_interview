@@ -1,53 +1,3 @@
-State and trust boundary & Trusted identity, resource, consent, policy version, detector version, redacted evidence, and override decisions belong outside model text.\\
-\end{tabularx}
-\paragraph{Five-part tutorial.}
-\begin{description}[leftmargin=38mm,style=nextline]
-\item[1. Problem and abstraction] Screens prompts and responses for prompt injection, sensitive data, malicious URLs, and content-safety risks around model applications. Think of Google Cloud Model Armor as a managed ai security service between prompt or response and sanitized content + findings; its defining mechanism is managed security screening.
-\item[2. Structure and execution] Follow the data path Prompt or response → Managed security screening → Sanitized content + findings. Layer deterministic validation and authorization with calibrated model-based detectors at the boundary each can actually defend.
-\item[3. State, security, and operations] Trusted identity, resource, consent, policy version, detector version, redacted evidence, and override decisions belong outside model text.
-\item[4. Selection decision] Choose it when google Cloud applications need centralized managed inspection across supported model and agent paths. Reject it when a local open-source control or business authorization is the actual requirement. Compare the same representative workload with Bedrock Guardrails, Azure AI Content Safety, LLM Guard.
-\item[5. Production proof] Start with the failure hypothesis: Detection coverage, false positives, region, and latency must be tested, and screening is not authorization. Test attack success, false positives, false negatives, over-refusal, language and cohort slices, latency, bypass chains, and rollback.
-\end{description}
-\begin{tabularx}{\linewidth}{>{\bfseries\color{blue}}p{27mm}X}
-Deployment & Google Cloud managed service\\
-Choose when & Google Cloud applications need centralized managed inspection across supported model and agent paths.\\
-Reject when & A local open-source control or business authorization is the actual requirement.\\
-Primary failure & Detection coverage, false positives, region, and latency must be tested, and screening is not authorization.\\
-Compare with & Bedrock Guardrails; Azure AI Content Safety; LLM Guard\\
-\end{tabularx}
-\paragraph{Minimal use in REST / client SDKs.}
-\begin{Verbatim}[fontsize=\scriptsize]
-gcloud model-armor templates create TEMPLATE
-gcloud model-armor templates sanitize-user-prompt TEMPLATE
-\end{Verbatim}
-\textbf{Primary sources.} \href{https://cloud.google.com/security-command-center/docs/model-armor-overview}{Google Cloud Model Armor official documentation}.
-\clearpage\subsection{07. MCP and tool connectivity}
-\textbf{Selection question.} Where is authority enforced?
-\begin{center}\begin{tikzpicture}[tech/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=42mm,minimum height=12mm,font=\small},arr/.style={-{Stealth},thick,draw=blue},node distance=8mm]
-\node[tech](c0){Model intent + capability};
-\node[tech,right=of c0](c1){Discover, authorize, invoke};
-\node[tech,right=of c1](c2){Typed tool result};
-\draw[arr](c0)--(c1);\draw[arr](c1)--(c2);
-\end{tikzpicture}\end{center}
-\paragraph{Comparison matrix.}
-\begin{longtable}{@{}p{20mm}p{22mm}p{26mm}p{46mm}p{46mm}@{}}
-\toprule\textbf{Tool} & \textbf{Kind} & \textbf{Language / boundary} & \textbf{Choose when} & \textbf{Reject when}\\\midrule\endhead
-Model Context Protocol & Open protocol & JSON-RPC, TypeScript, Python, C\#, Java and more; Local stdio or remote HTTP transports & Independent applications and capability providers need a standard integration boundary with explicit host control. & A private in-process function call is simpler, or the integration cannot implement authentication and authorization safely.\\
-Official MCP SDKs & Protocol SDKs & TypeScript, Python, C\#, Java, Kotlin, Swift, Rust, Go, Ruby, PHP; Embedded in MCP clients and servers & You are implementing an MCP client or server and want protocol-correct primitives instead of hand-written JSON-RPC. & You only consume a stable product SDK and do not need MCP interoperability.\\
-FastMCP & MCP framework & Python, TypeScript; Library; local or remote server & Developers need a concise typed API for production Python or TypeScript MCP services. & You require only low-level protocol control or an existing framework already owns routing and auth.\\
-MCP Inspector & Developer inspection tool & TypeScript; Local web UI and proxy & You are developing or debugging a server and need to see exact schemas, messages, and responses. & You need production monitoring, authorization, or a security boundary.\\
-Docker MCP Toolkit and Gateway & Tool catalog and gateway & Go, Docker configuration; Docker Desktop and containerized gateway & Desktop or enterprise teams want curated containerized servers and centralized client configuration. & Container trust, image provenance, or Docker Desktop availability cannot be accepted.\\
-Smithery & MCP registry and deployment platform & TypeScript, Python, CLI; Hosted registry and remote server infrastructure & Teams need to find and connect interoperable servers quickly with hosted deployment options. & Strict private catalogs, on-premises execution, or bespoke authorization dominate.\\
-Composio & Managed tool integration platform & Python, TypeScript, REST; Managed service and SDKs & Many SaaS integrations and per-user OAuth connections must be delivered quickly. & On-premises secrets, custom APIs, or avoiding an external auth and tool data plane is mandatory.\\
-Arcade & Agent tool and authorization platform & Python, TypeScript, REST; Managed or gateway-oriented platform & Agents need end-user authorization and a curated tool layer without rebuilding OAuth for every integration. & The organization requires fully self-hosted bespoke connectors or direct provider APIs only.\\
-Official MCP Registry & MCP metadata registry & REST, JSON; Hosted registry API with ecosystem clients & Clients or catalogs need a common source of server identity and distribution metadata. & You need runtime authorization, trust decisions, or private internal discovery by itself.\\
-GitHub MCP Server & Repository tool server & Go, Docker; Local stdio, containers, or remote GitHub service & Agents need typed GitHub operations with token scopes and explicit toolsets. & Direct REST or GraphQL clients are simpler, or broad repository mutation is too risky.\\
-AWS MCP Servers & Cloud service MCP server collection & Python, TypeScript; Local or remote servers for AWS services & Agents need typed access to selected AWS services under existing IAM and audit controls. & Direct SDK calls are clearer or a centralized gateway must own every tool schema and policy.\\
-MCP Toolbox for Databases & Database tool server & Go, YAML, client SDKs; Local binary, container, or cloud deployment & Agents need governed, reusable database operations rather than arbitrary SQL generation. & A direct application data layer or unrestricted analyst SQL is the actual boundary.\\
-Azure MCP Server & Cloud service MCP server & TypeScript, Docker; Local stdio or container with Azure identity & Agents need governed access to Azure resources through familiar identity and service-specific tools. & Direct Azure SDKs are clearer or remote shared tool execution violates the trust boundary.\\
-Zapier MCP & Managed application tool gateway & MCP, REST; Managed remote MCP server & A user wants quick authenticated access to many SaaS actions without building each OAuth connector. & High-impact actions, self-hosting, or deeply customized schemas require an owned integration service.\\
-mcp-use & MCP client and agent library & Python, TypeScript; Library and optional cloud services & You need a focused programmatic MCP client layer across models and server transports. & A framework already supplies adequate MCP integration or an enterprise gateway must mediate every call.\\
-\bottomrule\end{longtable}
 \subsubsection{Model Context Protocol}
 \noindent\colorbox{navy}{\parbox[c][10mm][c]{10mm}{\centering\textcolor{white}{\Large\bfseries MCP}}}\quad \badge{Open protocol} \quad \textbf{Languages:} JSON-RPC / TypeScript / Python / C\# / Java and more
 \par\smallskip Protocol for hosts, clients, and servers to negotiate and expose tools, resources, prompts, roots, sampling, elicitation, and related capabilities.
@@ -2443,3 +2393,307 @@ Every listed technology has one medium selection question, a hard architecture q
 \textbf{Answer.} Start from this primary risk: Per-agent durable state does not automatically solve cross-agent transactions, regional data rules, or tool authorization. Reproduce it with representative scale, concurrency, data shape, filters or tool permissions, and dependency failures. Trace the path Client event + agent identity -> Durable Object agent runtime -> State update + streamed response; define quality, saturation, tail-latency, cost, and recovery signals at each boundary. Predefine a degraded mode and rollback trigger, keep artifacts and schemas versioned, dual-run or shadow the strongest alternative (Mastra), and prove that data and callers can migrate without an outage or authority expansion.
 \textit{A very-hard answer must make the selection falsifiable and include recovery, not merely defend a preferred product.}
 \subsection{Model, embedding, and optimization libraries}
+\subsubsection*{PyTorch}
+\paragraph{MEDIUM - TECH-MCQ-085} Which workload is the strongest fit for PyTorch?
+\begin{enumerate}[label=\Alph*.]
+\item Teams want repeatable fine-tuning recipes without writing a custom training loop.
+\item Existing PyTorch code must scale across devices with minimal structural change.
+\item Multilingual or advanced retrieval experiments need BGE models, rerankers, or trainable retrieval recipes.
+\item Custom model training, fine-tuning, research kernels, or ecosystem compatibility requires an expressive tensor framework.
+\end{enumerate}
+\textbf{Answer.} Custom model training, fine-tuning, research kernels, or ecosystem compatibility requires an expressive tensor framework.
+\textit{Eager tensor programming, automatic differentiation, neural-network modules, distributed training, compilation, and a broad research ecosystem. Compare it with JAX, TensorFlow, ONNX Runtime; the deciding evidence is the actual workload and operational boundary.}
+\paragraph{HARD - TECH-HARD-085} Compare PyTorch with JAX, TensorFlow. What measurements would decide the choice?
+\textbf{Answer.} Choose PyTorch when custom model training, fine-tuning, research kernels, or ecosystem compatibility requires an expressive tensor framework. Avoid it when inference only can use a smaller runtime, or an existing JAX stack already owns accelerator compilation. Build the same representative slice on the alternatives and compare quality, p95 and p99 latency, throughput, failure recovery, operability, security boundary, migration cost, and total cost. Preserve an exit path rather than selecting from feature lists.
+\textit{A hard answer converts product differences into measurable workload and operating constraints.}
+\paragraph{HARD - TECH-ARCH-085} Explain the internal structure and design of PyTorch. Trace one request, identify the control plane and data plane, and place state, security, retries, and telemetry.
+\textbf{Answer.} Mental model: Think of PyTorch as a tensor and deep-learning framework between tensors + modules and model parameters + graph; its defining mechanism is autograd, compile, distribute. Trace Tensors + modules -> Autograd, compile, distribute -> Model parameters + graph. The training or compilation plan binds data, objective, precision, parallelism, optimizer, and target runtime. Datasets, tokenizers, code, configs, checkpoints, adapters, seeds, and evaluation sets form one versioned artifact graph. Put validation at the entry and result contracts, authorize immediately before side effects, make retries idempotent, and emit correlated evidence at every boundary.
+\textit{A framework answer is complete only when it explains mechanisms and ownership boundaries rather than repeating the product feature list.}
+\paragraph{VERY-HARD - TECH-VH-085} You selected PyTorch for a production system. Design the failure experiment, telemetry, fallback, and migration plan that would disprove or defend that choice.
+\textbf{Answer.} Start from this primary risk: Python flexibility can hide graph breaks, device transfers, nondeterminism, and memory growth until scale. Reproduce it with representative scale, concurrency, data shape, filters or tool permissions, and dependency failures. Trace the path Tensors + modules -> Autograd, compile, distribute -> Model parameters + graph; define quality, saturation, tail-latency, cost, and recovery signals at each boundary. Predefine a degraded mode and rollback trigger, keep artifacts and schemas versioned, dual-run or shadow the strongest alternative (JAX), and prove that data and callers can migrate without an outage or authority expansion.
+\textit{A very-hard answer must make the selection falsifiable and include recovery, not merely defend a preferred product.}
+\subsubsection*{JAX}
+\paragraph{MEDIUM - TECH-MCQ-086} Which workload is the strongest fit for JAX?
+\begin{enumerate}[label=\Alph*.]
+\item Deployment targets Intel CPUs, integrated GPUs, or NPUs and hardware-aware optimization matters.
+\item Functional numerical programs need compiler optimization, explicit sharding, or large accelerator training at scale.
+\item A portable, non-LLM-specific inference artifact must run across languages and hardware targets.
+\item Multilingual or advanced retrieval experiments need BGE models, rerankers, or trainable retrieval recipes.
+\end{enumerate}
+\textbf{Answer.} Functional numerical programs need compiler optimization, explicit sharding, or large accelerator training at scale.
+\textit{NumPy-like arrays with composable transformations such as automatic differentiation, vectorization, JIT compilation, and parallel sharding. Compare it with PyTorch, TensorFlow, NumPy; the deciding evidence is the actual workload and operational boundary.}
+\paragraph{HARD - TECH-HARD-086} Compare JAX with PyTorch, TensorFlow. What measurements would decide the choice?
+\textbf{Answer.} Choose JAX when functional numerical programs need compiler optimization, explicit sharding, or large accelerator training at scale. Avoid it when dynamic Python mutation and the PyTorch ecosystem matter more than compilation and functional transforms. Build the same representative slice on the alternatives and compare quality, p95 and p99 latency, throughput, failure recovery, operability, security boundary, migration cost, and total cost. Preserve an exit path rather than selecting from feature lists.
+\textit{A hard answer converts product differences into measurable workload and operating constraints.}
+\paragraph{HARD - TECH-ARCH-086} Explain the internal structure and design of JAX. Trace one request, identify the control plane and data plane, and place state, security, retries, and telemetry.
+\textbf{Answer.} Mental model: Think of JAX as a array transformation and compiler framework between pure array function and sharded accelerator result; its defining mechanism is transform + xla compile. Trace Pure array function -> Transform + XLA compile -> Sharded accelerator result. The training or compilation plan binds data, objective, precision, parallelism, optimizer, and target runtime. Datasets, tokenizers, code, configs, checkpoints, adapters, seeds, and evaluation sets form one versioned artifact graph. Put validation at the entry and result contracts, authorize immediately before side effects, make retries idempotent, and emit correlated evidence at every boundary.
+\textit{A framework answer is complete only when it explains mechanisms and ownership boundaries rather than repeating the product feature list.}
+\paragraph{VERY-HARD - TECH-VH-086} You selected JAX for a production system. Design the failure experiment, telemetry, fallback, and migration plan that would disprove or defend that choice.
+\textbf{Answer.} Start from this primary risk: Unexpected recompilation, shape polymorphism, host-device transfer, or PRNG misuse can erase performance and correctness. Reproduce it with representative scale, concurrency, data shape, filters or tool permissions, and dependency failures. Trace the path Pure array function -> Transform + XLA compile -> Sharded accelerator result; define quality, saturation, tail-latency, cost, and recovery signals at each boundary. Predefine a degraded mode and rollback trigger, keep artifacts and schemas versioned, dual-run or shadow the strongest alternative (PyTorch), and prove that data and callers can migrate without an outage or authority expansion.
+\textit{A very-hard answer must make the selection falsifiable and include recovery, not merely defend a preferred product.}
+\subsubsection*{Hugging Face Transformers}
+\paragraph{MEDIUM - TECH-MCQ-087} Which workload is the strongest fit for Hugging Face Transformers?
+\begin{enumerate}[label=\Alph*.]
+\item Typed extraction is central and the team wants a thin layer over existing provider SDKs.
+\item You need reproducible access to pretrained architectures, tokenizers, checkpoints, and fine-tuning utilities.
+\item A portable, non-LLM-specific inference artifact must run across languages and hardware targets.
+\item GPU memory is the limiting resource and supported hardware plus measured quality make 8-bit or 4-bit execution useful.
+\end{enumerate}
+\textbf{Answer.} You need reproducible access to pretrained architectures, tokenizers, checkpoints, and fine-tuning utilities.
+\textit{Model, tokenizer, processor, generation, training, and pipeline APIs for a large pretrained-model ecosystem. Compare it with PyTorch, vLLM, sentence-transformers; the deciding evidence is the actual workload and operational boundary.}
+\paragraph{HARD - TECH-HARD-087} Compare Hugging Face Transformers with PyTorch, vLLM. What measurements would decide the choice?
+\textbf{Answer.} Choose Hugging Face Transformers when you need reproducible access to pretrained architectures, tokenizers, checkpoints, and fine-tuning utilities. Avoid it when a narrow production server or a provider SDK already defines the complete model boundary. Build the same representative slice on the alternatives and compare quality, p95 and p99 latency, throughput, failure recovery, operability, security boundary, migration cost, and total cost. Preserve an exit path rather than selecting from feature lists.
+\textit{A hard answer converts product differences into measurable workload and operating constraints.}
+\paragraph{HARD - TECH-ARCH-087} Explain the internal structure and design of Hugging Face Transformers. Trace one request, identify the control plane and data plane, and place state, security, retries, and telemetry.
+\textbf{Answer.} Mental model: Think of Hugging Face Transformers as a pretrained model library between hub artifact + tokenizer and task output; its defining mechanism is model forward or generate. Trace Hub artifact + tokenizer -> Model forward or generate -> Task output. The training or compilation plan binds data, objective, precision, parallelism, optimizer, and target runtime. Datasets, tokenizers, code, configs, checkpoints, adapters, seeds, and evaluation sets form one versioned artifact graph. Put validation at the entry and result contracts, authorize immediately before side effects, make retries idempotent, and emit correlated evidence at every boundary.
+\textit{A framework answer is complete only when it explains mechanisms and ownership boundaries rather than repeating the product feature list.}
+\paragraph{VERY-HARD - TECH-VH-087} You selected Hugging Face Transformers for a production system. Design the failure experiment, telemetry, fallback, and migration plan that would disprove or defend that choice.
+\textbf{Answer.} Start from this primary risk: Trusting remote model code, mutable revisions, or default generation settings creates supply-chain and reproducibility risk. Reproduce it with representative scale, concurrency, data shape, filters or tool permissions, and dependency failures. Trace the path Hub artifact + tokenizer -> Model forward or generate -> Task output; define quality, saturation, tail-latency, cost, and recovery signals at each boundary. Predefine a degraded mode and rollback trigger, keep artifacts and schemas versioned, dual-run or shadow the strongest alternative (PyTorch), and prove that data and callers can migrate without an outage or authority expansion.
+\textit{A very-hard answer must make the selection falsifiable and include recovery, not merely defend a preferred product.}
+\subsubsection*{Sentence Transformers}
+\paragraph{MEDIUM - TECH-MCQ-088} Which workload is the strongest fit for Sentence Transformers?
+\begin{enumerate}[label=\Alph*.]
+\item You need a well-tested Python path to train or run text embedding and reranking models.
+\item Multilingual or advanced retrieval experiments need BGE models, rerankers, or trainable retrieval recipes.
+\item Teams want repeatable fine-tuning recipes without writing a custom training loop.
+\item A portable, non-LLM-specific inference artifact must run across languages and hardware targets.
+\end{enumerate}
+\textbf{Answer.} You need a well-tested Python path to train or run text embedding and reranking models.
+\textit{High-level bi-encoder, sparse encoder, and cross-encoder workflows for embeddings, semantic search, reranking, and fine-tuning. Compare it with FlagEmbedding, Transformers, Cohere Rerank; the deciding evidence is the actual workload and operational boundary.}
+\paragraph{HARD - TECH-HARD-088} Compare Sentence Transformers with FlagEmbedding, Transformers. What measurements would decide the choice?
+\textbf{Answer.} Choose Sentence Transformers when you need a well-tested Python path to train or run text embedding and reranking models. Avoid it when only a remote embedding API is allowed or a high-throughput server already owns preprocessing and batching. Build the same representative slice on the alternatives and compare quality, p95 and p99 latency, throughput, failure recovery, operability, security boundary, migration cost, and total cost. Preserve an exit path rather than selecting from feature lists.
+\textit{A hard answer converts product differences into measurable workload and operating constraints.}
+\paragraph{HARD - TECH-ARCH-088} Explain the internal structure and design of Sentence Transformers. Trace one request, identify the control plane and data plane, and place state, security, retries, and telemetry.
+\textbf{Answer.} Mental model: Think of Sentence Transformers as a embedding and reranker library between text pairs or corpus and vectors or relevance scores; its defining mechanism is encode or cross-score. Trace Text pairs or corpus -> Encode or cross-score -> Vectors or relevance scores. The training or compilation plan binds data, objective, precision, parallelism, optimizer, and target runtime. Datasets, tokenizers, code, configs, checkpoints, adapters, seeds, and evaluation sets form one versioned artifact graph. Put validation at the entry and result contracts, authorize immediately before side effects, make retries idempotent, and emit correlated evidence at every boundary.
+\textit{A framework answer is complete only when it explains mechanisms and ownership boundaries rather than repeating the product feature list.}
+\paragraph{VERY-HARD - TECH-VH-088} You selected Sentence Transformers for a production system. Design the failure experiment, telemetry, fallback, and migration plan that would disprove or defend that choice.
+\textbf{Answer.} Start from this primary risk: Using cosine similarity without matching prompts, normalization, pooling, language, and training objective silently degrades retrieval. Reproduce it with representative scale, concurrency, data shape, filters or tool permissions, and dependency failures. Trace the path Text pairs or corpus -> Encode or cross-score -> Vectors or relevance scores; define quality, saturation, tail-latency, cost, and recovery signals at each boundary. Predefine a degraded mode and rollback trigger, keep artifacts and schemas versioned, dual-run or shadow the strongest alternative (FlagEmbedding), and prove that data and callers can migrate without an outage or authority expansion.
+\textit{A very-hard answer must make the selection falsifiable and include recovery, not merely defend a preferred product.}
+\subsubsection*{Hugging Face PEFT}
+\paragraph{MEDIUM - TECH-MCQ-089} Which workload is the strongest fit for Hugging Face PEFT?
+\begin{enumerate}[label=\Alph*.]
+\item A portable, non-LLM-specific inference artifact must run across languages and hardware targets.
+\item You need reproducible post-training recipes integrated with Hugging Face models and datasets.
+\item Typed extraction is central and the team wants a thin layer over existing provider SDKs.
+\item Many task adapters must be trained or served while full-model fine-tuning is too expensive.
+\end{enumerate}
+\textbf{Answer.} Many task adapters must be trained or served while full-model fine-tuning is too expensive.
+\textit{Adapters such as LoRA reduce trainable parameters and storage while integrating with Transformers and common training systems. Compare it with full fine-tuning, prompt tuning, vendor fine-tuning APIs; the deciding evidence is the actual workload and operational boundary.}
+\paragraph{HARD - TECH-HARD-089} Compare Hugging Face PEFT with full fine-tuning, prompt tuning. What measurements would decide the choice?
+\textbf{Answer.} Choose Hugging Face PEFT when many task adapters must be trained or served while full-model fine-tuning is too expensive. Avoid it when the task needs broad weight changes, the base model is unstable, or adapter serving complexity exceeds savings. Build the same representative slice on the alternatives and compare quality, p95 and p99 latency, throughput, failure recovery, operability, security boundary, migration cost, and total cost. Preserve an exit path rather than selecting from feature lists.
+\textit{A hard answer converts product differences into measurable workload and operating constraints.}
+\paragraph{HARD - TECH-ARCH-089} Explain the internal structure and design of Hugging Face PEFT. Trace one request, identify the control plane and data plane, and place state, security, retries, and telemetry.
+\textbf{Answer.} Mental model: Think of Hugging Face PEFT as a parameter-efficient fine-tuning library between frozen base + adapter config and mergeable adapter artifact; its defining mechanism is train low-rank parameters. Trace Frozen base + adapter config -> Train low-rank parameters -> Mergeable adapter artifact. The training or compilation plan binds data, objective, precision, parallelism, optimizer, and target runtime. Datasets, tokenizers, code, configs, checkpoints, adapters, seeds, and evaluation sets form one versioned artifact graph. Put validation at the entry and result contracts, authorize immediately before side effects, make retries idempotent, and emit correlated evidence at every boundary.
+\textit{A framework answer is complete only when it explains mechanisms and ownership boundaries rather than repeating the product feature list.}
+\paragraph{VERY-HARD - TECH-VH-089} You selected Hugging Face PEFT for a production system. Design the failure experiment, telemetry, fallback, and migration plan that would disprove or defend that choice.
+\textbf{Answer.} Start from this primary risk: A small adapter can overfit, target the wrong modules, or become incompatible with the exact base revision. Reproduce it with representative scale, concurrency, data shape, filters or tool permissions, and dependency failures. Trace the path Frozen base + adapter config -> Train low-rank parameters -> Mergeable adapter artifact; define quality, saturation, tail-latency, cost, and recovery signals at each boundary. Predefine a degraded mode and rollback trigger, keep artifacts and schemas versioned, dual-run or shadow the strongest alternative (full fine-tuning), and prove that data and callers can migrate without an outage or authority expansion.
+\textit{A very-hard answer must make the selection falsifiable and include recovery, not merely defend a preferred product.}
+\subsubsection*{bitsandbytes}
+\paragraph{MEDIUM - TECH-MCQ-090} Which workload is the strongest fit for bitsandbytes?
+\begin{enumerate}[label=\Alph*.]
+\item You need reproducible post-training recipes integrated with Hugging Face models and datasets.
+\item GPU memory is the limiting resource and supported hardware plus measured quality make 8-bit or 4-bit execution useful.
+\item Functional numerical programs need compiler optimization, explicit sharding, or large accelerator training at scale.
+\item Single-node or modest GPU training needs strong speed and memory efficiency with common model families.
+\end{enumerate}
+\textbf{Answer.} GPU memory is the limiting resource and supported hardware plus measured quality make 8-bit or 4-bit execution useful.
+\textit{Low-bit linear layers, quantization paths, and memory-saving optimizers commonly used for loading and adapting large models. Compare it with GPTQModel, AWQ, TensorRT-LLM quantization; the deciding evidence is the actual workload and operational boundary.}
+\paragraph{HARD - TECH-HARD-090} Compare bitsandbytes with GPTQModel, AWQ. What measurements would decide the choice?
+\textbf{Answer.} Choose bitsandbytes when gPU memory is the limiting resource and supported hardware plus measured quality make 8-bit or 4-bit execution useful. Avoid it when unsupported accelerators, kernels, model layers, or accuracy requirements make the low-bit path fragile. Build the same representative slice on the alternatives and compare quality, p95 and p99 latency, throughput, failure recovery, operability, security boundary, migration cost, and total cost. Preserve an exit path rather than selecting from feature lists.
+\textit{A hard answer converts product differences into measurable workload and operating constraints.}
+\paragraph{HARD - TECH-ARCH-090} Explain the internal structure and design of bitsandbytes. Trace one request, identify the control plane and data plane, and place state, security, retries, and telemetry.
+\textbf{Answer.} Mental model: Think of bitsandbytes as a quantization and low-bit optimizer library between weights + quant config and reduced-memory model execution; its defining mechanism is low-bit kernels. Trace Weights + quant config -> Low-bit kernels -> Reduced-memory model execution. The training or compilation plan binds data, objective, precision, parallelism, optimizer, and target runtime. Datasets, tokenizers, code, configs, checkpoints, adapters, seeds, and evaluation sets form one versioned artifact graph. Put validation at the entry and result contracts, authorize immediately before side effects, make retries idempotent, and emit correlated evidence at every boundary.
+\textit{A framework answer is complete only when it explains mechanisms and ownership boundaries rather than repeating the product feature list.}
+\paragraph{VERY-HARD - TECH-VH-090} You selected bitsandbytes for a production system. Design the failure experiment, telemetry, fallback, and migration plan that would disprove or defend that choice.
+\textbf{Answer.} Start from this primary risk: A model may fit memory but run slower, lose quality on critical slices, or fail on unsupported kernels. Reproduce it with representative scale, concurrency, data shape, filters or tool permissions, and dependency failures. Trace the path Weights + quant config -> Low-bit kernels -> Reduced-memory model execution; define quality, saturation, tail-latency, cost, and recovery signals at each boundary. Predefine a degraded mode and rollback trigger, keep artifacts and schemas versioned, dual-run or shadow the strongest alternative (GPTQModel), and prove that data and callers can migrate without an outage or authority expansion.
+\textit{A very-hard answer must make the selection falsifiable and include recovery, not merely defend a preferred product.}
+\subsubsection*{ONNX Runtime}
+\paragraph{MEDIUM - TECH-MCQ-091} Which workload is the strongest fit for ONNX Runtime?
+\begin{enumerate}[label=\Alph*.]
+\item Single-node or modest GPU training needs strong speed and memory efficiency with common model families.
+\item A portable, non-LLM-specific inference artifact must run across languages and hardware targets.
+\item Typed extraction is central and the team wants a thin layer over existing provider SDKs.
+\item A managed multilingual or domain-capable reranker gives measured relevance lift on a bounded candidate set.
+\end{enumerate}
+\textbf{Answer.} A portable, non-LLM-specific inference artifact must run across languages and hardware targets.
+\textit{Executes ONNX graphs through pluggable hardware providers with graph optimization, quantization, and broad language bindings. Compare it with OpenVINO, TensorRT, PyTorch compile; the deciding evidence is the actual workload and operational boundary.}
+\paragraph{HARD - TECH-HARD-091} Compare ONNX Runtime with OpenVINO, TensorRT. What measurements would decide the choice?
+\textbf{Answer.} Choose ONNX Runtime when a portable, non-LLM-specific inference artifact must run across languages and hardware targets. Avoid it when the model cannot export correctly or needs an LLM-specialized token scheduler and KV-cache control plane. Build the same representative slice on the alternatives and compare quality, p95 and p99 latency, throughput, failure recovery, operability, security boundary, migration cost, and total cost. Preserve an exit path rather than selecting from feature lists.
+\textit{A hard answer converts product differences into measurable workload and operating constraints.}
+\paragraph{HARD - TECH-ARCH-091} Explain the internal structure and design of ONNX Runtime. Trace one request, identify the control plane and data plane, and place state, security, retries, and telemetry.
+\textbf{Answer.} Mental model: Think of ONNX Runtime as a cross-platform inference runtime between onnx graph + tensors and portable inference outputs; its defining mechanism is optimize + execution provider. Trace ONNX graph + tensors -> Optimize + execution provider -> Portable inference outputs. The training or compilation plan binds data, objective, precision, parallelism, optimizer, and target runtime. Datasets, tokenizers, code, configs, checkpoints, adapters, seeds, and evaluation sets form one versioned artifact graph. Put validation at the entry and result contracts, authorize immediately before side effects, make retries idempotent, and emit correlated evidence at every boundary.
+\textit{A framework answer is complete only when it explains mechanisms and ownership boundaries rather than repeating the product feature list.}
+\paragraph{VERY-HARD - TECH-VH-091} You selected ONNX Runtime for a production system. Design the failure experiment, telemetry, fallback, and migration plan that would disprove or defend that choice.
+\textbf{Answer.} Start from this primary risk: Exported operators, dynamic shapes, preprocessing, and provider fallback can change accuracy or performance. Reproduce it with representative scale, concurrency, data shape, filters or tool permissions, and dependency failures. Trace the path ONNX graph + tensors -> Optimize + execution provider -> Portable inference outputs; define quality, saturation, tail-latency, cost, and recovery signals at each boundary. Predefine a degraded mode and rollback trigger, keep artifacts and schemas versioned, dual-run or shadow the strongest alternative (OpenVINO), and prove that data and callers can migrate without an outage or authority expansion.
+\textit{A very-hard answer must make the selection falsifiable and include recovery, not merely defend a preferred product.}
+\subsubsection*{OpenVINO}
+\paragraph{MEDIUM - TECH-MCQ-092} Which workload is the strongest fit for OpenVINO?
+\begin{enumerate}[label=\Alph*.]
+\item You need reproducible access to pretrained architectures, tokenizers, checkpoints, and fine-tuning utilities.
+\item Deployment targets Intel CPUs, integrated GPUs, or NPUs and hardware-aware optimization matters.
+\item Custom model training, fine-tuning, research kernels, or ecosystem compatibility requires an expressive tensor framework.
+\item You need reproducible post-training recipes integrated with Hugging Face models and datasets.
+\end{enumerate}
+\textbf{Answer.} Deployment targets Intel CPUs, integrated GPUs, or NPUs and hardware-aware optimization matters.
+\textit{Model conversion, graph optimization, quantization, and inference across Intel hardware with runtime and model-server options. Compare it with ONNX Runtime, TensorRT, llama.cpp; the deciding evidence is the actual workload and operational boundary.}
+\paragraph{HARD - TECH-HARD-092} Compare OpenVINO with ONNX Runtime, TensorRT. What measurements would decide the choice?
+\textbf{Answer.} Choose OpenVINO when deployment targets Intel CPUs, integrated GPUs, or NPUs and hardware-aware optimization matters. Avoid it when a CUDA-first fleet or unsupported model operators dominate the workload. Build the same representative slice on the alternatives and compare quality, p95 and p99 latency, throughput, failure recovery, operability, security boundary, migration cost, and total cost. Preserve an exit path rather than selecting from feature lists.
+\textit{A hard answer converts product differences into measurable workload and operating constraints.}
+\paragraph{HARD - TECH-ARCH-092} Explain the internal structure and design of OpenVINO. Trace one request, identify the control plane and data plane, and place state, security, retries, and telemetry.
+\textbf{Answer.} Mental model: Think of OpenVINO as a intel inference toolkit between framework model and intel-targeted compiled model; its defining mechanism is convert + optimize. Trace Framework model -> Convert + optimize -> Intel-targeted compiled model. The training or compilation plan binds data, objective, precision, parallelism, optimizer, and target runtime. Datasets, tokenizers, code, configs, checkpoints, adapters, seeds, and evaluation sets form one versioned artifact graph. Put validation at the entry and result contracts, authorize immediately before side effects, make retries idempotent, and emit correlated evidence at every boundary.
+\textit{A framework answer is complete only when it explains mechanisms and ownership boundaries rather than repeating the product feature list.}
+\paragraph{VERY-HARD - TECH-VH-092} You selected OpenVINO for a production system. Design the failure experiment, telemetry, fallback, and migration plan that would disprove or defend that choice.
+\textbf{Answer.} Start from this primary risk: A converted model can change numerics or fall back to slower operations unless layer placement is inspected. Reproduce it with representative scale, concurrency, data shape, filters or tool permissions, and dependency failures. Trace the path Framework model -> Convert + optimize -> Intel-targeted compiled model; define quality, saturation, tail-latency, cost, and recovery signals at each boundary. Predefine a degraded mode and rollback trigger, keep artifacts and schemas versioned, dual-run or shadow the strongest alternative (ONNX Runtime), and prove that data and callers can migrate without an outage or authority expansion.
+\textit{A very-hard answer must make the selection falsifiable and include recovery, not merely defend a preferred product.}
+\subsubsection*{FlagEmbedding}
+\paragraph{MEDIUM - TECH-MCQ-093} Which workload is the strongest fit for FlagEmbedding?
+\begin{enumerate}[label=\Alph*.]
+\item A managed multilingual or domain-capable reranker gives measured relevance lift on a bounded candidate set.
+\item Multilingual or advanced retrieval experiments need BGE models, rerankers, or trainable retrieval recipes.
+\item Functional numerical programs need compiler optimization, explicit sharding, or large accelerator training at scale.
+\item You need a well-tested Python path to train or run text embedding and reranking models.
+\end{enumerate}
+\textbf{Answer.} Multilingual or advanced retrieval experiments need BGE models, rerankers, or trainable retrieval recipes.
+\textit{BGE-family dense, sparse, multi-vector embedding, reranking, and retrieval training utilities. Compare it with Sentence Transformers, Tevatron, Cohere Rerank; the deciding evidence is the actual workload and operational boundary.}
+\paragraph{HARD - TECH-HARD-093} Compare FlagEmbedding with Sentence Transformers, Tevatron. What measurements would decide the choice?
+\textbf{Answer.} Choose FlagEmbedding when multilingual or advanced retrieval experiments need BGE models, rerankers, or trainable retrieval recipes. Avoid it when a managed embedding API or Sentence Transformers abstraction already meets quality and operations needs. Build the same representative slice on the alternatives and compare quality, p95 and p99 latency, throughput, failure recovery, operability, security boundary, migration cost, and total cost. Preserve an exit path rather than selecting from feature lists.
+\textit{A hard answer converts product differences into measurable workload and operating constraints.}
+\paragraph{HARD - TECH-ARCH-093} Explain the internal structure and design of FlagEmbedding. Trace one request, identify the control plane and data plane, and place state, security, retries, and telemetry.
+\textbf{Answer.} Mental model: Think of FlagEmbedding as a retrieval model library between queries + corpus and ranked evidence; its defining mechanism is embed, retrieve, rerank. Trace Queries + corpus -> Embed, retrieve, rerank -> Ranked evidence. The training or compilation plan binds data, objective, precision, parallelism, optimizer, and target runtime. Datasets, tokenizers, code, configs, checkpoints, adapters, seeds, and evaluation sets form one versioned artifact graph. Put validation at the entry and result contracts, authorize immediately before side effects, make retries idempotent, and emit correlated evidence at every boundary.
+\textit{A framework answer is complete only when it explains mechanisms and ownership boundaries rather than repeating the product feature list.}
+\paragraph{VERY-HARD - TECH-VH-093} You selected FlagEmbedding for a production system. Design the failure experiment, telemetry, fallback, and migration plan that would disprove or defend that choice.
+\textbf{Answer.} Start from this primary risk: Comparing models with mismatched query instructions, pooling, normalization, or candidate sets produces invalid conclusions. Reproduce it with representative scale, concurrency, data shape, filters or tool permissions, and dependency failures. Trace the path Queries + corpus -> Embed, retrieve, rerank -> Ranked evidence; define quality, saturation, tail-latency, cost, and recovery signals at each boundary. Predefine a degraded mode and rollback trigger, keep artifacts and schemas versioned, dual-run or shadow the strongest alternative (Sentence Transformers), and prove that data and callers can migrate without an outage or authority expansion.
+\textit{A very-hard answer must make the selection falsifiable and include recovery, not merely defend a preferred product.}
+\subsubsection*{Instructor}
+\paragraph{MEDIUM - TECH-MCQ-094} Which workload is the strongest fit for Instructor?
+\begin{enumerate}[label=\Alph*.]
+\item You need reproducible access to pretrained architectures, tokenizers, checkpoints, and fine-tuning utilities.
+\item Functional numerical programs need compiler optimization, explicit sharding, or large accelerator training at scale.
+\item Typed extraction is central and the team wants a thin layer over existing provider SDKs.
+\item You need a well-tested Python path to train or run text embedding and reranking models.
+\end{enumerate}
+\textbf{Answer.} Typed extraction is central and the team wants a thin layer over existing provider SDKs.
+\textit{Adds schema-driven extraction, validation, retries, and streaming around model calls using typed application models. Compare it with PydanticAI, provider structured outputs, Guardrails AI; the deciding evidence is the actual workload and operational boundary.}
+\paragraph{HARD - TECH-HARD-094} Compare Instructor with PydanticAI, provider structured outputs. What measurements would decide the choice?
+\textbf{Answer.} Choose Instructor when typed extraction is central and the team wants a thin layer over existing provider SDKs. Avoid it when free-form dialogue, durable agent state, or deterministic business validation is the actual problem. Build the same representative slice on the alternatives and compare quality, p95 and p99 latency, throughput, failure recovery, operability, security boundary, migration cost, and total cost. Preserve an exit path rather than selecting from feature lists.
+\textit{A hard answer converts product differences into measurable workload and operating constraints.}
+\paragraph{HARD - TECH-ARCH-094} Explain the internal structure and design of Instructor. Trace one request, identify the control plane and data plane, and place state, security, retries, and telemetry.
+\textbf{Answer.} Mental model: Think of Instructor as a structured-output library between prompt + schema and typed application object; its defining mechanism is generate, validate, retry. Trace Prompt + schema -> Generate, validate, retry -> Typed application object. The training or compilation plan binds data, objective, precision, parallelism, optimizer, and target runtime. Datasets, tokenizers, code, configs, checkpoints, adapters, seeds, and evaluation sets form one versioned artifact graph. Put validation at the entry and result contracts, authorize immediately before side effects, make retries idempotent, and emit correlated evidence at every boundary.
+\textit{A framework answer is complete only when it explains mechanisms and ownership boundaries rather than repeating the product feature list.}
+\paragraph{VERY-HARD - TECH-VH-094} You selected Instructor for a production system. Design the failure experiment, telemetry, fallback, and migration plan that would disprove or defend that choice.
+\textbf{Answer.} Start from this primary risk: Schema-valid data can remain semantically false, and blind retries can amplify cost or attack payloads. Reproduce it with representative scale, concurrency, data shape, filters or tool permissions, and dependency failures. Trace the path Prompt + schema -> Generate, validate, retry -> Typed application object; define quality, saturation, tail-latency, cost, and recovery signals at each boundary. Predefine a degraded mode and rollback trigger, keep artifacts and schemas versioned, dual-run or shadow the strongest alternative (PydanticAI), and prove that data and callers can migrate without an outage or authority expansion.
+\textit{A very-hard answer must make the selection falsifiable and include recovery, not merely defend a preferred product.}
+\subsubsection*{Cohere Rerank}
+\paragraph{MEDIUM - TECH-MCQ-095} Which workload is the strongest fit for Cohere Rerank?
+\begin{enumerate}[label=\Alph*.]
+\item Teams want repeatable fine-tuning recipes without writing a custom training loop.
+\item You need a well-tested Python path to train or run text embedding and reranking models.
+\item Multilingual or advanced retrieval experiments need BGE models, rerankers, or trainable retrieval recipes.
+\item A managed multilingual or domain-capable reranker gives measured relevance lift on a bounded candidate set.
+\end{enumerate}
+\textbf{Answer.} A managed multilingual or domain-capable reranker gives measured relevance lift on a bounded candidate set.
+\textit{Jointly scores a query with candidate documents to improve ordering after a cheaper first-stage retriever. Compare it with Sentence Transformers CrossEncoder, FlagEmbedding rerankers, mixedbread rerank; the deciding evidence is the actual workload and operational boundary.}
+\paragraph{HARD - TECH-HARD-095} Compare Cohere Rerank with Sentence Transformers CrossEncoder, FlagEmbedding rerankers. What measurements would decide the choice?
+\textbf{Answer.} Choose Cohere Rerank when a managed multilingual or domain-capable reranker gives measured relevance lift on a bounded candidate set. Avoid it when data cannot leave the trust boundary, latency is too tight, or an open local reranker performs adequately. Build the same representative slice on the alternatives and compare quality, p95 and p99 latency, throughput, failure recovery, operability, security boundary, migration cost, and total cost. Preserve an exit path rather than selecting from feature lists.
+\textit{A hard answer converts product differences into measurable workload and operating constraints.}
+\paragraph{HARD - TECH-ARCH-095} Explain the internal structure and design of Cohere Rerank. Trace one request, identify the control plane and data plane, and place state, security, retries, and telemetry.
+\textbf{Answer.} Mental model: Think of Cohere Rerank as a managed cross-encoder reranking api between query + candidates and reranked candidate list; its defining mechanism is joint relevance scoring. Trace Query + candidates -> Joint relevance scoring -> Reranked candidate list. The training or compilation plan binds data, objective, precision, parallelism, optimizer, and target runtime. Datasets, tokenizers, code, configs, checkpoints, adapters, seeds, and evaluation sets form one versioned artifact graph. Put validation at the entry and result contracts, authorize immediately before side effects, make retries idempotent, and emit correlated evidence at every boundary.
+\textit{A framework answer is complete only when it explains mechanisms and ownership boundaries rather than repeating the product feature list.}
+\paragraph{VERY-HARD - TECH-VH-095} You selected Cohere Rerank for a production system. Design the failure experiment, telemetry, fallback, and migration plan that would disprove or defend that choice.
+\textbf{Answer.} Start from this primary risk: Sending too many long candidates increases latency and cost, while truncation or weak first-stage recall caps any benefit. Reproduce it with representative scale, concurrency, data shape, filters or tool permissions, and dependency failures. Trace the path Query + candidates -> Joint relevance scoring -> Reranked candidate list; define quality, saturation, tail-latency, cost, and recovery signals at each boundary. Predefine a degraded mode and rollback trigger, keep artifacts and schemas versioned, dual-run or shadow the strongest alternative (Sentence Transformers CrossEncoder), and prove that data and callers can migrate without an outage or authority expansion.
+\textit{A very-hard answer must make the selection falsifiable and include recovery, not merely defend a preferred product.}
+\subsubsection*{Hugging Face Accelerate}
+\paragraph{MEDIUM - TECH-MCQ-127} Which workload is the strongest fit for Hugging Face Accelerate?
+\begin{enumerate}[label=\Alph*.]
+\item Existing PyTorch code must scale across devices with minimal structural change.
+\item Many task adapters must be trained or served while full-model fine-tuning is too expensive.
+\item Multilingual or advanced retrieval experiments need BGE models, rerankers, or trainable retrieval recipes.
+\item Custom model training, fine-tuning, research kernels, or ecosystem compatibility requires an expressive tensor framework.
+\end{enumerate}
+\textbf{Answer.} Existing PyTorch code must scale across devices with minimal structural change.
+\textit{Lightweight abstraction for device placement, mixed precision, distributed launch, checkpointing, and big-model inference. Compare it with DeepSpeed, PyTorch Distributed, Lightning Fabric; the deciding evidence is the actual workload and operational boundary.}
+\paragraph{HARD - TECH-HARD-127} Compare Hugging Face Accelerate with DeepSpeed, PyTorch Distributed. What measurements would decide the choice?
+\textbf{Answer.} Choose Hugging Face Accelerate when existing PyTorch code must scale across devices with minimal structural change. Avoid it when you need a full trainer, serving runtime, or highly specialized parallelism implementation. Build the same representative slice on the alternatives and compare quality, p95 and p99 latency, throughput, failure recovery, operability, security boundary, migration cost, and total cost. Preserve an exit path rather than selecting from feature lists.
+\textit{A hard answer converts product differences into measurable workload and operating constraints.}
+\paragraph{HARD - TECH-ARCH-127} Explain the internal structure and design of Hugging Face Accelerate. Trace one request, identify the control plane and data plane, and place state, security, retries, and telemetry.
+\textbf{Answer.} Mental model: Think of Hugging Face Accelerate as a distributed training and inference helper between pytorch program + config and distributed training result; its defining mechanism is accelerator placement + launch. Trace PyTorch program + config -> Accelerator placement + launch -> Distributed training result. The training or compilation plan binds data, objective, precision, parallelism, optimizer, and target runtime. Datasets, tokenizers, code, configs, checkpoints, adapters, seeds, and evaluation sets form one versioned artifact graph. Put validation at the entry and result contracts, authorize immediately before side effects, make retries idempotent, and emit correlated evidence at every boundary.
+\textit{A framework answer is complete only when it explains mechanisms and ownership boundaries rather than repeating the product feature list.}
+\paragraph{VERY-HARD - TECH-VH-127} You selected Hugging Face Accelerate for a production system. Design the failure experiment, telemetry, fallback, and migration plan that would disprove or defend that choice.
+\textbf{Answer.} Start from this primary risk: A simple API can hide topology, synchronization, memory, and checkpoint bottlenecks that still require measurement. Reproduce it with representative scale, concurrency, data shape, filters or tool permissions, and dependency failures. Trace the path PyTorch program + config -> Accelerator placement + launch -> Distributed training result; define quality, saturation, tail-latency, cost, and recovery signals at each boundary. Predefine a degraded mode and rollback trigger, keep artifacts and schemas versioned, dual-run or shadow the strongest alternative (DeepSpeed), and prove that data and callers can migrate without an outage or authority expansion.
+\textit{A very-hard answer must make the selection falsifiable and include recovery, not merely defend a preferred product.}
+\subsubsection*{DeepSpeed}
+\paragraph{MEDIUM - TECH-MCQ-128} Which workload is the strongest fit for DeepSpeed?
+\begin{enumerate}[label=\Alph*.]
+\item You need a well-tested Python path to train or run text embedding and reranking models.
+\item Custom model training, fine-tuning, research kernels, or ecosystem compatibility requires an expressive tensor framework.
+\item You need reproducible post-training recipes integrated with Hugging Face models and datasets.
+\item Large models exceed a single device and the team can tune distributed optimizer, communication, and checkpoint behavior.
+\end{enumerate}
+\textbf{Answer.} Large models exceed a single device and the team can tune distributed optimizer, communication, and checkpoint behavior.
+\textit{Training and inference optimizations including ZeRO memory partitioning, mixed precision, parallelism, offload, and custom kernels. Compare it with FSDP, Megatron Core, Accelerate; the deciding evidence is the actual workload and operational boundary.}
+\paragraph{HARD - TECH-HARD-128} Compare DeepSpeed with FSDP, Megatron Core. What measurements would decide the choice?
+\textbf{Answer.} Choose DeepSpeed when large models exceed a single device and the team can tune distributed optimizer, communication, and checkpoint behavior. Avoid it when small models, heterogeneous portability, or minimal cluster complexity is more important. Build the same representative slice on the alternatives and compare quality, p95 and p99 latency, throughput, failure recovery, operability, security boundary, migration cost, and total cost. Preserve an exit path rather than selecting from feature lists.
+\textit{A hard answer converts product differences into measurable workload and operating constraints.}
+\paragraph{HARD - TECH-ARCH-128} Explain the internal structure and design of DeepSpeed. Trace one request, identify the control plane and data plane, and place state, security, retries, and telemetry.
+\textbf{Answer.} Mental model: Think of DeepSpeed as a distributed model optimization library between model + cluster topology and sharded training artifacts; its defining mechanism is zero and parallel runtime. Trace Model + cluster topology -> ZeRO and parallel runtime -> Sharded training artifacts. The training or compilation plan binds data, objective, precision, parallelism, optimizer, and target runtime. Datasets, tokenizers, code, configs, checkpoints, adapters, seeds, and evaluation sets form one versioned artifact graph. Put validation at the entry and result contracts, authorize immediately before side effects, make retries idempotent, and emit correlated evidence at every boundary.
+\textit{A framework answer is complete only when it explains mechanisms and ownership boundaries rather than repeating the product feature list.}
+\paragraph{VERY-HARD - TECH-VH-128} You selected DeepSpeed for a production system. Design the failure experiment, telemetry, fallback, and migration plan that would disprove or defend that choice.
+\textbf{Answer.} Start from this primary risk: Configuration can shift bottlenecks into network, CPU offload, or checkpoint recovery while appearing to solve GPU memory. Reproduce it with representative scale, concurrency, data shape, filters or tool permissions, and dependency failures. Trace the path Model + cluster topology -> ZeRO and parallel runtime -> Sharded training artifacts; define quality, saturation, tail-latency, cost, and recovery signals at each boundary. Predefine a degraded mode and rollback trigger, keep artifacts and schemas versioned, dual-run or shadow the strongest alternative (FSDP), and prove that data and callers can migrate without an outage or authority expansion.
+\textit{A very-hard answer must make the selection falsifiable and include recovery, not merely defend a preferred product.}
+\subsubsection*{Hugging Face TRL}
+\paragraph{MEDIUM - TECH-MCQ-129} Which workload is the strongest fit for Hugging Face TRL?
+\begin{enumerate}[label=\Alph*.]
+\item Typed extraction is central and the team wants a thin layer over existing provider SDKs.
+\item A portable, non-LLM-specific inference artifact must run across languages and hardware targets.
+\item You need reproducible post-training recipes integrated with Hugging Face models and datasets.
+\item A managed multilingual or domain-capable reranker gives measured relevance lift on a bounded candidate set.
+\end{enumerate}
+\textbf{Answer.} You need reproducible post-training recipes integrated with Hugging Face models and datasets.
+\textit{Trainers and utilities for supervised fine-tuning, preference optimization, reward modeling, and reinforcement-learning-style post-training. Compare it with Axolotl, LLaMA Factory, custom Transformers trainer; the deciding evidence is the actual workload and operational boundary.}
+\paragraph{HARD - TECH-HARD-129} Compare Hugging Face TRL with Axolotl, LLaMA Factory. What measurements would decide the choice?
+\textbf{Answer.} Choose Hugging Face TRL when you need reproducible post-training recipes integrated with Hugging Face models and datasets. Avoid it when the requirement is base-model pretraining, low-level distributed kernels, or online production serving. Build the same representative slice on the alternatives and compare quality, p95 and p99 latency, throughput, failure recovery, operability, security boundary, migration cost, and total cost. Preserve an exit path rather than selecting from feature lists.
+\textit{A hard answer converts product differences into measurable workload and operating constraints.}
+\paragraph{HARD - TECH-ARCH-129} Explain the internal structure and design of Hugging Face TRL. Trace one request, identify the control plane and data plane, and place state, security, retries, and telemetry.
+\textbf{Answer.} Mental model: Think of Hugging Face TRL as a post-training library between model + preference data and adapted checkpoint; its defining mechanism is post-training objective + trainer. Trace Model + preference data -> Post-training objective + trainer -> Adapted checkpoint. The training or compilation plan binds data, objective, precision, parallelism, optimizer, and target runtime. Datasets, tokenizers, code, configs, checkpoints, adapters, seeds, and evaluation sets form one versioned artifact graph. Put validation at the entry and result contracts, authorize immediately before side effects, make retries idempotent, and emit correlated evidence at every boundary.
+\textit{A framework answer is complete only when it explains mechanisms and ownership boundaries rather than repeating the product feature list.}
+\paragraph{VERY-HARD - TECH-VH-129} You selected Hugging Face TRL for a production system. Design the failure experiment, telemetry, fallback, and migration plan that would disprove or defend that choice.
+\textbf{Answer.} Start from this primary risk: Reward or preference data leakage and narrow evaluators can optimize style while degrading factual or safety behavior. Reproduce it with representative scale, concurrency, data shape, filters or tool permissions, and dependency failures. Trace the path Model + preference data -> Post-training objective + trainer -> Adapted checkpoint; define quality, saturation, tail-latency, cost, and recovery signals at each boundary. Predefine a degraded mode and rollback trigger, keep artifacts and schemas versioned, dual-run or shadow the strongest alternative (Axolotl), and prove that data and callers can migrate without an outage or authority expansion.
+\textit{A very-hard answer must make the selection falsifiable and include recovery, not merely defend a preferred product.}
+\subsubsection*{Axolotl}
+\paragraph{MEDIUM - TECH-MCQ-130} Which workload is the strongest fit for Axolotl?
+\begin{enumerate}[label=\Alph*.]
+\item Teams want repeatable fine-tuning recipes without writing a custom training loop.
+\item Deployment targets Intel CPUs, integrated GPUs, or NPUs and hardware-aware optimization matters.
+\item You need reproducible post-training recipes integrated with Hugging Face models and datasets.
+\item Functional numerical programs need compiler optimization, explicit sharding, or large accelerator training at scale.
+\end{enumerate}
+\textbf{Answer.} Teams want repeatable fine-tuning recipes without writing a custom training loop.
+\textit{Configuration-driven fine-tuning across model families with LoRA, quantization, distributed backends, datasets, and evaluation hooks. Compare it with TRL, LLaMA Factory, Unsloth; the deciding evidence is the actual workload and operational boundary.}
+\paragraph{HARD - TECH-HARD-130} Compare Axolotl with TRL, LLaMA Factory. What measurements would decide the choice?
+\textbf{Answer.} Choose Axolotl when teams want repeatable fine-tuning recipes without writing a custom training loop. Avoid it when deep research requires low-level algorithm changes or the target architecture is unsupported. Build the same representative slice on the alternatives and compare quality, p95 and p99 latency, throughput, failure recovery, operability, security boundary, migration cost, and total cost. Preserve an exit path rather than selecting from feature lists.
+\textit{A hard answer converts product differences into measurable workload and operating constraints.}
+\paragraph{HARD - TECH-ARCH-130} Explain the internal structure and design of Axolotl. Trace one request, identify the control plane and data plane, and place state, security, retries, and telemetry.
+\textbf{Answer.} Mental model: Think of Axolotl as a llm fine-tuning framework between dataset + yaml config and checkpoint + metrics; its defining mechanism is training launcher + adapters. Trace Dataset + YAML config -> Training launcher + adapters -> Checkpoint + metrics. The training or compilation plan binds data, objective, precision, parallelism, optimizer, and target runtime. Datasets, tokenizers, code, configs, checkpoints, adapters, seeds, and evaluation sets form one versioned artifact graph. Put validation at the entry and result contracts, authorize immediately before side effects, make retries idempotent, and emit correlated evidence at every boundary.
+\textit{A framework answer is complete only when it explains mechanisms and ownership boundaries rather than repeating the product feature list.}
+\paragraph{VERY-HARD - TECH-VH-130} You selected Axolotl for a production system. Design the failure experiment, telemetry, fallback, and migration plan that would disprove or defend that choice.
+\textbf{Answer.} Start from this primary risk: A copied YAML can train successfully with the wrong chat template, packing, masking, or evaluation split. Reproduce it with representative scale, concurrency, data shape, filters or tool permissions, and dependency failures. Trace the path Dataset + YAML config -> Training launcher + adapters -> Checkpoint + metrics; define quality, saturation, tail-latency, cost, and recovery signals at each boundary. Predefine a degraded mode and rollback trigger, keep artifacts and schemas versioned, dual-run or shadow the strongest alternative (TRL), and prove that data and callers can migrate without an outage or authority expansion.
+\textit{A very-hard answer must make the selection falsifiable and include recovery, not merely defend a preferred product.}
+\subsubsection*{Unsloth}
+\paragraph{MEDIUM - TECH-MCQ-131} Which workload is the strongest fit for Unsloth?
+\begin{enumerate}[label=\Alph*.]
+\item You need reproducible access to pretrained architectures, tokenizers, checkpoints, and fine-tuning utilities.
+\item Teams want repeatable fine-tuning recipes without writing a custom training loop.
+\item Single-node or modest GPU training needs strong speed and memory efficiency with common model families.
+\item Custom model training, fine-tuning, research kernels, or ecosystem compatibility requires an expressive tensor framework.
+\end{enumerate}
+\textbf{Answer.} Single-node or modest GPU training needs strong speed and memory efficiency with common model families.
+\textit{Optimized kernels and memory-efficient workflows for fine-tuning and reinforcement learning on supported open models. Compare it with TRL, Axolotl, PEFT; the deciding evidence is the actual workload and operational boundary.}
+\paragraph{HARD - TECH-HARD-131} Compare Unsloth with TRL, Axolotl. What measurements would decide the choice?
+\textbf{Answer.} Choose Unsloth when single-node or modest GPU training needs strong speed and memory efficiency with common model families. Avoid it when you require arbitrary architectures, maximum backend portability, or full control of kernel implementation. Build the same representative slice on the alternatives and compare quality, p95 and p99 latency, throughput, failure recovery, operability, security boundary, migration cost, and total cost. Preserve an exit path rather than selecting from feature lists.
+\textit{A hard answer converts product differences into measurable workload and operating constraints.}
+\paragraph{HARD - TECH-ARCH-131} Explain the internal structure and design of Unsloth. Trace one request, identify the control plane and data plane, and place state, security, retries, and telemetry.
+\textbf{Answer.} Mental model: Think of Unsloth as a efficient fine-tuning library between model + dataset and adapter or merged model; its defining mechanism is optimized kernels + peft trainer. Trace Model + dataset -> Optimized kernels + PEFT trainer -> Adapter or merged model. The training or compilation plan binds data, objective, precision, parallelism, optimizer, and target runtime. Datasets, tokenizers, code, configs, checkpoints, adapters, seeds, and evaluation sets form one versioned artifact graph. Put validation at the entry and result contracts, authorize immediately before side effects, make retries idempotent, and emit correlated evidence at every boundary.
+\textit{A framework answer is complete only when it explains mechanisms and ownership boundaries rather than repeating the product feature list.}
+\paragraph{VERY-HARD - TECH-VH-131} You selected Unsloth for a production system. Design the failure experiment, telemetry, fallback, and migration plan that would disprove or defend that choice.
+\textbf{Answer.} Start from this primary risk: Speed claims may not transfer across sequence lengths, quantization, GPUs, or unsupported model revisions. Reproduce it with representative scale, concurrency, data shape, filters or tool permissions, and dependency failures. Trace the path Model + dataset -> Optimized kernels + PEFT trainer -> Adapter or merged model; define quality, saturation, tail-latency, cost, and recovery signals at each boundary. Predefine a degraded mode and rollback trigger, keep artifacts and schemas versioned, dual-run or shadow the strongest alternative (TRL), and prove that data and callers can migrate without an outage or authority expansion.
+\textit{A very-hard answer must make the selection falsifiable and include recovery, not merely defend a preferred product.}

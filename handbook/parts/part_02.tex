@@ -1,36 +1,3 @@
-\begin{center}\begin{tikzpicture}[node distance=8mm,tech/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=42mm,minimum height=12mm,font=\small},arr/.style={-{Stealth},thick,draw=blue}]
-\node[tech](t0){Token request + cache hints};
-\node[tech,right=of t0](t1){Router + distributed inference workers};
-\node[tech,right=of t1](t2){Stream under fleet SLO};
-\draw[arr](t0)--(t1);\draw[arr](t1)--(t2);
-\end{tikzpicture}\end{center}
-\paragraph{Framework structure and design.}
-\begin{tabularx}{\linewidth}{>{\bfseries\color{blue}}p{34mm}X}
-Data plane & Token request + cache hints -> Router + distributed inference workers -> Stream under fleet SLO\\
-Control plane & Admission, routing, batching, scheduling, cache placement, parallelism, and autoscaling turn requests into accelerator work.\\
-State and trust boundary & Queues, KV cache, model revisions, adapters, quotas, routing policy, and request identity must survive or fail predictably.\\
-\end{tabularx}
-\paragraph{Five-part tutorial.}
-\begin{description}[leftmargin=38mm,style=nextline]
-\item[1. Problem and abstraction] Open serving stack for intelligent routing, KV-cache-aware scheduling, disaggregated prefill and decode, and distributed inference. Think of llm-d as a kubernetes distributed llm serving stack between token request + cache hints and stream under fleet slo; its defining mechanism is router + distributed inference workers.
-\item[2. Structure and execution] Follow the data path Token request + cache hints → Router + distributed inference workers → Stream under fleet SLO. Admission, routing, batching, scheduling, cache placement, parallelism, and autoscaling turn requests into accelerator work.
-\item[3. State, security, and operations] Queues, KV cache, model revisions, adapters, quotas, routing policy, and request identity must survive or fail predictably.
-\item[4. Selection decision] Choose it when a Kubernetes fleet needs production routing and scale above individual vLLM or SGLang servers. Reject it when a single node or managed endpoint meets the SLO with much less control-plane complexity. Compare the same representative workload with KServe LLMInferenceService, NVIDIA Dynamo, Ray Serve.
-\item[5. Production proof] Start with the failure hypothesis: Router, cache, scheduler, and engine version skew can erase expected locality or make failover unsafe. Replay real prompt and output lengths at realistic concurrency; report time to first token, inter-token latency, p95 and p99 latency, throughput, memory, errors, and cost.
-\end{description}
-\begin{tabularx}{\linewidth}{>{\bfseries\color{blue}}p{27mm}X}
-Deployment & Kubernetes with vLLM or compatible engines\\
-Choose when & A Kubernetes fleet needs production routing and scale above individual vLLM or SGLang servers.\\
-Reject when & A single node or managed endpoint meets the SLO with much less control-plane complexity.\\
-Primary failure & Router, cache, scheduler, and engine version skew can erase expected locality or make failover unsafe.\\
-Compare with & KServe LLMInferenceService; NVIDIA Dynamo; Ray Serve\\
-\end{tabularx}
-\paragraph{Minimal use in Go / Python / Kubernetes.}
-\begin{Verbatim}[fontsize=\scriptsize]
-kubectl apply -k github.com/llm-d/llm-d
-kubectl get pods
-\end{Verbatim}
-\textbf{Primary sources.} \href{https://llm-d.ai/docs/dev}{llm-d official documentation} \quad \href{https://llm-d.ai/docs/architecture}{llm-d architecture} \quad \href{https://kserve.github.io/website/docs/model-serving/generative-inference/llmisvc/llmisvc-overview}{KServe LLMInferenceService}.
 \subsubsection{NVIDIA Dynamo}
 \noindent\colorbox{navy}{\parbox[c][10mm][c]{10mm}{\centering\textcolor{white}{\Large\bfseries ND}}}\quad \badge{Distributed inference serving framework} \quad \textbf{Languages:} Python / Rust / CUDA
 \par\smallskip NVIDIA framework for disaggregated serving, smart routing, KV-cache management, worker coordination, and high-performance inference backends.
@@ -2946,3 +2913,53 @@ from azure.ai.contentsafety import ContentSafetyClient
 \begin{tabularx}{\linewidth}{>{\bfseries\color{blue}}p{34mm}X}
 Data plane & Prompt or response -> Managed security screening -> Sanitized content + findings\\
 Control plane & Layer deterministic validation and authorization with calibrated model-based detectors at the boundary each can actually defend.\\
+State and trust boundary & Trusted identity, resource, consent, policy version, detector version, redacted evidence, and override decisions belong outside model text.\\
+\end{tabularx}
+\paragraph{Five-part tutorial.}
+\begin{description}[leftmargin=38mm,style=nextline]
+\item[1. Problem and abstraction] Screens prompts and responses for prompt injection, sensitive data, malicious URLs, and content-safety risks around model applications. Think of Google Cloud Model Armor as a managed ai security service between prompt or response and sanitized content + findings; its defining mechanism is managed security screening.
+\item[2. Structure and execution] Follow the data path Prompt or response → Managed security screening → Sanitized content + findings. Layer deterministic validation and authorization with calibrated model-based detectors at the boundary each can actually defend.
+\item[3. State, security, and operations] Trusted identity, resource, consent, policy version, detector version, redacted evidence, and override decisions belong outside model text.
+\item[4. Selection decision] Choose it when google Cloud applications need centralized managed inspection across supported model and agent paths. Reject it when a local open-source control or business authorization is the actual requirement. Compare the same representative workload with Bedrock Guardrails, Azure AI Content Safety, LLM Guard.
+\item[5. Production proof] Start with the failure hypothesis: Detection coverage, false positives, region, and latency must be tested, and screening is not authorization. Test attack success, false positives, false negatives, over-refusal, language and cohort slices, latency, bypass chains, and rollback.
+\end{description}
+\begin{tabularx}{\linewidth}{>{\bfseries\color{blue}}p{27mm}X}
+Deployment & Google Cloud managed service\\
+Choose when & Google Cloud applications need centralized managed inspection across supported model and agent paths.\\
+Reject when & A local open-source control or business authorization is the actual requirement.\\
+Primary failure & Detection coverage, false positives, region, and latency must be tested, and screening is not authorization.\\
+Compare with & Bedrock Guardrails; Azure AI Content Safety; LLM Guard\\
+\end{tabularx}
+\paragraph{Minimal use in REST / client SDKs.}
+\begin{Verbatim}[fontsize=\scriptsize]
+gcloud model-armor templates create TEMPLATE
+gcloud model-armor templates sanitize-user-prompt TEMPLATE
+\end{Verbatim}
+\textbf{Primary sources.} \href{https://cloud.google.com/security-command-center/docs/model-armor-overview}{Google Cloud Model Armor official documentation}.
+\clearpage\subsection{07. MCP and tool connectivity}
+\textbf{Selection question.} Where is authority enforced?
+\begin{center}\begin{tikzpicture}[tech/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=42mm,minimum height=12mm,font=\small},arr/.style={-{Stealth},thick,draw=blue},node distance=8mm]
+\node[tech](c0){Model intent + capability};
+\node[tech,right=of c0](c1){Discover, authorize, invoke};
+\node[tech,right=of c1](c2){Typed tool result};
+\draw[arr](c0)--(c1);\draw[arr](c1)--(c2);
+\end{tikzpicture}\end{center}
+\paragraph{Comparison matrix.}
+\begin{longtable}{@{}p{20mm}p{22mm}p{26mm}p{46mm}p{46mm}@{}}
+\toprule\textbf{Tool} & \textbf{Kind} & \textbf{Language / boundary} & \textbf{Choose when} & \textbf{Reject when}\\\midrule\endhead
+Model Context Protocol & Open protocol & JSON-RPC, TypeScript, Python, C\#, Java and more; Local stdio or remote HTTP transports & Independent applications and capability providers need a standard integration boundary with explicit host control. & A private in-process function call is simpler, or the integration cannot implement authentication and authorization safely.\\
+Official MCP SDKs & Protocol SDKs & TypeScript, Python, C\#, Java, Kotlin, Swift, Rust, Go, Ruby, PHP; Embedded in MCP clients and servers & You are implementing an MCP client or server and want protocol-correct primitives instead of hand-written JSON-RPC. & You only consume a stable product SDK and do not need MCP interoperability.\\
+FastMCP & MCP framework & Python, TypeScript; Library; local or remote server & Developers need a concise typed API for production Python or TypeScript MCP services. & You require only low-level protocol control or an existing framework already owns routing and auth.\\
+MCP Inspector & Developer inspection tool & TypeScript; Local web UI and proxy & You are developing or debugging a server and need to see exact schemas, messages, and responses. & You need production monitoring, authorization, or a security boundary.\\
+Docker MCP Toolkit and Gateway & Tool catalog and gateway & Go, Docker configuration; Docker Desktop and containerized gateway & Desktop or enterprise teams want curated containerized servers and centralized client configuration. & Container trust, image provenance, or Docker Desktop availability cannot be accepted.\\
+Smithery & MCP registry and deployment platform & TypeScript, Python, CLI; Hosted registry and remote server infrastructure & Teams need to find and connect interoperable servers quickly with hosted deployment options. & Strict private catalogs, on-premises execution, or bespoke authorization dominate.\\
+Composio & Managed tool integration platform & Python, TypeScript, REST; Managed service and SDKs & Many SaaS integrations and per-user OAuth connections must be delivered quickly. & On-premises secrets, custom APIs, or avoiding an external auth and tool data plane is mandatory.\\
+Arcade & Agent tool and authorization platform & Python, TypeScript, REST; Managed or gateway-oriented platform & Agents need end-user authorization and a curated tool layer without rebuilding OAuth for every integration. & The organization requires fully self-hosted bespoke connectors or direct provider APIs only.\\
+Official MCP Registry & MCP metadata registry & REST, JSON; Hosted registry API with ecosystem clients & Clients or catalogs need a common source of server identity and distribution metadata. & You need runtime authorization, trust decisions, or private internal discovery by itself.\\
+GitHub MCP Server & Repository tool server & Go, Docker; Local stdio, containers, or remote GitHub service & Agents need typed GitHub operations with token scopes and explicit toolsets. & Direct REST or GraphQL clients are simpler, or broad repository mutation is too risky.\\
+AWS MCP Servers & Cloud service MCP server collection & Python, TypeScript; Local or remote servers for AWS services & Agents need typed access to selected AWS services under existing IAM and audit controls. & Direct SDK calls are clearer or a centralized gateway must own every tool schema and policy.\\
+MCP Toolbox for Databases & Database tool server & Go, YAML, client SDKs; Local binary, container, or cloud deployment & Agents need governed, reusable database operations rather than arbitrary SQL generation. & A direct application data layer or unrestricted analyst SQL is the actual boundary.\\
+Azure MCP Server & Cloud service MCP server & TypeScript, Docker; Local stdio or container with Azure identity & Agents need governed access to Azure resources through familiar identity and service-specific tools. & Direct Azure SDKs are clearer or remote shared tool execution violates the trust boundary.\\
+Zapier MCP & Managed application tool gateway & MCP, REST; Managed remote MCP server & A user wants quick authenticated access to many SaaS actions without building each OAuth connector. & High-impact actions, self-hosting, or deeply customized schemas require an owned integration service.\\
+mcp-use & MCP client and agent library & Python, TypeScript; Library and optional cloud services & You need a focused programmatic MCP client layer across models and server transports. & A framework already supplies adequate MCP integration or an enterprise gateway must mediate every call.\\
+\bottomrule\end{longtable}

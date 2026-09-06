@@ -3081,3 +3081,36 @@ az ml online-deployment create -f deployment.yml
 \noindent\colorbox{navy}{\parbox[c][10mm][c]{10mm}{\centering\textcolor{white}{\Large\bfseries L}}}\quad \badge{Kubernetes distributed LLM serving stack} \quad \textbf{Languages:} Go / Python / Kubernetes
 \par\smallskip Open serving stack for intelligent routing, KV-cache-aware scheduling, disaggregated prefill and decode, and distributed inference.
 \par\smallskip\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Mental model.} Think of llm-d as a kubernetes distributed llm serving stack between token request + cache hints and stream under fleet slo; its defining mechanism is router + distributed inference workers.}}
+\begin{center}\begin{tikzpicture}[node distance=8mm,tech/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=42mm,minimum height=12mm,font=\small},arr/.style={-{Stealth},thick,draw=blue}]
+\node[tech](t0){Token request + cache hints};
+\node[tech,right=of t0](t1){Router + distributed inference workers};
+\node[tech,right=of t1](t2){Stream under fleet SLO};
+\draw[arr](t0)--(t1);\draw[arr](t1)--(t2);
+\end{tikzpicture}\end{center}
+\paragraph{Framework structure and design.}
+\begin{tabularx}{\linewidth}{>{\bfseries\color{blue}}p{34mm}X}
+Data plane & Token request + cache hints -> Router + distributed inference workers -> Stream under fleet SLO\\
+Control plane & Admission, routing, batching, scheduling, cache placement, parallelism, and autoscaling turn requests into accelerator work.\\
+State and trust boundary & Queues, KV cache, model revisions, adapters, quotas, routing policy, and request identity must survive or fail predictably.\\
+\end{tabularx}
+\paragraph{Five-part tutorial.}
+\begin{description}[leftmargin=38mm,style=nextline]
+\item[1. Problem and abstraction] Open serving stack for intelligent routing, KV-cache-aware scheduling, disaggregated prefill and decode, and distributed inference. Think of llm-d as a kubernetes distributed llm serving stack between token request + cache hints and stream under fleet slo; its defining mechanism is router + distributed inference workers.
+\item[2. Structure and execution] Follow the data path Token request + cache hints → Router + distributed inference workers → Stream under fleet SLO. Admission, routing, batching, scheduling, cache placement, parallelism, and autoscaling turn requests into accelerator work.
+\item[3. State, security, and operations] Queues, KV cache, model revisions, adapters, quotas, routing policy, and request identity must survive or fail predictably.
+\item[4. Selection decision] Choose it when a Kubernetes fleet needs production routing and scale above individual vLLM or SGLang servers. Reject it when a single node or managed endpoint meets the SLO with much less control-plane complexity. Compare the same representative workload with KServe LLMInferenceService, NVIDIA Dynamo, Ray Serve.
+\item[5. Production proof] Start with the failure hypothesis: Router, cache, scheduler, and engine version skew can erase expected locality or make failover unsafe. Replay real prompt and output lengths at realistic concurrency; report time to first token, inter-token latency, p95 and p99 latency, throughput, memory, errors, and cost.
+\end{description}
+\begin{tabularx}{\linewidth}{>{\bfseries\color{blue}}p{27mm}X}
+Deployment & Kubernetes with vLLM or compatible engines\\
+Choose when & A Kubernetes fleet needs production routing and scale above individual vLLM or SGLang servers.\\
+Reject when & A single node or managed endpoint meets the SLO with much less control-plane complexity.\\
+Primary failure & Router, cache, scheduler, and engine version skew can erase expected locality or make failover unsafe.\\
+Compare with & KServe LLMInferenceService; NVIDIA Dynamo; Ray Serve\\
+\end{tabularx}
+\paragraph{Minimal use in Go / Python / Kubernetes.}
+\begin{Verbatim}[fontsize=\scriptsize]
+kubectl apply -k github.com/llm-d/llm-d
+kubectl get pods
+\end{Verbatim}
+\textbf{Primary sources.} \href{https://llm-d.ai/docs/dev}{llm-d official documentation} \quad \href{https://llm-d.ai/docs/architecture}{llm-d architecture} \quad \href{https://kserve.github.io/website/docs/model-serving/generative-inference/llmisvc/llmisvc-overview}{KServe LLMInferenceService}.
