@@ -728,5 +728,207 @@
         "a": "Maintain stable memory ids and reverse provenance indexes, delete raw and derived copies plus caches, verify tombstones across backups under policy, export canonical events and claims, and shadow a replacement retriever before switching context assembly."
       }
     ]
+  },
+  {
+    "id": "tool-agent-framework-selection",
+    "title": "Select an agent framework for a long-running engineering assistant",
+    "brief": "Design one product that must edit repositories, retain bounded memory, delegate work, pause for approval, and recover after a worker crash. Defend the framework boundary rather than listing features.",
+    "diagram": "flowchart TD\n U[User and tenant policy] --> O[Framework selection gateway]\n O --> G[LangGraph or Deep Agents]\n O --> S[smolagents or Claude Agent SDK]\n O --> L[Letta memory service]\n G --> X[Sandboxed tools]\n S --> X\n X --> T[Trace and approval ledger]",
+    "tool_choices": [
+      "LangGraph",
+      "Deep Agents",
+      "Hugging Face smolagents",
+      "Claude Agent SDK",
+      "Letta",
+      "Agno"
+    ],
+    "stages": [
+      {
+        "q": "Initial design: separate the product requirements by mechanism",
+        "a": "Use LangGraph when explicit state transitions, checkpoints, interrupts, and replay are central. Deep Agents earns its place when planning, files, skills, and delegation should arrive as one LangGraph-based harness. Claude Agent SDK or smolagents fits a coding loop with mature or minimal tool execution respectively. Add Letta only when persistent inspectable agent memory is truly a product feature; Agno is a broader Python runtime option when teams, knowledge, sessions, and serving should share one framework."
+      },
+      {
+        "q": "Why not choose the framework with the most integrations?",
+        "a": "Score the smallest representative workflow on state ownership, recovery, termination, tool authorization, context growth, observability, packaging, team language, and exit cost. Integrations reduce adapter work but cannot compensate for the wrong control model. Keep domain state and side-effect receipts in owned schemas so the orchestration layer remains replaceable."
+      },
+      {
+        "q": "Challenge: the agent crashes after pushing a branch but before checkpointing",
+        "a": "Create a durable operation id before the push, bind it to repository, branch, expected base SHA, and authorization, then reconcile GitHub state after recovery. The workflow may replay the decision but must not repeat the effect blindly. Human approval references the exact proposed diff and expires when its base changes."
+      },
+      {
+        "q": "Prove the selection",
+        "a": "Kill the runtime at every transition, inject malicious repository instructions, revoke tools mid-run, expand context to its limit, and force cyclic delegation. Compare task success, duplicate-effect rate, recovery time, p95 cost, trace completeness, and implementation complexity against a plain typed loop and one alternative framework."
+      }
+    ]
+  },
+  {
+    "id": "tool-kubernetes-llm-fleet",
+    "title": "Kubernetes LLM fleet with disaggregated inference",
+    "brief": "Serve several open models across a multi-tenant accelerator fleet with prefix reuse, adapters, region failover, predictable tails, and an explicit migration path.",
+    "diagram": "flowchart TD\n C[Clients] --> E[Kong AI Gateway]\n E --> R[llm-d cache-aware router]\n R --> P[vLLM prefill workers]\n R --> D[vLLM decode workers]\n R --> N[NVIDIA NIM dedicated profiles]\n P --> K[Distributed KV cache]\n D --> K\n R --> O[OpenTelemetry and Opik]",
+    "tool_choices": [
+      "llm-d",
+      "vLLM",
+      "NVIDIA Dynamo",
+      "NVIDIA NIM",
+      "KServe",
+      "Kong AI Gateway",
+      "OpenTelemetry",
+      "Opik"
+    ],
+    "stages": [
+      {
+        "q": "Place the engine, fleet control plane, and edge gateway",
+        "a": "Use vLLM as the token engine, llm-d or NVIDIA Dynamo for distributed routing, cache locality, and prefill-decode coordination, and KServe when model lifecycle CRDs and shared Kubernetes serving policy are required. NIM is appropriate for supported enterprise profiles. Keep identity and API policy at Kong, not inside the token scheduler."
+      },
+      {
+        "q": "Choose llm-d versus Dynamo versus plain KServe",
+        "a": "llm-d is an open Kubernetes LLM-serving stack and fits vLLM-centered infrastructure; Dynamo is compelling for NVIDIA fleets needing a programmable distributed runtime across supported backends; plain KServe is enough when per-endpoint lifecycle and autoscaling matter more than disaggregated scheduling. Benchmark the complete request path, not engine-only tokens per second."
+      },
+      {
+        "q": "Challenge: a node loss destroys hot KV cache during a traffic spike",
+        "a": "Route by cache ownership but cap affinity, replicate only valuable reusable prefixes, shed low-priority work, and fall back to recomputation with queue budgets. Do not retry partially streamed requests invisibly. Emit cache hit, recompute, queue, cancellation, and token-latency evidence by tenant and model revision."
+      },
+      {
+        "q": "Capacity and migration proof",
+        "a": "Replay the joint distribution of input length, output length, adapters, structured decoding, and concurrency. Report TTFT, inter-token latency, p95 and p99, goodput, GPU memory, cache hit, failures, and cost. Shadow SGLang or TensorRT-LLM behind the same owned request contract and prove model and adapter artifacts can move."
+      }
+    ]
+  },
+  {
+    "id": "tool-enterprise-mcp-control-plane",
+    "title": "Enterprise MCP catalog, gateway, and authorization plane",
+    "brief": "Let internal agents discover approved tools across GitHub, AWS, Azure, and databases without confusing discovery, authentication, authorization, execution, and audit.",
+    "diagram": "flowchart TD\n A[Agent host and user identity] --> C[Private catalog plus MCP Registry]\n C --> G[Policy-enforcing MCP gateway]\n G --> H[GitHub MCP Server]\n G --> W[AWS or Azure MCP servers]\n G --> D[MCP Toolbox for Databases]\n G --> S[Cloudflare Sandbox]\n H --> R[Redacted audit receipts]\n W --> R\n D --> R\n S --> R",
+    "tool_choices": [
+      "Model Context Protocol",
+      "Official MCP Registry",
+      "GitHub MCP Server",
+      "AWS MCP Servers",
+      "Azure MCP Server",
+      "MCP Toolbox for Databases",
+      "Cloudflare Sandbox SDK",
+      "Open Policy Agent"
+    ],
+    "stages": [
+      {
+        "q": "Initial design: name every trust boundary",
+        "a": "The registry supplies versioned metadata, not trust. The host chooses servers and presents tools. A gateway authenticates the user and server, pins schemas, filters tools, validates arguments, applies OPA policy, issues narrow credentials, and records receipts. Servers translate bounded calls to downstream APIs; high-risk code runs in a sandbox."
+      },
+      {
+        "q": "Why use official service servers rather than one universal connector?",
+        "a": "Official GitHub, AWS, Azure, and database servers can preserve service-specific schemas and identity semantics. A broad managed connector reduces integration work but expands a shared trust boundary. Choose per risk tier: direct owned servers for high-impact operations and curated managed actions for low-impact productivity workflows."
+      },
+      {
+        "q": "Challenge: a retrieved document asks the agent to enable a destructive cloud tool",
+        "a": "Retrieved text cannot change tool exposure, identity, policy, or approval state. Tool allowlists come from trusted workload policy. Authorize the exact principal, action, resource, tenant, and arguments at execution time; require fresh confirmation for irreversible effects; redact results before returning them to the model."
+      },
+      {
+        "q": "Version and failure proof",
+        "a": "Test changed schemas, malicious descriptions, server-name collisions, token revocation, timeouts, duplicate calls, compromised results, and unavailable registries. Pin server package digests and protocol versions, support staged rollout, and retain a direct emergency path for critical operations."
+      }
+    ]
+  },
+  {
+    "id": "tool-graph-database-selection",
+    "title": "Graph database selection for GraphRAG and investigation",
+    "brief": "Choose among Neo4j, Neptune, TigerGraph, ArangoDB, Apache AGE, Memgraph, and Kuzu for provenance-heavy multi-hop questions and operational investigations.",
+    "diagram": "flowchart TD\n Q[Query and graph workload] --> C{Dominant boundary}\n C -->|Cypher ecosystem| N[Neo4j]\n C -->|AWS managed or RDF| A[Amazon Neptune]\n C -->|Distributed analytics| T[TigerGraph]\n C -->|Multi-model| R[ArangoDB]\n C -->|PostgreSQL extension| P[Apache AGE]\n C -->|Streaming or embedded| M[Memgraph or Kuzu]",
+    "tool_choices": [
+      "Neo4j",
+      "Amazon Neptune",
+      "TigerGraph",
+      "ArangoDB",
+      "Apache AGE",
+      "Memgraph",
+      "Kuzu",
+      "pgvector"
+    ],
+    "stages": [
+      {
+        "q": "Build the decision matrix",
+        "a": "Classify queries by traversal depth, fan-out, path constraints, update rate, graph size, consistency, algorithms, vector needs, language, deployment, and governance. Neo4j favors mature Cypher and Graph Data Science; Neptune favors managed AWS plus RDF, Gremlin, and openCypher choices; TigerGraph targets parallel graph analytics; ArangoDB joins document and graph patterns; AGE keeps a smaller graph inside PostgreSQL; Memgraph favors streaming in-memory operations; Kuzu is embedded."
+      },
+      {
+        "q": "Why not use only a vector database?",
+        "a": "Vector similarity retrieves semantically close items but does not natively enforce multi-hop topology, path constraints, relationship provenance, or graph algorithms. Keep pgvector or another vector index for semantic candidates when useful, and require measured quality lift before adding a graph service."
+      },
+      {
+        "q": "Challenge: hallucinated entity resolution creates authoritative edges",
+        "a": "Every node and edge stores source record, time, extractor version, confidence, tenant, and review state. Proposed edges remain separate from verified facts. Answers cite paths back to source spans; automated actions require governed records rather than model-created relationships."
+      },
+      {
+        "q": "Benchmark and migration",
+        "a": "Replay graph motifs including supernodes, long paths, temporal filters, concurrent writes, and tenant ACLs. Measure answer quality, traversal tails, update freshness, storage, recovery, staffing, and cost. Export canonical nodes and edges with stable ids and dual-run key queries before moving clients."
+      }
+    ]
+  },
+  {
+    "id": "tool-evaluation-control-plane",
+    "title": "Evaluation and observability control plane for agents",
+    "brief": "Create one release gate and incident workflow across traces, offline datasets, human labels, safety attacks, and production outcomes while keeping observability replaceable.",
+    "diagram": "flowchart TD\n R[OpenTelemetry run schema] --> L[LangSmith or Langfuse]\n R --> O[Opik experiments]\n D[Versioned datasets] --> O\n D --> I[Inspect AI and Giskard]\n L --> H[Human review]\n O --> G[Release gate]\n I --> G\n H --> G\n G --> M[Production monitor]",
+    "tool_choices": [
+      "OpenTelemetry",
+      "LangSmith",
+      "Langfuse",
+      "Opik",
+      "Inspect AI",
+      "Giskard",
+      "Promptfoo",
+      "Ragas"
+    ],
+    "stages": [
+      {
+        "q": "Separate telemetry storage from evaluation policy",
+        "a": "Define an owned semantic schema on OpenTelemetry-compatible traces. LangSmith provides strong LangChain and agent workflows, Langfuse offers open-source tracing and prompt operations, and Opik joins open evaluation with observability. Inspect AI handles auditable tool-using model evaluations; Giskard and Promptfoo add testing and adversarial suites; Ragas supplies RAG-focused metrics."
+      },
+      {
+        "q": "Choose the platform",
+        "a": "Replay the same frozen traces and cases through two candidates. Compare span fidelity, datasets, per-case diffs, evaluator versioning, online sampling, human review, self-hosting, access control, retention, export, query latency, and total cost. Do not let a proprietary trace id become the release's only identity."
+      },
+      {
+        "q": "Challenge: the judge model upgrade raises every score",
+        "a": "Pin judge model, prompt, rubric, decoding, and aggregation. Re-score a human-labeled anchor set, report agreement and slice deltas, and run old and new judges in parallel. A judge migration is a measurement-system change, not evidence that the product improved."
+      },
+      {
+        "q": "Incident and privacy proof",
+        "a": "Inject retrieval, tool, model, and policy failures and require the trace to localize each one. Tokenize sensitive fields before export, separate tenant access, bound retention, sample deliberately, and prove that raw traces and datasets can be exported to a replacement backend."
+      }
+    ]
+  },
+  {
+    "id": "tool-rag-ingestion-factory",
+    "title": "Versioned document-ingestion factory for RAG",
+    "brief": "Ingest changing SaaS data and difficult PDFs, preserve provenance, validate structure, and rebuild several retrieval indexes without mixing parser or embedding versions.",
+    "diagram": "flowchart LR\n S[SaaS and database sources] --> A[Airbyte raw sync]\n F[PDF and office files] --> U[Unstructured or Docling]\n A --> D[Dagster or Flyte assets]\n U --> D\n D --> Q[Great Expectations]\n Q --> V[lakeFS and DVC versions]\n V --> I[Lexical vector and graph indexes]",
+    "tool_choices": [
+      "Airbyte",
+      "Unstructured",
+      "Docling",
+      "Dagster",
+      "Flyte",
+      "Great Expectations",
+      "lakeFS",
+      "DVC"
+    ],
+    "stages": [
+      {
+        "q": "Initial design and tool roles",
+        "a": "Use Airbyte for incremental source extraction into immutable raw tables, Docling or Unstructured for structure-aware document conversion, Dagster for asset and partition lineage or Flyte for typed container workflows, Great Expectations for explicit data contracts, lakeFS for atomic lake snapshots, and DVC for repository-adjacent benchmark artifacts."
+      },
+      {
+        "q": "Choose Docling versus Unstructured and Dagster versus Flyte",
+        "a": "Benchmark parsers on reading order, tables, equations, OCR, metadata, provenance, speed, and failure visibility for each document family. Dagster is attractive when data assets and partitions are the core abstraction; Flyte when typed tasks, images, and Kubernetes-scale ML execution dominate. Retain raw files so either choice is reversible."
+      },
+      {
+        "q": "Challenge: a connector schema and parser both change during backfill",
+        "a": "Version the raw source snapshot, connector, cursor, schema, parser, OCR model, chunker, tokenizer, embedding model, and index configuration independently. Build new assets under a release id, validate counts and structural slices, then atomically move read aliases. Never mutate an existing vector space in place."
+      },
+      {
+        "q": "Quality and recovery proof",
+        "a": "Test deleted records, cursor rewind, duplicate events, corrupt files, scans, nested tables, equations, multilingual layouts, partial writes, and worker loss. From any answer, resolve the raw record or page, every transformation, validation result, index version, and deployment approval."
+      }
+    ]
   }
 ]

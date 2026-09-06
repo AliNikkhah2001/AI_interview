@@ -63,12 +63,27 @@ def technology_latex(technology, latex_escape):
         + r"\badge{" + latex_escape(technology["kind"]) + r"} \quad "
         + r"\textbf{Languages:} " + latex_escape(" / ".join(technology["languages"])),
         r"\par\smallskip " + latex_escape(technology["summary"]),
+        r"\par\smallskip\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Mental model.} "
+        + latex_escape(technology["mental_model"]) + r"}}",
         r"\begin{center}\begin{tikzpicture}[node distance=8mm,tech/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=42mm,minimum height=12mm,font=\small},arr/.style={-{Stealth},thick,draw=blue}]",
         r"\node[tech](t0){" + latex_escape(flow[0]) + r"};",
         r"\node[tech,right=of t0](t1){" + latex_escape(flow[1]) + r"};",
         r"\node[tech,right=of t1](t2){" + latex_escape(flow[2]) + r"};",
         r"\draw[arr](t0)--(t1);\draw[arr](t1)--(t2);",
         r"\end{tikzpicture}\end{center}",
+        r"\paragraph{Framework structure and design.}",
+        r"\begin{tabularx}{\linewidth}{>{\bfseries\color{blue}}p{34mm}X}",
+        r"Data plane & " + latex_escape(" -> ".join(technology["flow"])) + r"\\",
+        r"Control plane & " + latex_escape(technology["architecture"][3]["detail"]) + r"\\",
+        r"State and trust boundary & " + latex_escape(technology["architecture"][4]["detail"]) + r"\\",
+        r"\end{tabularx}",
+        r"\paragraph{Five-part tutorial.}",
+        r"\begin{description}[leftmargin=38mm,style=nextline]",
+        *[
+            r"\item[" + latex_escape(lesson["title"]) + r"] " + latex_escape(lesson["body"])
+            for lesson in technology["tutorial"]
+        ],
+        r"\end{description}",
         r"\begin{tabularx}{\linewidth}{>{\bfseries\color{blue}}p{27mm}X}",
         r"Deployment & " + latex_escape(technology["deployment"]) + r"\\",
         r"Choose when & " + latex_escape(technology["choose_when"]) + r"\\",
@@ -80,7 +95,10 @@ def technology_latex(technology, latex_escape):
         r"\begin{Verbatim}[fontsize=\scriptsize]",
         technology["quickstart"],
         r"\end{Verbatim}",
-        r"\textbf{Version-specific reference.} \href{" + technology["source_url"] + "}{" + latex_escape(technology["name"] + " official documentation") + "}.",
+        r"\textbf{Primary sources.} " + r" \quad ".join(
+            r"\href{" + source["url"] + "}{" + latex_escape(source["label"]) + "}"
+            for source in technology["sources"]
+        ) + ".",
     ]
     return lines
 
@@ -166,7 +184,7 @@ def build_handbook(root: Path, topics, questions, core, designs, refs, tutorials
         r"\newcommand{\mathblock}[1]{\begin{center}\begin{adjustbox}{max width=\linewidth}$\displaystyle #1$\end{adjustbox}\end{center}}",
         r"\newenvironment{derivation}{\begin{quote}\small\color{navy}}{\end{quote}}",
         r"\begin{document}",
-        r"\begin{titlepage}\pagecolor{navy}\color{white}\vspace*{1.1in}{\Huge\bfseries AI Engineering\\Interview Atlas\par}\vspace{.35in}{\Large Mathematical tutorials, technology field guide, systems, and 2,000+ questions\par}\vspace{.35in}{\large " + str(len(formulas)) + r" derivations \textbullet\ " + str(len(visuals)) + r" visual models \textbullet\ " + str(len(technologies)) + r" technology profiles \textbullet\ " + str(len(tutorials)) + r" deep lessons\par}\vfill{\large Research snapshot: 5 September 2026\par}\vspace{.15in}{\normalsize Primary papers, official documentation, specifications, and standards\par}\vspace{.7in}{\color{cyan}\rule{\textwidth}{3pt}}\end{titlepage}\nopagecolor\color{black}",
+        r"\begin{titlepage}\pagecolor{navy}\color{white}\vspace*{1.1in}{\Huge\bfseries AI Engineering\\Interview Atlas\par}\vspace{.35in}{\Large Mathematical tutorials, technology field guide, systems, and 2,000+ questions\par}\vspace{.35in}{\large " + str(len(formulas)) + r" derivations \textbullet\ " + str(len(visuals)) + r" visual models \textbullet\ " + str(len(technologies)) + r" technology profiles \textbullet\ " + str(len(tutorials)) + r" deep lessons\par}\vfill{\large Research snapshot: 6 September 2026\par}\vspace{.15in}{\normalsize Primary papers, official documentation, specifications, and standards\par}\vspace{.7in}{\color{cyan}\rule{\textwidth}{3pt}}\end{titlepage}\nopagecolor\color{black}",
         r"\tableofcontents\newpage",
         r"\section{How to use this handbook}",
         "This handbook contains " + str(len(topics)) + " complete topic tutorials, " + str(len(technologies)) + " workload-oriented technology profiles, " + str(len(questions)) + " generated practice questions, 50 core interview questions, " + str(len(designs)) + " progressive system-design challenges, " + str(len(visuals)) + " visual intuition models, and " + str(len(formulas)) + " mathematical modules. The browser resumes the last unfinished chapter, records five reading checkpoints, unlocks a five-question exam, and advances after a score of at least 80 percent.",
@@ -268,7 +286,7 @@ def build_handbook(root: Path, topics, questions, core, designs, refs, tutorials
 
     lines += [
         r"\clearpage\section{Technology interview question bank}",
-        "Every listed technology has one medium selection question, one hard comparison and measurement question, and one very-hard failure, migration, and recovery question. Product APIs evolve; defend answers with workload evidence and the linked official documentation.",
+        "Every listed technology has one medium selection question, a hard architecture question, a hard comparison and measurement question, and one very-hard failure, migration, and recovery question. Product APIs evolve; defend answers with workload evidence and the linked official documentation.",
     ]
     for category in technology_categories:
         lines.append(r"\subsection{" + latex_escape(category["title"]) + "}")

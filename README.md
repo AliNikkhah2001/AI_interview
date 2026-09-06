@@ -1,6 +1,6 @@
 # AI Engineering Interview Atlas
 
-> 192 topics, 111 technology profiles, 2253 generated practice questions, 50 core interview questions, and 26 system-design challenges.
+> 192 topics, 194 technology profiles, 2696 generated practice questions, 50 core interview questions, and 32 system-design challenges.
 
 A research-grounded practice repository for AI engineering, LLM systems, RAG, agents, deployment, data, observability, theory, and backend engineering.
 
@@ -12,43 +12,43 @@ A research-grounded practice repository for AI engineering, LLM systems, RAG, ag
 
 ## Technology field guide
 
-The dedicated catalog contains 111 current libraries, protocols, databases, runtimes, and platforms across 9 layers. Every profile includes its role, execution flow, languages, deployment shape, quick start, selection and rejection criteria, alternatives, failure mode, official documentation, logo or labeled fallback, and medium/hard/very-hard interview prompts.
+The dedicated catalog contains 194 current libraries, protocols, databases, runtimes, and platforms across 9 layers. Every profile includes a mental model, framework anatomy, control and data planes, state and trust boundary, a five-part tutorial, languages, deployment shape, quick start, selection and rejection criteria, alternatives, failure mode, logo or labeled fallback, framework-specific primary sources, and four interview prompts from medium through very hard.
 
 ### Agent and application frameworks
 
-LangChain · LangGraph · Deep Agents · LlamaIndex · Haystack · Semantic Kernel · AutoGen · CrewAI · PydanticAI · DSPy · OpenAI Agents SDK · Google Agent Development Kit · Mastra · Zep · Mem0
+LangChain · LangGraph · Deep Agents · LlamaIndex · Haystack · Semantic Kernel · AutoGen · CrewAI · PydanticAI · DSPy · OpenAI Agents SDK · Google Agent Development Kit · Mastra · Zep · Mem0 · Agno · Hugging Face smolagents · Letta · Langroid · BeeAI Framework · Strands Agents SDK · Claude Agent SDK · Vercel AI SDK · Microsoft Agent Framework · CAMEL-AI · Rasa · Langflow · Dify · Flowise · Cloudflare Agents SDK
 
 ### Model, embedding, and optimization libraries
 
-PyTorch · JAX · Hugging Face Transformers · Sentence Transformers · Hugging Face PEFT · bitsandbytes · ONNX Runtime · OpenVINO · FlagEmbedding · Instructor · Cohere Rerank
+PyTorch · JAX · Hugging Face Transformers · Sentence Transformers · Hugging Face PEFT · bitsandbytes · ONNX Runtime · OpenVINO · FlagEmbedding · Instructor · Cohere Rerank · Hugging Face Accelerate · DeepSpeed · Hugging Face TRL · Axolotl · Unsloth
 
 ### Model serving, gateways, and inference
 
-vLLM · SGLang · Hugging Face Text Generation Inference · TensorRT-LLM · NVIDIA Triton Inference Server · llama.cpp · Ollama · KServe · Ray Serve · BentoML · LocalAI · Modal · Baseten · Hugging Face Inference Endpoints · Hugging Face Text Embeddings Inference · LiteLLM · Portkey AI Gateway · Kong AI Gateway · Envoy AI Gateway · Amazon SageMaker AI Endpoints · Vertex AI Endpoints · Azure Machine Learning Managed Online Endpoints
+vLLM · SGLang · Hugging Face Text Generation Inference · TensorRT-LLM · NVIDIA Triton Inference Server · llama.cpp · Ollama · KServe · Ray Serve · BentoML · LocalAI · Modal · Baseten · Hugging Face Inference Endpoints · Hugging Face Text Embeddings Inference · LiteLLM · Portkey AI Gateway · Kong AI Gateway · Envoy AI Gateway · Amazon SageMaker AI Endpoints · Vertex AI Endpoints · Azure Machine Learning Managed Online Endpoints · llm-d · NVIDIA Dynamo · NVIDIA NIM · TorchServe · DeepSpeed-MII · OpenLLM · LMDeploy · MLC LLM · Replicate · Runpod Serverless · Together AI Inference · Fireworks AI · GroqCloud · Cerebras Inference · Amazon Bedrock · Cloudflare Workers AI · Databricks Model Serving
 
 ### Retrieval, vector, and graph data
 
-pgvector · Pinecone · Qdrant · Weaviate · Milvus and Zilliz · Chroma · LanceDB · FAISS · Elasticsearch · OpenSearch · Vespa · Redis Search and Vector Sets · Neo4j · Memgraph · FalkorDB · Amazon Neptune · Kuzu
+pgvector · Pinecone · Qdrant · Weaviate · Milvus and Zilliz · Chroma · LanceDB · FAISS · Elasticsearch · OpenSearch · Vespa · Redis Search and Vector Sets · Neo4j · Memgraph · FalkorDB · Amazon Neptune · Kuzu · MongoDB Atlas Vector Search · Couchbase Vector Search · Databricks Mosaic AI Vector Search · Snowflake Cortex Search · Oracle AI Vector Search · TigerGraph · ArangoDB · Apache AGE · JanusGraph
 
 ### Observability and evaluation
 
-LangSmith · Langfuse · Arize Phoenix · Helicone · OpenTelemetry · MLflow · Weights & Biases Weave · Braintrust · Ragas · DeepEval · TruLens · Evidently · Promptfoo
+LangSmith · Langfuse · Arize Phoenix · Helicone · OpenTelemetry · MLflow · Weights & Biases Weave · Braintrust · Ragas · DeepEval · TruLens · Evidently · Promptfoo · Opik · AgentOps · Parea · HoneyHive · Galileo · Giskard · Inspect AI · Maxim AI
 
 ### Safety, validation, and policy guardrails
 
-NVIDIA NeMo Guardrails · Guardrails AI · Llama Guard · Protect AI LLM Guard · Microsoft Presidio · Open Policy Agent · Cedar · Lakera Guard
+NVIDIA NeMo Guardrails · Guardrails AI · Llama Guard · Protect AI LLM Guard · Microsoft Presidio · Open Policy Agent · Cedar · Lakera Guard · garak · PyRIT · Rebuff · Amazon Bedrock Guardrails · Azure AI Content Safety · Google Cloud Model Armor
 
 ### MCP and tool connectivity
 
-Model Context Protocol · Official MCP SDKs · FastMCP · MCP Inspector · Docker MCP Toolkit and Gateway · Smithery · Composio · Arcade
+Model Context Protocol · Official MCP SDKs · FastMCP · MCP Inspector · Docker MCP Toolkit and Gateway · Smithery · Composio · Arcade · Official MCP Registry · GitHub MCP Server · AWS MCP Servers · MCP Toolbox for Databases · Azure MCP Server · Zapier MCP · mcp-use
 
 ### Sandbox and code execution
 
-E2B · Daytona · Modal Sandboxes · Docker · gVisor · Firecracker · Kata Containers · Kubernetes Jobs
+E2B · Daytona · Modal Sandboxes · Docker · gVisor · Firecracker · Kata Containers · Kubernetes Jobs · Cloudflare Sandbox SDK · Runloop · Sprites · Browserbase · Docker Sandboxes · Wasmtime · nsjail
 
 ### Data, workflow, and ML lifecycle
 
-Temporal · Apache Airflow · Prefect · Dagster · DVC · lakeFS · Feast · Kubeflow Pipelines · ZenML
+Temporal · Apache Airflow · Prefect · Dagster · DVC · lakeFS · Feast · Kubeflow Pipelines · ZenML · Argo Workflows · Flyte · Metaflow · ClearML · Label Studio · Great Expectations · Airbyte · Unstructured · Docling
 
 ## Curriculum map
 
@@ -133,7 +133,7 @@ The browser resumes the last unfinished lesson, records five reading checkpoints
 
 ## Visual and mathematical coverage
 
-The handbook and site include 15 core instructional diagrams and plots, 111 technology-specific flow diagrams, 9 comparison maps, and 33 formula modules with assumptions, variable definitions, derivations, and worked interpretations. Browser equations use MathJax; the source handbook uses native LaTeX with `amsmath`, `amssymb`, `mathtools`, and TikZ.
+The handbook and site include 15 core instructional diagrams and plots, 194 technology-specific flow diagrams, 9 comparison maps, and 33 formula modules with assumptions, variable definitions, derivations, and worked interpretations. Browser equations use MathJax; the source handbook uses native LaTeX with `amsmath`, `amssymb`, `mathtools`, and TikZ.
 
 ## Source policy
 
