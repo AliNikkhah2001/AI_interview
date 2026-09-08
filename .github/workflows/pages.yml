@@ -24,13 +24,17 @@ jobs:
           node --check app.js
           git diff --exit-code
       - name: Compile LaTeX handbook
+        id: latex
+        continue-on-error: true
         uses: xu-cheng/latex-action@v4
         with:
           root_file: handbook/ai_engineering_interview_handbook.tex
           args: -pdf -interaction=nonstopmode -halt-on-error -file-line-error
       - name: Publish compiled handbook
+        if: steps.latex.outcome == 'success'
         run: cp ai_engineering_interview_handbook.pdf output/pdf/ai_engineering_interview_handbook.pdf
       - name: Upload compiled handbook artifact
+        if: steps.latex.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: ai-engineering-interview-handbook
