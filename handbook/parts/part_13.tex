@@ -1,0 +1,787 @@
+\subsection{Distributed Systems and Reliability}
+\paragraph{MCQ-1457 [medium]} A design requires this behavior: Under a network partition, a distributed system must trade availability against consistent reads and writes. Which mechanism should the team study?
+\begin{enumerate}[label=\Alph*.]
+\item Queues and backpressure
+\item CAP and consistency
+\item Caching
+\item Retries and timeouts
+\end{enumerate}
+\noindent\textbf{Answer.} CAP and consistency
+\par\textit{Under a network partition, a distributed system must trade availability against consistent reads and writes. Tradeoff: Stronger guarantees simplify application invariants but increase latency and unavailability. Watch for: Quoting CAP without identifying partitions and operations does not guide design.}
+\paragraph{MCQ-1458 [hard]} The team proposes CAP and consistency for a real workload. Which finding gives the correct decision boundary?
+\begin{enumerate}[label=\Alph*.]
+\item Success rate improves, while retries amplify overload and tail latency.
+\item Stronger guarantees simplify application invariants but increase latency and unavailability.
+\item Smoothing improves utilization, while waiting increases latency and stale work.
+\item Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation.
+\end{enumerate}
+\noindent\textbf{Answer.} Stronger guarantees simplify application invariants but increase latency and unavailability.
+\par\textit{Under a network partition, a distributed system must trade availability against consistent reads and writes. Tradeoff: Stronger guarantees simplify application invariants but increase latency and unavailability. Watch for: Quoting CAP without identifying partitions and operations does not guide design.}
+\paragraph{MCQ-1459 [hard]} Before releasing CAP and consistency, which failure deserves a dedicated regression test?
+\begin{enumerate}[label=\Alph*.]
+\item Layered automatic retries create multiplicative request storms.
+\item Omitting tenant, model, prompt version, or authorization from a cache key leaks data.
+\item An unbounded queue converts overload into memory exhaustion.
+\item Quoting CAP without identifying partitions and operations does not guide design.
+\end{enumerate}
+\noindent\textbf{Answer.} Quoting CAP without identifying partitions and operations does not guide design.
+\par\textit{Under a network partition, a distributed system must trade availability against consistent reads and writes. Tradeoff: Stronger guarantees simplify application invariants but increase latency and unavailability. Watch for: Quoting CAP without identifying partitions and operations does not guide design.}
+\paragraph{MCQ-1460 [medium]} A design review reveals this mistake: Quoting CAP without identifying partitions and operations does not guide design. Which mechanism should be traced first?
+\begin{enumerate}[label=\Alph*.]
+\item Caching
+\item Queues and backpressure
+\item CAP and consistency
+\item Retries and timeouts
+\end{enumerate}
+\noindent\textbf{Answer.} CAP and consistency
+\par\textit{Under a network partition, a distributed system must trade availability against consistent reads and writes. Tradeoff: Stronger guarantees simplify application invariants but increase latency and unavailability. Watch for: Quoting CAP without identifying partitions and operations does not guide design.}
+\paragraph{MCQ-1461 [hard]} Which causal explanation of CAP and consistency connects what it does to when it is worth its cost?
+\begin{enumerate}[label=\Alph*.]
+\item Mechanism: Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Consequence: Success rate improves, while retries amplify overload and tail latency.
+\item Mechanism: Caches trade staleness and invalidation complexity for lower latency and load. Consequence: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation.
+\item Mechanism: Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Consequence: Smoothing improves utilization, while waiting increases latency and stale work.
+\item Mechanism: Under a network partition, a distributed system must trade availability against consistent reads and writes. Consequence: Stronger guarantees simplify application invariants but increase latency and unavailability.
+\end{enumerate}
+\noindent\textbf{Answer.} Mechanism: Under a network partition, a distributed system must trade availability against consistent reads and writes. Consequence: Stronger guarantees simplify application invariants but increase latency and unavailability.
+\par\textit{Under a network partition, a distributed system must trade availability against consistent reads and writes. Tradeoff: Stronger guarantees simplify application invariants but increase latency and unavailability. Watch for: Quoting CAP without identifying partitions and operations does not guide design.}
+\paragraph{FC-1462 [medium]} Define CAP and consistency in interview-ready language.
+\noindent\textbf{Answer.} Under a network partition, a distributed system must trade availability against consistent reads and writes.
+\par\textit{Under a network partition, a distributed system must trade availability against consistent reads and writes.}
+\paragraph{FC-1463 [hard]} State the main tradeoff and production pitfall for CAP and consistency.
+\noindent\textbf{Answer.} Tradeoff: Stronger guarantees simplify application invariants but increase latency and unavailability. Pitfall: Quoting CAP without identifying partitions and operations does not guide design.
+\par\textit{Tradeoff: Stronger guarantees simplify application invariants but increase latency and unavailability. Pitfall: Quoting CAP without identifying partitions and operations does not guide design.}
+\paragraph{LA-1464 [hard]} Explain CAP and consistency from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Under a network partition, a distributed system must trade availability against consistent reads and writes. Make the tradeoff explicit: Stronger guarantees simplify application invariants but increase latency and unavailability. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Quoting CAP without identifying partitions and operations does not guide design.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1465 [medium]} A design requires this behavior: Protocols such as Raft replicate an ordered log so nodes agree despite failures. Which mechanism should the team study?
+\begin{enumerate}[label=\Alph*.]
+\item Exactly-once effects
+\item Capacity planning
+\item Consensus
+\item CAP and consistency
+\end{enumerate}
+\noindent\textbf{Answer.} Consensus
+\par\textit{Protocols such as Raft replicate an ordered log so nodes agree despite failures. Tradeoff: Coordination provides a consistent control plane but costs extra messages and quorum latency. Watch for: Deploying a quorum across unreliable links can reduce availability.}
+\paragraph{MCQ-1466 [hard]} The team proposes Consensus for a real workload. Which finding gives the correct decision boundary?
+\begin{enumerate}[label=\Alph*.]
+\item Headroom handles bursts but idle accelerators are expensive.
+\item Coordination provides a consistent control plane but costs extra messages and quorum latency.
+\item Stronger guarantees simplify application invariants but increase latency and unavailability.
+\item Business effects can be effectively once, but state and retention are needed.
+\end{enumerate}
+\noindent\textbf{Answer.} Coordination provides a consistent control plane but costs extra messages and quorum latency.
+\par\textit{Protocols such as Raft replicate an ordered log so nodes agree despite failures. Tradeoff: Coordination provides a consistent control plane but costs extra messages and quorum latency. Watch for: Deploying a quorum across unreliable links can reduce availability.}
+\paragraph{MCQ-1467 [hard]} Before releasing Consensus, which failure deserves a dedicated regression test?
+\begin{enumerate}[label=\Alph*.]
+\item Quoting CAP without identifying partitions and operations does not guide design.
+\item Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.
+\item Deploying a quorum across unreliable links can reduce availability.
+\item Planning with average sequence length underestimates tail memory and latency.
+\end{enumerate}
+\noindent\textbf{Answer.} Deploying a quorum across unreliable links can reduce availability.
+\par\textit{Protocols such as Raft replicate an ordered log so nodes agree despite failures. Tradeoff: Coordination provides a consistent control plane but costs extra messages and quorum latency. Watch for: Deploying a quorum across unreliable links can reduce availability.}
+\paragraph{MCQ-1468 [medium]} A design review reveals this mistake: Deploying a quorum across unreliable links can reduce availability. Which mechanism should be traced first?
+\begin{enumerate}[label=\Alph*.]
+\item Capacity planning
+\item Exactly-once effects
+\item CAP and consistency
+\item Consensus
+\end{enumerate}
+\noindent\textbf{Answer.} Consensus
+\par\textit{Protocols such as Raft replicate an ordered log so nodes agree despite failures. Tradeoff: Coordination provides a consistent control plane but costs extra messages and quorum latency. Watch for: Deploying a quorum across unreliable links can reduce availability.}
+\paragraph{MCQ-1469 [hard]} Which causal explanation of Consensus connects what it does to when it is worth its cost?
+\begin{enumerate}[label=\Alph*.]
+\item Mechanism: Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. Consequence: Headroom handles bursts but idle accelerators are expensive.
+\item Mechanism: Under a network partition, a distributed system must trade availability against consistent reads and writes. Consequence: Stronger guarantees simplify application invariants but increase latency and unavailability.
+\item Mechanism: Protocols such as Raft replicate an ordered log so nodes agree despite failures. Consequence: Coordination provides a consistent control plane but costs extra messages and quorum latency.
+\item Mechanism: Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Consequence: Business effects can be effectively once, but state and retention are needed.
+\end{enumerate}
+\noindent\textbf{Answer.} Mechanism: Protocols such as Raft replicate an ordered log so nodes agree despite failures. Consequence: Coordination provides a consistent control plane but costs extra messages and quorum latency.
+\par\textit{Protocols such as Raft replicate an ordered log so nodes agree despite failures. Tradeoff: Coordination provides a consistent control plane but costs extra messages and quorum latency. Watch for: Deploying a quorum across unreliable links can reduce availability.}
+\paragraph{FC-1470 [medium]} Define Consensus in interview-ready language.
+\noindent\textbf{Answer.} Protocols such as Raft replicate an ordered log so nodes agree despite failures.
+\par\textit{Protocols such as Raft replicate an ordered log so nodes agree despite failures.}
+\paragraph{FC-1471 [hard]} State the main tradeoff and production pitfall for Consensus.
+\noindent\textbf{Answer.} Tradeoff: Coordination provides a consistent control plane but costs extra messages and quorum latency. Pitfall: Deploying a quorum across unreliable links can reduce availability.
+\par\textit{Tradeoff: Coordination provides a consistent control plane but costs extra messages and quorum latency. Pitfall: Deploying a quorum across unreliable links can reduce availability.}
+\paragraph{LA-1472 [hard]} Explain Consensus from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Protocols such as Raft replicate an ordered log so nodes agree despite failures. Make the tradeoff explicit: Coordination provides a consistent control plane but costs extra messages and quorum latency. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Deploying a quorum across unreliable links can reduce availability.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1473 [medium]} A design requires this behavior: Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Which mechanism should the team study?
+\begin{enumerate}[label=\Alph*.]
+\item CAP and consistency
+\item Consensus
+\item Caching
+\item Queues and backpressure
+\end{enumerate}
+\noindent\textbf{Answer.} Queues and backpressure
+\par\textit{Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Tradeoff: Smoothing improves utilization, while waiting increases latency and stale work. Watch for: An unbounded queue converts overload into memory exhaustion.}
+\paragraph{MCQ-1474 [hard]} The team proposes Queues and backpressure for a real workload. Which finding gives the correct decision boundary?
+\begin{enumerate}[label=\Alph*.]
+\item Stronger guarantees simplify application invariants but increase latency and unavailability.
+\item Smoothing improves utilization, while waiting increases latency and stale work.
+\item Coordination provides a consistent control plane but costs extra messages and quorum latency.
+\item Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation.
+\end{enumerate}
+\noindent\textbf{Answer.} Smoothing improves utilization, while waiting increases latency and stale work.
+\par\textit{Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Tradeoff: Smoothing improves utilization, while waiting increases latency and stale work. Watch for: An unbounded queue converts overload into memory exhaustion.}
+\paragraph{MCQ-1475 [hard]} Before releasing Queues and backpressure, which failure deserves a dedicated regression test?
+\begin{enumerate}[label=\Alph*.]
+\item An unbounded queue converts overload into memory exhaustion.
+\item Deploying a quorum across unreliable links can reduce availability.
+\item Quoting CAP without identifying partitions and operations does not guide design.
+\item Omitting tenant, model, prompt version, or authorization from a cache key leaks data.
+\end{enumerate}
+\noindent\textbf{Answer.} An unbounded queue converts overload into memory exhaustion.
+\par\textit{Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Tradeoff: Smoothing improves utilization, while waiting increases latency and stale work. Watch for: An unbounded queue converts overload into memory exhaustion.}
+\paragraph{MCQ-1476 [medium]} A design review reveals this mistake: An unbounded queue converts overload into memory exhaustion. Which mechanism should be traced first?
+\begin{enumerate}[label=\Alph*.]
+\item CAP and consistency
+\item Queues and backpressure
+\item Consensus
+\item Caching
+\end{enumerate}
+\noindent\textbf{Answer.} Queues and backpressure
+\par\textit{Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Tradeoff: Smoothing improves utilization, while waiting increases latency and stale work. Watch for: An unbounded queue converts overload into memory exhaustion.}
+\paragraph{MCQ-1477 [hard]} Which causal explanation of Queues and backpressure connects what it does to when it is worth its cost?
+\begin{enumerate}[label=\Alph*.]
+\item Mechanism: Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Consequence: Smoothing improves utilization, while waiting increases latency and stale work.
+\item Mechanism: Under a network partition, a distributed system must trade availability against consistent reads and writes. Consequence: Stronger guarantees simplify application invariants but increase latency and unavailability.
+\item Mechanism: Protocols such as Raft replicate an ordered log so nodes agree despite failures. Consequence: Coordination provides a consistent control plane but costs extra messages and quorum latency.
+\item Mechanism: Caches trade staleness and invalidation complexity for lower latency and load. Consequence: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation.
+\end{enumerate}
+\noindent\textbf{Answer.} Mechanism: Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Consequence: Smoothing improves utilization, while waiting increases latency and stale work.
+\par\textit{Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Tradeoff: Smoothing improves utilization, while waiting increases latency and stale work. Watch for: An unbounded queue converts overload into memory exhaustion.}
+\paragraph{FC-1478 [medium]} Define Queues and backpressure in interview-ready language.
+\noindent\textbf{Answer.} Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers.
+\par\textit{Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers.}
+\paragraph{FC-1479 [hard]} State the main tradeoff and production pitfall for Queues and backpressure.
+\noindent\textbf{Answer.} Tradeoff: Smoothing improves utilization, while waiting increases latency and stale work. Pitfall: An unbounded queue converts overload into memory exhaustion.
+\par\textit{Tradeoff: Smoothing improves utilization, while waiting increases latency and stale work. Pitfall: An unbounded queue converts overload into memory exhaustion.}
+\paragraph{LA-1480 [hard]} Explain Queues and backpressure from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Make the tradeoff explicit: Smoothing improves utilization, while waiting increases latency and stale work. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: An unbounded queue converts overload into memory exhaustion.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1481 [medium]} A design requires this behavior: Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Which mechanism should the team study?
+\begin{enumerate}[label=\Alph*.]
+\item Retries and timeouts
+\item CAP and consistency
+\item Queues and backpressure
+\item Multi-region design
+\end{enumerate}
+\noindent\textbf{Answer.} Retries and timeouts
+\par\textit{Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Tradeoff: Success rate improves, while retries amplify overload and tail latency. Watch for: Layered automatic retries create multiplicative request storms.}
+\paragraph{MCQ-1482 [hard]} The team proposes Retries and timeouts for a real workload. Which finding gives the correct decision boundary?
+\begin{enumerate}[label=\Alph*.]
+\item Success rate improves, while retries amplify overload and tail latency.
+\item Smoothing improves utilization, while waiting increases latency and stale work.
+\item Active-active improves availability and latency but makes writes and conflict resolution harder.
+\item Stronger guarantees simplify application invariants but increase latency and unavailability.
+\end{enumerate}
+\noindent\textbf{Answer.} Success rate improves, while retries amplify overload and tail latency.
+\par\textit{Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Tradeoff: Success rate improves, while retries amplify overload and tail latency. Watch for: Layered automatic retries create multiplicative request storms.}
+\paragraph{MCQ-1483 [hard]} Before releasing Retries and timeouts, which failure deserves a dedicated regression test?
+\begin{enumerate}[label=\Alph*.]
+\item An unbounded queue converts overload into memory exhaustion.
+\item A standby region that never receives realistic traffic may fail during disaster recovery.
+\item Quoting CAP without identifying partitions and operations does not guide design.
+\item Layered automatic retries create multiplicative request storms.
+\end{enumerate}
+\noindent\textbf{Answer.} Layered automatic retries create multiplicative request storms.
+\par\textit{Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Tradeoff: Success rate improves, while retries amplify overload and tail latency. Watch for: Layered automatic retries create multiplicative request storms.}
+\paragraph{MCQ-1484 [medium]} A design review reveals this mistake: Layered automatic retries create multiplicative request storms. Which mechanism should be traced first?
+\begin{enumerate}[label=\Alph*.]
+\item Queues and backpressure
+\item CAP and consistency
+\item Retries and timeouts
+\item Multi-region design
+\end{enumerate}
+\noindent\textbf{Answer.} Retries and timeouts
+\par\textit{Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Tradeoff: Success rate improves, while retries amplify overload and tail latency. Watch for: Layered automatic retries create multiplicative request storms.}
+\paragraph{MCQ-1485 [hard]} Which causal explanation of Retries and timeouts connects what it does to when it is worth its cost?
+\begin{enumerate}[label=\Alph*.]
+\item Mechanism: Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Consequence: Active-active improves availability and latency but makes writes and conflict resolution harder.
+\item Mechanism: Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Consequence: Success rate improves, while retries amplify overload and tail latency.
+\item Mechanism: Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Consequence: Smoothing improves utilization, while waiting increases latency and stale work.
+\item Mechanism: Under a network partition, a distributed system must trade availability against consistent reads and writes. Consequence: Stronger guarantees simplify application invariants but increase latency and unavailability.
+\end{enumerate}
+\noindent\textbf{Answer.} Mechanism: Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Consequence: Success rate improves, while retries amplify overload and tail latency.
+\par\textit{Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Tradeoff: Success rate improves, while retries amplify overload and tail latency. Watch for: Layered automatic retries create multiplicative request storms.}
+\paragraph{FC-1486 [medium]} Define Retries and timeouts in interview-ready language.
+\noindent\textbf{Answer.} Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures.
+\par\textit{Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures.}
+\paragraph{FC-1487 [hard]} State the main tradeoff and production pitfall for Retries and timeouts.
+\noindent\textbf{Answer.} Tradeoff: Success rate improves, while retries amplify overload and tail latency. Pitfall: Layered automatic retries create multiplicative request storms.
+\par\textit{Tradeoff: Success rate improves, while retries amplify overload and tail latency. Pitfall: Layered automatic retries create multiplicative request storms.}
+\paragraph{LA-1488 [hard]} Explain Retries and timeouts from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Make the tradeoff explicit: Success rate improves, while retries amplify overload and tail latency. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Layered automatic retries create multiplicative request storms.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1489 [medium]} A design requires this behavior: Caches trade staleness and invalidation complexity for lower latency and load. Which mechanism should the team study?
+\begin{enumerate}[label=\Alph*.]
+\item Caching
+\item Retries and timeouts
+\item Capacity planning
+\item CAP and consistency
+\end{enumerate}
+\noindent\textbf{Answer.} Caching
+\par\textit{Caches trade staleness and invalidation complexity for lower latency and load. Tradeoff: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation. Watch for: Omitting tenant, model, prompt version, or authorization from a cache key leaks data.}
+\paragraph{MCQ-1490 [hard]} The team proposes Caching for a real workload. Which finding gives the correct decision boundary?
+\begin{enumerate}[label=\Alph*.]
+\item Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation.
+\item Headroom handles bursts but idle accelerators are expensive.
+\item Success rate improves, while retries amplify overload and tail latency.
+\item Stronger guarantees simplify application invariants but increase latency and unavailability.
+\end{enumerate}
+\noindent\textbf{Answer.} Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation.
+\par\textit{Caches trade staleness and invalidation complexity for lower latency and load. Tradeoff: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation. Watch for: Omitting tenant, model, prompt version, or authorization from a cache key leaks data.}
+\paragraph{MCQ-1491 [hard]} Before releasing Caching, which failure deserves a dedicated regression test?
+\begin{enumerate}[label=\Alph*.]
+\item Quoting CAP without identifying partitions and operations does not guide design.
+\item Omitting tenant, model, prompt version, or authorization from a cache key leaks data.
+\item Planning with average sequence length underestimates tail memory and latency.
+\item Layered automatic retries create multiplicative request storms.
+\end{enumerate}
+\noindent\textbf{Answer.} Omitting tenant, model, prompt version, or authorization from a cache key leaks data.
+\par\textit{Caches trade staleness and invalidation complexity for lower latency and load. Tradeoff: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation. Watch for: Omitting tenant, model, prompt version, or authorization from a cache key leaks data.}
+\paragraph{MCQ-1492 [medium]} A design review reveals this mistake: Omitting tenant, model, prompt version, or authorization from a cache key leaks data. Which mechanism should be traced first?
+\begin{enumerate}[label=\Alph*.]
+\item CAP and consistency
+\item Capacity planning
+\item Retries and timeouts
+\item Caching
+\end{enumerate}
+\noindent\textbf{Answer.} Caching
+\par\textit{Caches trade staleness and invalidation complexity for lower latency and load. Tradeoff: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation. Watch for: Omitting tenant, model, prompt version, or authorization from a cache key leaks data.}
+\paragraph{MCQ-1493 [hard]} Which causal explanation of Caching connects what it does to when it is worth its cost?
+\begin{enumerate}[label=\Alph*.]
+\item Mechanism: Under a network partition, a distributed system must trade availability against consistent reads and writes. Consequence: Stronger guarantees simplify application invariants but increase latency and unavailability.
+\item Mechanism: Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. Consequence: Headroom handles bursts but idle accelerators are expensive.
+\item Mechanism: Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Consequence: Success rate improves, while retries amplify overload and tail latency.
+\item Mechanism: Caches trade staleness and invalidation complexity for lower latency and load. Consequence: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation.
+\end{enumerate}
+\noindent\textbf{Answer.} Mechanism: Caches trade staleness and invalidation complexity for lower latency and load. Consequence: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation.
+\par\textit{Caches trade staleness and invalidation complexity for lower latency and load. Tradeoff: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation. Watch for: Omitting tenant, model, prompt version, or authorization from a cache key leaks data.}
+\paragraph{FC-1494 [medium]} Define Caching in interview-ready language.
+\noindent\textbf{Answer.} Caches trade staleness and invalidation complexity for lower latency and load.
+\par\textit{Caches trade staleness and invalidation complexity for lower latency and load.}
+\paragraph{FC-1495 [hard]} State the main tradeoff and production pitfall for Caching.
+\noindent\textbf{Answer.} Tradeoff: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation. Pitfall: Omitting tenant, model, prompt version, or authorization from a cache key leaks data.
+\par\textit{Tradeoff: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation. Pitfall: Omitting tenant, model, prompt version, or authorization from a cache key leaks data.}
+\paragraph{LA-1496 [hard]} Explain Caching from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Caches trade staleness and invalidation complexity for lower latency and load. Make the tradeoff explicit: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Omitting tenant, model, prompt version, or authorization from a cache key leaks data.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1497 [medium]} A design requires this behavior: Balancers route by health, load, locality, affinity, or capacity across replicas. Which mechanism should the team study?
+\begin{enumerate}[label=\Alph*.]
+\item Exactly-once effects
+\item Fault isolation
+\item Load balancing
+\item Multi-region design
+\end{enumerate}
+\noindent\textbf{Answer.} Load balancing
+\par\textit{Balancers route by health, load, locality, affinity, or capacity across replicas. Tradeoff: Distribution improves availability but generic least-connections may ignore token workload size. Watch for: Sending a long-context request to the least-busy replica can still cause head-of-line blocking.}
+\paragraph{MCQ-1498 [hard]} The team proposes Load balancing for a real workload. Which finding gives the correct decision boundary?
+\begin{enumerate}[label=\Alph*.]
+\item Business effects can be effectively once, but state and retention are needed.
+\item Distribution improves availability but generic least-connections may ignore token workload size.
+\item Blast radius shrinks at some efficiency cost.
+\item Active-active improves availability and latency but makes writes and conflict resolution harder.
+\end{enumerate}
+\noindent\textbf{Answer.} Distribution improves availability but generic least-connections may ignore token workload size.
+\par\textit{Balancers route by health, load, locality, affinity, or capacity across replicas. Tradeoff: Distribution improves availability but generic least-connections may ignore token workload size. Watch for: Sending a long-context request to the least-busy replica can still cause head-of-line blocking.}
+\paragraph{MCQ-1499 [hard]} Before releasing Load balancing, which failure deserves a dedicated regression test?
+\begin{enumerate}[label=\Alph*.]
+\item A standby region that never receives realistic traffic may fail during disaster recovery.
+\item Sending a long-context request to the least-busy replica can still cause head-of-line blocking.
+\item Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.
+\item A single global vector index or queue can defeat otherwise isolated services.
+\end{enumerate}
+\noindent\textbf{Answer.} Sending a long-context request to the least-busy replica can still cause head-of-line blocking.
+\par\textit{Balancers route by health, load, locality, affinity, or capacity across replicas. Tradeoff: Distribution improves availability but generic least-connections may ignore token workload size. Watch for: Sending a long-context request to the least-busy replica can still cause head-of-line blocking.}
+\paragraph{MCQ-1500 [medium]} A design review reveals this mistake: Sending a long-context request to the least-busy replica can still cause head-of-line blocking. Which mechanism should be traced first?
+\begin{enumerate}[label=\Alph*.]
+\item Load balancing
+\item Multi-region design
+\item Fault isolation
+\item Exactly-once effects
+\end{enumerate}
+\noindent\textbf{Answer.} Load balancing
+\par\textit{Balancers route by health, load, locality, affinity, or capacity across replicas. Tradeoff: Distribution improves availability but generic least-connections may ignore token workload size. Watch for: Sending a long-context request to the least-busy replica can still cause head-of-line blocking.}
+\paragraph{MCQ-1501 [hard]} Which causal explanation of Load balancing connects what it does to when it is worth its cost?
+\begin{enumerate}[label=\Alph*.]
+\item Mechanism: Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Consequence: Business effects can be effectively once, but state and retention are needed.
+\item Mechanism: Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Consequence: Active-active improves availability and latency but makes writes and conflict resolution harder.
+\item Mechanism: Balancers route by health, load, locality, affinity, or capacity across replicas. Consequence: Distribution improves availability but generic least-connections may ignore token workload size.
+\item Mechanism: Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources. Consequence: Blast radius shrinks at some efficiency cost.
+\end{enumerate}
+\noindent\textbf{Answer.} Mechanism: Balancers route by health, load, locality, affinity, or capacity across replicas. Consequence: Distribution improves availability but generic least-connections may ignore token workload size.
+\par\textit{Balancers route by health, load, locality, affinity, or capacity across replicas. Tradeoff: Distribution improves availability but generic least-connections may ignore token workload size. Watch for: Sending a long-context request to the least-busy replica can still cause head-of-line blocking.}
+\paragraph{FC-1502 [medium]} Define Load balancing in interview-ready language.
+\noindent\textbf{Answer.} Balancers route by health, load, locality, affinity, or capacity across replicas.
+\par\textit{Balancers route by health, load, locality, affinity, or capacity across replicas.}
+\paragraph{FC-1503 [hard]} State the main tradeoff and production pitfall for Load balancing.
+\noindent\textbf{Answer.} Tradeoff: Distribution improves availability but generic least-connections may ignore token workload size. Pitfall: Sending a long-context request to the least-busy replica can still cause head-of-line blocking.
+\par\textit{Tradeoff: Distribution improves availability but generic least-connections may ignore token workload size. Pitfall: Sending a long-context request to the least-busy replica can still cause head-of-line blocking.}
+\paragraph{LA-1504 [hard]} Explain Load balancing from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Balancers route by health, load, locality, affinity, or capacity across replicas. Make the tradeoff explicit: Distribution improves availability but generic least-connections may ignore token workload size. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Sending a long-context request to the least-busy replica can still cause head-of-line blocking.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1505 [medium]} A design requires this behavior: Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources. Which mechanism should the team study?
+\begin{enumerate}[label=\Alph*.]
+\item Retries and timeouts
+\item Fault isolation
+\item Exactly-once effects
+\item Load balancing
+\end{enumerate}
+\noindent\textbf{Answer.} Fault isolation
+\par\textit{Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources. Tradeoff: Blast radius shrinks at some efficiency cost. Watch for: A single global vector index or queue can defeat otherwise isolated services.}
+\paragraph{MCQ-1506 [hard]} The team proposes Fault isolation for a real workload. Which finding gives the correct decision boundary?
+\begin{enumerate}[label=\Alph*.]
+\item Success rate improves, while retries amplify overload and tail latency.
+\item Blast radius shrinks at some efficiency cost.
+\item Business effects can be effectively once, but state and retention are needed.
+\item Distribution improves availability but generic least-connections may ignore token workload size.
+\end{enumerate}
+\noindent\textbf{Answer.} Blast radius shrinks at some efficiency cost.
+\par\textit{Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources. Tradeoff: Blast radius shrinks at some efficiency cost. Watch for: A single global vector index or queue can defeat otherwise isolated services.}
+\paragraph{MCQ-1507 [hard]} Before releasing Fault isolation, which failure deserves a dedicated regression test?
+\begin{enumerate}[label=\Alph*.]
+\item A single global vector index or queue can defeat otherwise isolated services.
+\item Sending a long-context request to the least-busy replica can still cause head-of-line blocking.
+\item Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.
+\item Layered automatic retries create multiplicative request storms.
+\end{enumerate}
+\noindent\textbf{Answer.} A single global vector index or queue can defeat otherwise isolated services.
+\par\textit{Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources. Tradeoff: Blast radius shrinks at some efficiency cost. Watch for: A single global vector index or queue can defeat otherwise isolated services.}
+\paragraph{MCQ-1508 [medium]} A design review reveals this mistake: A single global vector index or queue can defeat otherwise isolated services. Which mechanism should be traced first?
+\begin{enumerate}[label=\Alph*.]
+\item Load balancing
+\item Fault isolation
+\item Retries and timeouts
+\item Exactly-once effects
+\end{enumerate}
+\noindent\textbf{Answer.} Fault isolation
+\par\textit{Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources. Tradeoff: Blast radius shrinks at some efficiency cost. Watch for: A single global vector index or queue can defeat otherwise isolated services.}
+\paragraph{MCQ-1509 [hard]} Which causal explanation of Fault isolation connects what it does to when it is worth its cost?
+\begin{enumerate}[label=\Alph*.]
+\item Mechanism: Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Consequence: Business effects can be effectively once, but state and retention are needed.
+\item Mechanism: Balancers route by health, load, locality, affinity, or capacity across replicas. Consequence: Distribution improves availability but generic least-connections may ignore token workload size.
+\item Mechanism: Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Consequence: Success rate improves, while retries amplify overload and tail latency.
+\item Mechanism: Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources. Consequence: Blast radius shrinks at some efficiency cost.
+\end{enumerate}
+\noindent\textbf{Answer.} Mechanism: Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources. Consequence: Blast radius shrinks at some efficiency cost.
+\par\textit{Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources. Tradeoff: Blast radius shrinks at some efficiency cost. Watch for: A single global vector index or queue can defeat otherwise isolated services.}
+\paragraph{FC-1510 [medium]} Define Fault isolation in interview-ready language.
+\noindent\textbf{Answer.} Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources.
+\par\textit{Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources.}
+\paragraph{FC-1511 [hard]} State the main tradeoff and production pitfall for Fault isolation.
+\noindent\textbf{Answer.} Tradeoff: Blast radius shrinks at some efficiency cost. Pitfall: A single global vector index or queue can defeat otherwise isolated services.
+\par\textit{Tradeoff: Blast radius shrinks at some efficiency cost. Pitfall: A single global vector index or queue can defeat otherwise isolated services.}
+\paragraph{LA-1512 [hard]} Explain Fault isolation from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Bulkheads, cells, quotas, and tenant boundaries prevent one failure or workload from consuming shared resources. Make the tradeoff explicit: Blast radius shrinks at some efficiency cost. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: A single global vector index or queue can defeat otherwise isolated services.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1513 [medium]} A design requires this behavior: Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Which mechanism should the team study?
+\begin{enumerate}[label=\Alph*.]
+\item CAP and consistency
+\item Retries and timeouts
+\item Exactly-once effects
+\item Caching
+\end{enumerate}
+\noindent\textbf{Answer.} Exactly-once effects
+\par\textit{Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Tradeoff: Business effects can be effectively once, but state and retention are needed. Watch for: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.}
+\paragraph{MCQ-1514 [hard]} The team proposes Exactly-once effects for a real workload. Which finding gives the correct decision boundary?
+\begin{enumerate}[label=\Alph*.]
+\item Stronger guarantees simplify application invariants but increase latency and unavailability.
+\item Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation.
+\item Business effects can be effectively once, but state and retention are needed.
+\item Success rate improves, while retries amplify overload and tail latency.
+\end{enumerate}
+\noindent\textbf{Answer.} Business effects can be effectively once, but state and retention are needed.
+\par\textit{Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Tradeoff: Business effects can be effectively once, but state and retention are needed. Watch for: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.}
+\paragraph{MCQ-1515 [hard]} Before releasing Exactly-once effects, which failure deserves a dedicated regression test?
+\begin{enumerate}[label=\Alph*.]
+\item Quoting CAP without identifying partitions and operations does not guide design.
+\item Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.
+\item Omitting tenant, model, prompt version, or authorization from a cache key leaks data.
+\item Layered automatic retries create multiplicative request storms.
+\end{enumerate}
+\noindent\textbf{Answer.} Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.
+\par\textit{Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Tradeoff: Business effects can be effectively once, but state and retention are needed. Watch for: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.}
+\paragraph{MCQ-1516 [medium]} A design review reveals this mistake: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect. Which mechanism should be traced first?
+\begin{enumerate}[label=\Alph*.]
+\item Caching
+\item CAP and consistency
+\item Retries and timeouts
+\item Exactly-once effects
+\end{enumerate}
+\noindent\textbf{Answer.} Exactly-once effects
+\par\textit{Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Tradeoff: Business effects can be effectively once, but state and retention are needed. Watch for: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.}
+\paragraph{MCQ-1517 [hard]} Which causal explanation of Exactly-once effects connects what it does to when it is worth its cost?
+\begin{enumerate}[label=\Alph*.]
+\item Mechanism: Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Consequence: Success rate improves, while retries amplify overload and tail latency.
+\item Mechanism: Caches trade staleness and invalidation complexity for lower latency and load. Consequence: Hit rates improve cost, but correctness depends on keys, TTLs, and invalidation.
+\item Mechanism: Under a network partition, a distributed system must trade availability against consistent reads and writes. Consequence: Stronger guarantees simplify application invariants but increase latency and unavailability.
+\item Mechanism: Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Consequence: Business effects can be effectively once, but state and retention are needed.
+\end{enumerate}
+\noindent\textbf{Answer.} Mechanism: Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Consequence: Business effects can be effectively once, but state and retention are needed.
+\par\textit{Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Tradeoff: Business effects can be effectively once, but state and retention are needed. Watch for: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.}
+\paragraph{FC-1518 [medium]} Define Exactly-once effects in interview-ready language.
+\noindent\textbf{Answer.} Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes.
+\par\textit{Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes.}
+\paragraph{FC-1519 [hard]} State the main tradeoff and production pitfall for Exactly-once effects.
+\noindent\textbf{Answer.} Tradeoff: Business effects can be effectively once, but state and retention are needed. Pitfall: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.
+\par\textit{Tradeoff: Business effects can be effectively once, but state and retention are needed. Pitfall: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.}
+\paragraph{LA-1520 [hard]} Explain Exactly-once effects from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Make the tradeoff explicit: Business effects can be effectively once, but state and retention are needed. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1521 [medium]} A design requires this behavior: Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Which mechanism should the team study?
+\begin{enumerate}[label=\Alph*.]
+\item Consensus
+\item Multi-region design
+\item Load balancing
+\item Exactly-once effects
+\end{enumerate}
+\noindent\textbf{Answer.} Multi-region design
+\par\textit{Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Tradeoff: Active-active improves availability and latency but makes writes and conflict resolution harder. Watch for: A standby region that never receives realistic traffic may fail during disaster recovery.}
+\paragraph{MCQ-1522 [hard]} The team proposes Multi-region design for a real workload. Which finding gives the correct decision boundary?
+\begin{enumerate}[label=\Alph*.]
+\item Active-active improves availability and latency but makes writes and conflict resolution harder.
+\item Business effects can be effectively once, but state and retention are needed.
+\item Coordination provides a consistent control plane but costs extra messages and quorum latency.
+\item Distribution improves availability but generic least-connections may ignore token workload size.
+\end{enumerate}
+\noindent\textbf{Answer.} Active-active improves availability and latency but makes writes and conflict resolution harder.
+\par\textit{Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Tradeoff: Active-active improves availability and latency but makes writes and conflict resolution harder. Watch for: A standby region that never receives realistic traffic may fail during disaster recovery.}
+\paragraph{MCQ-1523 [hard]} Before releasing Multi-region design, which failure deserves a dedicated regression test?
+\begin{enumerate}[label=\Alph*.]
+\item Sending a long-context request to the least-busy replica can still cause head-of-line blocking.
+\item Equating broker delivery semantics with end-to-end exactly-once effects is incorrect.
+\item A standby region that never receives realistic traffic may fail during disaster recovery.
+\item Deploying a quorum across unreliable links can reduce availability.
+\end{enumerate}
+\noindent\textbf{Answer.} A standby region that never receives realistic traffic may fail during disaster recovery.
+\par\textit{Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Tradeoff: Active-active improves availability and latency but makes writes and conflict resolution harder. Watch for: A standby region that never receives realistic traffic may fail during disaster recovery.}
+\paragraph{MCQ-1524 [medium]} A design review reveals this mistake: A standby region that never receives realistic traffic may fail during disaster recovery. Which mechanism should be traced first?
+\begin{enumerate}[label=\Alph*.]
+\item Multi-region design
+\item Exactly-once effects
+\item Load balancing
+\item Consensus
+\end{enumerate}
+\noindent\textbf{Answer.} Multi-region design
+\par\textit{Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Tradeoff: Active-active improves availability and latency but makes writes and conflict resolution harder. Watch for: A standby region that never receives realistic traffic may fail during disaster recovery.}
+\paragraph{MCQ-1525 [hard]} Which causal explanation of Multi-region design connects what it does to when it is worth its cost?
+\begin{enumerate}[label=\Alph*.]
+\item Mechanism: Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Consequence: Active-active improves availability and latency but makes writes and conflict resolution harder.
+\item Mechanism: Protocols such as Raft replicate an ordered log so nodes agree despite failures. Consequence: Coordination provides a consistent control plane but costs extra messages and quorum latency.
+\item Mechanism: Balancers route by health, load, locality, affinity, or capacity across replicas. Consequence: Distribution improves availability but generic least-connections may ignore token workload size.
+\item Mechanism: Systems typically combine at-least-once delivery with idempotent consumers, dedupe keys, and transactional outboxes. Consequence: Business effects can be effectively once, but state and retention are needed.
+\end{enumerate}
+\noindent\textbf{Answer.} Mechanism: Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Consequence: Active-active improves availability and latency but makes writes and conflict resolution harder.
+\par\textit{Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Tradeoff: Active-active improves availability and latency but makes writes and conflict resolution harder. Watch for: A standby region that never receives realistic traffic may fail during disaster recovery.}
+\paragraph{FC-1526 [medium]} Define Multi-region design in interview-ready language.
+\noindent\textbf{Answer.} Regions trade user latency, residency, failover speed, replication lag, and operational complexity.
+\par\textit{Regions trade user latency, residency, failover speed, replication lag, and operational complexity.}
+\paragraph{FC-1527 [hard]} State the main tradeoff and production pitfall for Multi-region design.
+\noindent\textbf{Answer.} Tradeoff: Active-active improves availability and latency but makes writes and conflict resolution harder. Pitfall: A standby region that never receives realistic traffic may fail during disaster recovery.
+\par\textit{Tradeoff: Active-active improves availability and latency but makes writes and conflict resolution harder. Pitfall: A standby region that never receives realistic traffic may fail during disaster recovery.}
+\paragraph{LA-1528 [hard]} Explain Multi-region design from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Make the tradeoff explicit: Active-active improves availability and latency but makes writes and conflict resolution harder. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: A standby region that never receives realistic traffic may fail during disaster recovery.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\paragraph{MCQ-1529 [medium]} A design requires this behavior: Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. Which mechanism should the team study?
+\begin{enumerate}[label=\Alph*.]
+\item Capacity planning
+\item Retries and timeouts
+\item Multi-region design
+\item Queues and backpressure
+\end{enumerate}
+\noindent\textbf{Answer.} Capacity planning
+\par\textit{Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. Tradeoff: Headroom handles bursts but idle accelerators are expensive. Watch for: Planning with average sequence length underestimates tail memory and latency.}
+\paragraph{MCQ-1530 [hard]} The team proposes Capacity planning for a real workload. Which finding gives the correct decision boundary?
+\begin{enumerate}[label=\Alph*.]
+\item Active-active improves availability and latency but makes writes and conflict resolution harder.
+\item Smoothing improves utilization, while waiting increases latency and stale work.
+\item Headroom handles bursts but idle accelerators are expensive.
+\item Success rate improves, while retries amplify overload and tail latency.
+\end{enumerate}
+\noindent\textbf{Answer.} Headroom handles bursts but idle accelerators are expensive.
+\par\textit{Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. Tradeoff: Headroom handles bursts but idle accelerators are expensive. Watch for: Planning with average sequence length underestimates tail memory and latency.}
+\paragraph{MCQ-1531 [hard]} Before releasing Capacity planning, which failure deserves a dedicated regression test?
+\begin{enumerate}[label=\Alph*.]
+\item Layered automatic retries create multiplicative request storms.
+\item Planning with average sequence length underestimates tail memory and latency.
+\item An unbounded queue converts overload into memory exhaustion.
+\item A standby region that never receives realistic traffic may fail during disaster recovery.
+\end{enumerate}
+\noindent\textbf{Answer.} Planning with average sequence length underestimates tail memory and latency.
+\par\textit{Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. Tradeoff: Headroom handles bursts but idle accelerators are expensive. Watch for: Planning with average sequence length underestimates tail memory and latency.}
+\paragraph{MCQ-1532 [medium]} A design review reveals this mistake: Planning with average sequence length underestimates tail memory and latency. Which mechanism should be traced first?
+\begin{enumerate}[label=\Alph*.]
+\item Capacity planning
+\item Retries and timeouts
+\item Queues and backpressure
+\item Multi-region design
+\end{enumerate}
+\noindent\textbf{Answer.} Capacity planning
+\par\textit{Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. Tradeoff: Headroom handles bursts but idle accelerators are expensive. Watch for: Planning with average sequence length underestimates tail memory and latency.}
+\paragraph{MCQ-1533 [hard]} Which causal explanation of Capacity planning connects what it does to when it is worth its cost?
+\begin{enumerate}[label=\Alph*.]
+\item Mechanism: Timeouts bound uncertainty; retries use budgets, backoff, jitter, and idempotency for transient failures. Consequence: Success rate improves, while retries amplify overload and tail latency.
+\item Mechanism: Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. Consequence: Headroom handles bursts but idle accelerators are expensive.
+\item Mechanism: Bounded queues absorb bursts while admission control and backpressure prevent producers from overwhelming consumers. Consequence: Smoothing improves utilization, while waiting increases latency and stale work.
+\item Mechanism: Regions trade user latency, residency, failover speed, replication lag, and operational complexity. Consequence: Active-active improves availability and latency but makes writes and conflict resolution harder.
+\end{enumerate}
+\noindent\textbf{Answer.} Mechanism: Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. Consequence: Headroom handles bursts but idle accelerators are expensive.
+\par\textit{Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. Tradeoff: Headroom handles bursts but idle accelerators are expensive. Watch for: Planning with average sequence length underestimates tail memory and latency.}
+\paragraph{FC-1534 [medium]} Define Capacity planning in interview-ready language.
+\noindent\textbf{Answer.} Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets.
+\par\textit{Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets.}
+\paragraph{FC-1535 [hard]} State the main tradeoff and production pitfall for Capacity planning.
+\noindent\textbf{Answer.} Tradeoff: Headroom handles bursts but idle accelerators are expensive. Pitfall: Planning with average sequence length underestimates tail memory and latency.
+\par\textit{Tradeoff: Headroom handles bursts but idle accelerators are expensive. Pitfall: Planning with average sequence length underestimates tail memory and latency.}
+\paragraph{LA-1536 [hard]} Explain Capacity planning from first principles, then show how you would evaluate and operate it in production.
+\noindent\textbf{Answer.} Start with the mechanism: Workload models connect arrival rate, prompt and output tokens, service time, concurrency, memory, and SLO targets. Make the tradeoff explicit: Headroom handles bursts but idle accelerators are expensive. Define workload-specific offline metrics and a latency/cost budget, test important slices, instrument the critical path, and create a rollback criterion. The production review must explicitly guard against this failure: Planning with average sequence length underestimates tail memory and latency.
+\par\textit{A strong answer connects mechanism, measurable tradeoffs, failure isolation, observability, and rollback rather than listing product features.}
+\clearpage\section{Primary sources}
+\begin{enumerate}
+\item \href{https://arxiv.org/abs/1706.03762}{Attention Is All You Need} (paper)
+\item \href{https://arxiv.org/abs/2005.11401}{Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks} (paper)
+\item \href{https://arxiv.org/abs/2004.04906}{Dense Passage Retrieval for Open-Domain Question Answering} (paper)
+\item \href{https://arxiv.org/abs/2104.08663}{BEIR: A Heterogeneous Benchmark for Zero-shot Evaluation of Information Retrieval Models} (paper)
+\item \href{https://arxiv.org/abs/2309.15217}{RAGAS: Automated Evaluation of Retrieval Augmented Generation} (paper)
+\item \href{https://arxiv.org/abs/2109.07958}{TruthfulQA: Measuring How Models Mimic Human Falsehoods} (paper)
+\item \href{https://arxiv.org/abs/2210.03629}{ReAct: Synergizing Reasoning and Acting in Language Models} (paper)
+\item \href{https://arxiv.org/abs/2303.11366}{Reflexion: Language Agents with Verbal Reinforcement Learning} (paper)
+\item \href{https://arxiv.org/abs/2302.04761}{Toolformer: Language Models Can Teach Themselves to Use Tools} (paper)
+\item \href{https://arxiv.org/abs/2404.16130}{A Graph RAG Approach to Query-Focused Summarization} (paper)
+\item \href{https://arxiv.org/abs/2409.13731}{KAG: Boosting LLMs in Professional Domains via Knowledge Augmented Generation} (paper)
+\item \href{https://modelcontextprotocol.io/specification/2026-07-28}{Model Context Protocol Specification (2026-07-28)} (specification)
+\item \href{https://arxiv.org/abs/2205.14135}{FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness} (paper)
+\item \href{https://arxiv.org/abs/2309.06180}{Efficient Memory Management for Large Language Model Serving with PagedAttention} (paper)
+\item \href{https://arxiv.org/abs/2305.13245}{GQA: Training Generalized Multi-Query Transformer Models} (paper)
+\item \href{https://arxiv.org/abs/2211.17192}{Fast Inference from Transformers via Speculative Decoding} (paper)
+\item \href{https://arxiv.org/abs/2106.09685}{LoRA: Low-Rank Adaptation of Large Language Models} (paper)
+\item \href{https://arxiv.org/abs/2305.14314}{QLoRA: Efficient Finetuning of Quantized LLMs} (paper)
+\item \href{https://arxiv.org/abs/2305.18290}{Direct Preference Optimization} (paper)
+\item \href{https://github.com/pgvector/pgvector}{pgvector Documentation} (official docs)
+\item \href{https://docs.pinecone.io/guides/search/hybrid-search}{Pinecone Hybrid Search} (official docs)
+\item \href{https://qdrant.tech/documentation/}{Qdrant Documentation} (official docs)
+\item \href{https://docs.weaviate.io/weaviate}{Weaviate Documentation} (official docs)
+\item \href{https://milvus.io/docs}{Milvus Documentation} (official docs)
+\item \href{https://www.elastic.co/docs/solutions/search/vector/knn}{Elasticsearch kNN Search} (official docs)
+\item \href{https://neo4j.com/docs/cypher-manual/current/indexes/semantic-indexes/vector-indexes/}{Neo4j Vector Indexes} (official docs)
+\item \href{https://docs.langchain.com/oss/python/langgraph/overview}{LangGraph Overview} (official docs)
+\item \href{https://docs.temporal.io/}{Temporal Durable Execution} (official docs)
+\item \href{https://opentelemetry.io/docs/specs/semconv/}{OpenTelemetry Semantic Conventions} (standard)
+\item \href{https://mlflow.org/docs/latest/genai/}{MLflow for LLMs and Agents} (official docs)
+\item \href{https://docs.evidentlyai.com/}{Evidently Documentation} (official docs)
+\item \href{https://doc.dvc.org/start/data-pipelines/data-pipelines}{DVC Data Pipelines and Versioning} (official docs)
+\item \href{https://docs.feast.dev/}{Feast Feature Store Documentation} (official docs)
+\item \href{https://docs.vllm.ai/}{vLLM Documentation} (official docs)
+\item \href{https://docs.ray.io/en/latest/serve/llm/}{Ray Serve LLM Serving} (official docs)
+\item \href{https://kserve.github.io/website/}{KServe Documentation} (official docs)
+\item \href{https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/}{Kubernetes Horizontal Pod Autoscaling} (official docs)
+\item \href{https://fastapi.tiangolo.com/}{FastAPI Documentation} (official docs)
+\item \href{https://grpc.io/docs/}{gRPC Documentation} (official docs)
+\item \href{https://docs.python.org/3/}{Python 3 Documentation} (official docs)
+\item \href{https://genai.owasp.org/llm-top-10/}{OWASP Top 10 for LLM Applications} (standard)
+\item \href{https://www.nist.gov/itl/ai-risk-management-framework}{NIST AI Risk Management Framework} (standard)
+\item \href{https://docs.langchain.com/oss/python/langchain/overview}{LangChain official documentation} (official technology documentation)
+\item \href{https://docs.langchain.com/oss/python/langchain/agents}{LangChain agents and runtime} (official technology documentation)
+\item \href{https://docs.langchain.com/oss/python/langgraph/graph-api}{LangGraph graph API} (official technology documentation)
+\item \href{https://docs.langchain.com/oss/python/langgraph/persistence}{LangGraph persistence design} (official technology documentation)
+\item \href{https://docs.langchain.com/oss/python/deepagents/overview}{Deep Agents official documentation} (official technology documentation)
+\item \href{https://docs.langchain.com/oss/python/deepagents/harness}{Deep Agents harness} (official technology documentation)
+\item \href{https://docs.langchain.com/oss/python/deepagents/backends}{Deep Agents backends} (official technology documentation)
+\item \href{https://docs.llamaindex.ai/en/stable/}{LlamaIndex official documentation} (official technology documentation)
+\item \href{https://docs.haystack.deepset.ai/docs/intro}{Haystack official documentation} (official technology documentation)
+\item \href{https://learn.microsoft.com/en-us/semantic-kernel/overview/}{Semantic Kernel official documentation} (official technology documentation)
+\item \href{https://microsoft.github.io/autogen/stable/}{AutoGen official documentation} (official technology documentation)
+\item \href{https://docs.crewai.com/}{CrewAI official documentation} (official technology documentation)
+\item \href{https://ai.pydantic.dev/}{PydanticAI official documentation} (official technology documentation)
+\item \href{https://dspy.ai/}{DSPy official documentation} (official technology documentation)
+\item \href{https://openai.github.io/openai-agents-python/}{OpenAI Agents SDK official documentation} (official technology documentation)
+\item \href{https://google.github.io/adk-docs/}{Google Agent Development Kit official documentation} (official technology documentation)
+\item \href{https://mastra.ai/docs}{Mastra official documentation} (official technology documentation)
+\item \href{https://docs.vllm.ai/en/latest/design/arch_overview/}{vLLM architecture} (official technology documentation)
+\item \href{https://docs.vllm.ai/en/latest/serving/openai_compatible_server/}{vLLM serving guide} (official technology documentation)
+\item \href{https://docs.sglang.ai/}{SGLang official documentation} (official technology documentation)
+\item \href{https://huggingface.co/docs/text-generation-inference/index}{Hugging Face Text Generation Inference official documentation} (official technology documentation)
+\item \href{https://nvidia.github.io/TensorRT-LLM/}{TensorRT-LLM official documentation} (official technology documentation)
+\item \href{https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/}{NVIDIA Triton Inference Server official documentation} (official technology documentation)
+\item \href{https://github.com/ggml-org/llama.cpp}{llama.cpp official documentation} (official technology documentation)
+\item \href{https://docs.ollama.com/}{Ollama official documentation} (official technology documentation)
+\item \href{https://docs.ray.io/en/latest/serve/}{Ray Serve official documentation} (official technology documentation)
+\item \href{https://docs.bentoml.com/}{BentoML official documentation} (official technology documentation)
+\item \href{https://localai.io/}{LocalAI official documentation} (official technology documentation)
+\item \href{https://modal.com/docs/guide}{Modal official documentation} (official technology documentation)
+\item \href{https://docs.baseten.co/}{Baseten official documentation} (official technology documentation)
+\item \href{https://huggingface.co/docs/inference-endpoints/index}{Hugging Face Inference Endpoints official documentation} (official technology documentation)
+\item \href{https://docs.pinecone.io/}{Pinecone official documentation} (official technology documentation)
+\item \href{https://docs.trychroma.com/}{Chroma official documentation} (official technology documentation)
+\item \href{https://docs.lancedb.com/}{LanceDB official documentation} (official technology documentation)
+\item \href{https://github.com/facebookresearch/faiss}{FAISS official documentation} (official technology documentation)
+\item \href{https://www.elastic.co/docs/solutions/search}{Elasticsearch official documentation} (official technology documentation)
+\item \href{https://docs.opensearch.org/latest/vector-search/}{OpenSearch official documentation} (official technology documentation)
+\item \href{https://docs.vespa.ai/}{Vespa official documentation} (official technology documentation)
+\item \href{https://redis.io/docs/latest/develop/ai/}{Redis Search and Vector Sets official documentation} (official technology documentation)
+\item \href{https://neo4j.com/docs/}{Neo4j official documentation} (official technology documentation)
+\item \href{https://neo4j.com/docs/getting-started/appendix/graphdb-concepts/}{Neo4j graph database concepts} (official technology documentation)
+\item \href{https://neo4j.com/docs/cypher-manual/current/}{Cypher manual} (official technology documentation)
+\item \href{https://neo4j.com/docs/neo4j-graphrag-python/current/}{Neo4j GraphRAG for Python} (official technology documentation)
+\item \href{https://memgraph.com/docs}{Memgraph official documentation} (official technology documentation)
+\item \href{https://docs.falkordb.com/}{FalkorDB official documentation} (official technology documentation)
+\item \href{https://docs.aws.amazon.com/neptune/}{Amazon Neptune official documentation} (official technology documentation)
+\item \href{https://docs.kuzudb.com/}{Kuzu official documentation} (official technology documentation)
+\item \href{https://docs.langchain.com/langsmith/home}{LangSmith official documentation} (official technology documentation)
+\item \href{https://docs.langchain.com/langsmith/observability}{LangSmith observability} (official technology documentation)
+\item \href{https://docs.langchain.com/langsmith/evaluation}{LangSmith evaluation} (official technology documentation)
+\item \href{https://langfuse.com/docs}{Langfuse official documentation} (official technology documentation)
+\item \href{https://arize.com/docs/phoenix}{Arize Phoenix official documentation} (official technology documentation)
+\item \href{https://docs.helicone.ai/}{Helicone official documentation} (official technology documentation)
+\item \href{https://opentelemetry.io/docs/}{OpenTelemetry official documentation} (official technology documentation)
+\item \href{https://weave-docs.wandb.ai/}{Weights \& Biases Weave official documentation} (official technology documentation)
+\item \href{https://www.braintrust.dev/docs}{Braintrust official documentation} (official technology documentation)
+\item \href{https://docs.ragas.io/}{Ragas official documentation} (official technology documentation)
+\item \href{https://deepeval.com/docs/}{DeepEval official documentation} (official technology documentation)
+\item \href{https://www.trulens.org/}{TruLens official documentation} (official technology documentation)
+\item \href{https://www.promptfoo.dev/docs/}{Promptfoo official documentation} (official technology documentation)
+\item \href{https://modelcontextprotocol.io/docs/learn/architecture}{MCP architecture} (official technology documentation)
+\item \href{https://modelcontextprotocol.io/specification/latest/basic/authorization}{MCP authorization} (official technology documentation)
+\item \href{https://modelcontextprotocol.io/docs/sdk}{Official MCP SDKs official documentation} (official technology documentation)
+\item \href{https://gofastmcp.com/getting-started/welcome}{FastMCP official documentation} (official technology documentation)
+\item \href{https://github.com/modelcontextprotocol/inspector}{MCP Inspector official documentation} (official technology documentation)
+\item \href{https://docs.docker.com/ai/mcp-catalog-and-toolkit/}{Docker MCP Toolkit and Gateway official documentation} (official technology documentation)
+\item \href{https://smithery.ai/docs}{Smithery official documentation} (official technology documentation)
+\item \href{https://docs.composio.dev/}{Composio official documentation} (official technology documentation)
+\item \href{https://docs.arcade.dev/}{Arcade official documentation} (official technology documentation)
+\item \href{https://e2b.dev/docs}{E2B official documentation} (official technology documentation)
+\item \href{https://www.daytona.io/docs/}{Daytona official documentation} (official technology documentation)
+\item \href{https://modal.com/docs/guide/sandbox}{Modal Sandboxes official documentation} (official technology documentation)
+\item \href{https://docs.docker.com/engine/security/}{Docker official documentation} (official technology documentation)
+\item \href{https://gvisor.dev/docs/}{gVisor official documentation} (official technology documentation)
+\item \href{https://github.com/firecracker-microvm/firecracker}{Firecracker official documentation} (official technology documentation)
+\item \href{https://katacontainers.io/docs/}{Kata Containers official documentation} (official technology documentation)
+\item \href{https://kubernetes.io/docs/concepts/workloads/controllers/job/}{Kubernetes Jobs official documentation} (official technology documentation)
+\item \href{https://airflow.apache.org/docs/}{Apache Airflow official documentation} (official technology documentation)
+\item \href{https://docs.prefect.io/}{Prefect official documentation} (official technology documentation)
+\item \href{https://docs.dagster.io/}{Dagster official documentation} (official technology documentation)
+\item \href{https://dvc.org/doc}{DVC official documentation} (official technology documentation)
+\item \href{https://docs.lakefs.io/}{lakeFS official documentation} (official technology documentation)
+\item \href{https://www.kubeflow.org/docs/components/pipelines/}{Kubeflow Pipelines official documentation} (official technology documentation)
+\item \href{https://docs.zenml.io/}{ZenML official documentation} (official technology documentation)
+\item \href{https://help.getzep.com/}{Zep official documentation} (official technology documentation)
+\item \href{https://docs.mem0.ai/}{Mem0 official documentation} (official technology documentation)
+\item \href{https://docs.pytorch.org/docs/stable/index.html}{PyTorch official documentation} (official technology documentation)
+\item \href{https://docs.jax.dev/en/latest/}{JAX official documentation} (official technology documentation)
+\item \href{https://huggingface.co/docs/transformers/index}{Hugging Face Transformers official documentation} (official technology documentation)
+\item \href{https://sbert.net/}{Sentence Transformers official documentation} (official technology documentation)
+\item \href{https://huggingface.co/docs/peft/index}{Hugging Face PEFT official documentation} (official technology documentation)
+\item \href{https://huggingface.co/docs/bitsandbytes/main/en/index}{bitsandbytes official documentation} (official technology documentation)
+\item \href{https://onnxruntime.ai/docs/}{ONNX Runtime official documentation} (official technology documentation)
+\item \href{https://docs.openvino.ai/}{OpenVINO official documentation} (official technology documentation)
+\item \href{https://bge-model.com/}{FlagEmbedding official documentation} (official technology documentation)
+\item \href{https://python.useinstructor.com/}{Instructor official documentation} (official technology documentation)
+\item \href{https://docs.cohere.com/docs/rerank-overview}{Cohere Rerank official documentation} (official technology documentation)
+\item \href{https://huggingface.co/docs/text-embeddings-inference/index}{Hugging Face Text Embeddings Inference official documentation} (official technology documentation)
+\item \href{https://docs.litellm.ai/}{LiteLLM official documentation} (official technology documentation)
+\item \href{https://portkey.ai/docs/}{Portkey AI Gateway official documentation} (official technology documentation)
+\item \href{https://developer.konghq.com/ai-gateway/}{Kong AI Gateway official documentation} (official technology documentation)
+\item \href{https://aigateway.envoyproxy.io/docs/}{Envoy AI Gateway official documentation} (official technology documentation)
+\item \href{https://docs.aws.amazon.com/sagemaker/latest/dg/deploy-model.html}{Amazon SageMaker AI Endpoints official documentation} (official technology documentation)
+\item \href{https://cloud.google.com/vertex-ai/docs/predictions/overview}{Vertex AI Endpoints official documentation} (official technology documentation)
+\item \href{https://learn.microsoft.com/en-us/azure/machine-learning/concept-endpoints-online}{Azure Machine Learning Managed Online Endpoints official documentation} (official technology documentation)
+\item \href{https://docs.nvidia.com/nemo/guardrails/latest/}{NVIDIA NeMo Guardrails official documentation} (official technology documentation)
+\item \href{https://www.guardrailsai.com/docs}{Guardrails AI official documentation} (official technology documentation)
+\item \href{https://www.llama.com/docs/model-cards-and-prompt-formats/llama-guard-4/}{Llama Guard official documentation} (official technology documentation)
+\item \href{https://protectai.github.io/llm-guard/}{Protect AI LLM Guard official documentation} (official technology documentation)
+\item \href{https://microsoft.github.io/presidio/}{Microsoft Presidio official documentation} (official technology documentation)
+\item \href{https://www.openpolicyagent.org/docs/latest/}{Open Policy Agent official documentation} (official technology documentation)
+\item \href{https://docs.cedarpolicy.com/}{Cedar official documentation} (official technology documentation)
+\item \href{https://docs.lakera.ai/docs}{Lakera Guard official documentation} (official technology documentation)
+\item \href{https://docs.agno.com/}{Agno official documentation} (official technology documentation)
+\item \href{https://huggingface.co/docs/smolagents/index}{Hugging Face smolagents official documentation} (official technology documentation)
+\item \href{https://docs.letta.com/}{Letta official documentation} (official technology documentation)
+\item \href{https://langroid.github.io/langroid/}{Langroid official documentation} (official technology documentation)
+\item \href{https://framework.beeai.dev/}{BeeAI Framework official documentation} (official technology documentation)
+\item \href{https://github.com/strands-agents/harness-sdk}{Strands Agents SDK official documentation} (official technology documentation)
+\item \href{https://platform.claude.com/docs/en/agent-sdk/overview}{Claude Agent SDK official documentation} (official technology documentation)
+\item \href{https://ai-sdk.dev/docs/introduction}{Vercel AI SDK official documentation} (official technology documentation)
+\item \href{https://learn.microsoft.com/en-us/agent-framework/overview/}{Microsoft Agent Framework official documentation} (official technology documentation)
+\item \href{https://docs.camel-ai.org/}{CAMEL-AI official documentation} (official technology documentation)
+\item \href{https://rasa.com/docs/}{Rasa official documentation} (official technology documentation)
+\item \href{https://docs.langflow.org/}{Langflow official documentation} (official technology documentation)
+\item \href{https://docs.dify.ai/}{Dify official documentation} (official technology documentation)
+\item \href{https://docs.flowiseai.com/}{Flowise official documentation} (official technology documentation)
+\item \href{https://developers.cloudflare.com/agents/}{Cloudflare Agents SDK official documentation} (official technology documentation)
+\item \href{https://huggingface.co/docs/accelerate/index}{Hugging Face Accelerate official documentation} (official technology documentation)
+\item \href{https://www.deepspeed.ai/}{DeepSpeed official documentation} (official technology documentation)
+\item \href{https://huggingface.co/docs/trl/index}{Hugging Face TRL official documentation} (official technology documentation)
+\item \href{https://docs.axolotl.ai/}{Axolotl official documentation} (official technology documentation)
+\item \href{https://docs.unsloth.ai/}{Unsloth official documentation} (official technology documentation)
+\item \href{https://llm-d.ai/docs/dev}{llm-d official documentation} (official technology documentation)
+\item \href{https://llm-d.ai/docs/architecture}{llm-d architecture} (official technology documentation)
+\item \href{https://kserve.github.io/website/docs/model-serving/generative-inference/llmisvc/llmisvc-overview}{KServe LLMInferenceService} (official technology documentation)
+\item \href{https://docs.nvidia.com/dynamo/latest/}{NVIDIA Dynamo official documentation} (official technology documentation)
+\item \href{https://docs.nvidia.com/nim/large-language-models/latest/introduction.html}{NVIDIA NIM official documentation} (official technology documentation)
+\item \href{https://docs.nvidia.com/nim/large-language-models/latest/reference/architecture.html}{NIM LLM architecture} (official technology documentation)
+\item \href{https://docs.pytorch.org/serve/}{TorchServe official documentation} (official technology documentation)
+\item \href{https://deepspeed-mii.readthedocs.io/en/latest/}{DeepSpeed-MII official documentation} (official technology documentation)
+\item \href{https://github.com/bentoml/OpenLLM}{OpenLLM official documentation} (official technology documentation)
+\item \href{https://lmdeploy.readthedocs.io/en/latest/}{LMDeploy official documentation} (official technology documentation)
+\item \href{https://llm.mlc.ai/docs/}{MLC LLM official documentation} (official technology documentation)
+\item \href{https://replicate.com/docs}{Replicate official documentation} (official technology documentation)
+\item \href{https://docs.runpod.io/serverless/overview}{Runpod Serverless official documentation} (official technology documentation)
+\item \href{https://docs.together.ai/docs/inference-overview}{Together AI Inference official documentation} (official technology documentation)
+\item \href{https://docs.fireworks.ai/}{Fireworks AI official documentation} (official technology documentation)
+\item \href{https://console.groq.com/docs/overview}{GroqCloud official documentation} (official technology documentation)
+\item \href{https://inference-docs.cerebras.ai/introduction}{Cerebras Inference official documentation} (official technology documentation)
+\item \href{https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html}{Amazon Bedrock official documentation} (official technology documentation)
+\item \href{https://developers.cloudflare.com/workers-ai/}{Cloudflare Workers AI official documentation} (official technology documentation)
+\item \href{https://docs.databricks.com/aws/en/machine-learning/model-serving/}{Databricks Model Serving official documentation} (official technology documentation)
+\item \href{https://www.mongodb.com/docs/atlas/atlas-vector-search/}{MongoDB Atlas Vector Search official documentation} (official technology documentation)
+\item \href{https://docs.couchbase.com/server/current/vector-search/vector-search.html}{Couchbase Vector Search official documentation} (official technology documentation)
+\item \href{https://docs.databricks.com/aws/en/generative-ai/vector-search/}{Databricks Mosaic AI Vector Search official documentation} (official technology documentation)
+\item \href{https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-search/cortex-search-overview}{Snowflake Cortex Search official documentation} (official technology documentation)
+\item \href{https://docs.oracle.com/en/database/oracle/oracle-database/23/vecse/}{Oracle AI Vector Search official documentation} (official technology documentation)
+\item \href{https://docs.tigergraph.com/}{TigerGraph official documentation} (official technology documentation)
+\item \href{https://docs.arangodb.com/}{ArangoDB official documentation} (official technology documentation)
+\item \href{https://age.apache.org/age-manual/master/intro/overview.html}{Apache AGE official documentation} (official technology documentation)
+\item \href{https://docs.janusgraph.org/}{JanusGraph official documentation} (official technology documentation)
+\item \href{https://www.comet.com/docs/opik/}{Opik official documentation} (official technology documentation)
+\item \href{https://docs.agentops.ai/}{AgentOps official documentation} (official technology documentation)
+\item \href{https://docs.parea.ai/}{Parea official documentation} (official technology documentation)
+\item \href{https://docs.honeyhive.ai/}{HoneyHive official documentation} (official technology documentation)
+\item \href{https://docs.galileo.ai/}{Galileo official documentation} (official technology documentation)
+\item \href{https://docs.giskard.ai/}{Giskard official documentation} (official technology documentation)
+\item \href{https://inspect.aisi.org.uk/}{Inspect AI official documentation} (official technology documentation)
+\item \href{https://www.getmaxim.ai/docs/}{Maxim AI official documentation} (official technology documentation)
+\item \href{https://reference.garak.ai/en/latest/}{garak official documentation} (official technology documentation)
+\item \href{https://azure.github.io/PyRIT/}{PyRIT official documentation} (official technology documentation)
+\item \href{https://github.com/protectai/rebuff}{Rebuff official documentation} (official technology documentation)
+\item \href{https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html}{Amazon Bedrock Guardrails official documentation} (official technology documentation)
+\item \href{https://learn.microsoft.com/en-us/azure/ai-services/content-safety/overview}{Azure AI Content Safety official documentation} (official technology documentation)
+\item \href{https://cloud.google.com/security-command-center/docs/model-armor-overview}{Google Cloud Model Armor official documentation} (official technology documentation)
+\item \href{https://modelcontextprotocol.io/registry/about}{Official MCP Registry official documentation} (official technology documentation)
+\item \href{https://registry.modelcontextprotocol.io/docs}{Registry API} (official technology documentation)
+\item \href{https://github.com/github/github-mcp-server}{GitHub MCP Server official documentation} (official technology documentation)
+\item \href{https://github.com/awslabs/mcp}{AWS MCP Servers official documentation} (official technology documentation)
+\item \href{https://googleapis.github.io/genai-toolbox/}{MCP Toolbox for Databases official documentation} (official technology documentation)
+\item \href{https://github.com/microsoft/mcp}{Azure MCP Server official documentation} (official technology documentation)
+\item \href{https://docs.zapier.com/mcp/home}{Zapier MCP official documentation} (official technology documentation)
+\item \href{https://mcp-use.com/docs/}{mcp-use official documentation} (official technology documentation)
+\item \href{https://developers.cloudflare.com/sandbox/}{Cloudflare Sandbox SDK official documentation} (official technology documentation)
+\item \href{https://developers.cloudflare.com/sandbox/api/storage/}{Sandbox storage and persistence} (official technology documentation)
+\item \href{https://docs.runloop.ai/}{Runloop official documentation} (official technology documentation)
+\item \href{https://docs.sprites.dev/}{Sprites official documentation} (official technology documentation)
+\item \href{https://docs.browserbase.com/}{Browserbase official documentation} (official technology documentation)
+\item \href{https://docs.docker.com/ai/sandboxes/}{Docker Sandboxes official documentation} (official technology documentation)
+\item \href{https://docs.wasmtime.dev/}{Wasmtime official documentation} (official technology documentation)
+\item \href{https://github.com/google/nsjail}{nsjail official documentation} (official technology documentation)
+\item \href{https://argo-workflows.readthedocs.io/}{Argo Workflows official documentation} (official technology documentation)
+\item \href{https://docs.flyte.org/}{Flyte official documentation} (official technology documentation)
+\item \href{https://docs.metaflow.org/}{Metaflow official documentation} (official technology documentation)
+\item \href{https://clear.ml/docs/latest/docs/}{ClearML official documentation} (official technology documentation)
+\item \href{https://labelstud.io/guide/}{Label Studio official documentation} (official technology documentation)
+\item \href{https://docs.greatexpectations.io/docs/}{Great Expectations official documentation} (official technology documentation)
+\item \href{https://docs.airbyte.com/}{Airbyte official documentation} (official technology documentation)
+\item \href{https://docs.unstructured.io/}{Unstructured official documentation} (official technology documentation)
+\item \href{https://docling-project.github.io/docling/}{Docling official documentation} (official technology documentation)
+\end{enumerate}

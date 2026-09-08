@@ -1,6 +1,6 @@
 # AI Engineering Interview Atlas
 
-> 192 topics, 194 technology profiles, 2696 generated practice questions, 50 core interview questions, and 32 system-design challenges.
+> 192 topics, 194 technology profiles, 2312 generated practice questions, 50 core interview questions, and 32 system-design challenges.
 
 A research-grounded practice repository for AI engineering, LLM systems, RAG, agents, deployment, data, observability, theory, and backend engineering.
 
@@ -112,6 +112,12 @@ Prompt injection · Tool authorization · Secrets management · Sandboxing · Da
 
 CAP and consistency · Consensus · Queues and backpressure · Retries and timeouts · Caching · Load balancing · Fault isolation · Exactly-once effects · Multi-region design · Capacity planning
 
+## Lesson teaching contract
+
+Every chapter is generated from a topic-specific causal claim inside a real course-level model, then taught in six layers: (1) abstraction and prerequisites, (2) under-the-hood mechanism, (3) predictive intuition and its limit, (4) a quantitative model with derivations where applicable, (5) a worked case plus executable lab, and (6) failure diagnosis and recovery.
+
+`validate_tutorials` blocks missing layers, deprecated filler phrases, non-executable placeholder labs, lessons that do not name their own topic, and chapters below the minimum substance threshold. The Pages workflow rebuilds all generated assets and rejects any uncommitted difference before compiling the handbook.
+
 ## Ordered study roadmap
 
 ```mermaid
@@ -129,11 +135,11 @@ flowchart TD
   S --> M[Mock interviews]
 ```
 
-The browser resumes the last unfinished lesson, records five reading checkpoints, unlocks a five-question topic exam, and advances after an 80% passing score. Roadmap phases with lessons complete automatically when every chapter in the phase is passed.
+The browser resumes the last unfinished lesson, records six teaching checkpoints, unlocks a five-question topic exam, and advances after an 80% passing score. Roadmap phases with lessons complete automatically when every chapter in the phase is passed.
 
 ## Visual and mathematical coverage
 
-The handbook and site include 15 core instructional diagrams and plots, 194 technology-specific flow diagrams, 9 comparison maps, and 33 formula modules with assumptions, variable definitions, derivations, and worked interpretations. Browser equations use MathJax; the source handbook uses native LaTeX with `amsmath`, `amssymb`, `mathtools`, and TikZ.
+The handbook and site include 15 core instructional diagrams and plots, 194 technology-specific flow diagrams, 9 comparison maps, and 34 formula modules with assumptions, variable definitions, derivations, and worked interpretations. Browser equations use MathJax; the source handbook uses native LaTeX with `amsmath`, `amssymb`, `mathtools`, and TikZ.
 
 ## Source policy
 

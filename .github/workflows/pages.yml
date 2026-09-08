@@ -18,6 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Validate lesson depth and generated assets
+        run: |
+          python3 tools/build_content.py
+          node --check app.js
+          git diff --exit-code
       - name: Compile LaTeX handbook
         uses: xu-cheng/latex-action@v4
         with:

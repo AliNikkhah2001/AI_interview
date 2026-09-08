@@ -15,7 +15,7 @@ from reportlab.lib.units import mm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.platypus import (
     BaseDocTemplate, Flowable, Frame, KeepTogether, PageBreak, PageTemplate,
-    Paragraph, Spacer, Table, TableStyle,
+    Paragraph, Preformatted, Spacer, Table, TableStyle,
 )
 
 
@@ -59,6 +59,7 @@ styles.add(ParagraphStyle(name="AtlasOption", fontName="Helvetica", fontSize=7.4
 styles.add(ParagraphStyle(name="AtlasAnswer", fontName="Helvetica", fontSize=7.35, leading=9.7, textColor=GREEN, leftIndent=8, borderColor=CYAN, borderWidth=0, borderPadding=0, spaceBefore=2))
 styles.add(ParagraphStyle(name="AtlasCenter", parent=styles["AtlasBody"], alignment=TA_CENTER))
 styles.add(ParagraphStyle(name="AtlasFormula", fontName="Courier", fontSize=6.35, leading=8.5, textColor=NAVY, backColor=colors.HexColor("#EFF9FA"), borderColor=CYAN, borderWidth=.5, borderPadding=6, spaceBefore=3, spaceAfter=5))
+styles.add(ParagraphStyle(name="AtlasCode", fontName="Courier", fontSize=5.7, leading=7.4, textColor=NAVY, backColor=colors.HexColor("#EEF5FF"), borderColor=LINE, borderWidth=.5, borderPadding=6, spaceBefore=3, spaceAfter=6))
 
 
 class AtlasDoc(BaseDocTemplate):
@@ -198,18 +199,28 @@ for f in formulas:
         story += [Paragraph(f"<b>Step {i}.</b> "+safe(s["text"]),styles["AtlasBody"]),Paragraph(safe(s["latex"]),styles["AtlasFormula"])]
     story += [Paragraph("<b>Worked interpretation.</b> "+safe(f["example"]),styles["AtlasSmall"])]
 
-story += [PageBreak(),section("Deep tutorials: first principles to production"),body("These lessons are the teaching source for the full generated bank. Each one covers the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric used by all seven MCQs, both flashcards, and the long-answer prompt for its topic.")]
+story += [PageBreak(),section("Deep tutorials: first principles to production"),body("Every chapter teaches six layers: the map and prerequisites, the causal mechanism, predictive intuition and its limits, a quantitative model, a worked case with an executable probe, and failure diagnosis with recovery. The questions test those layers instead of substituting for them.")]
 formula_map={f["id"]:f for f in formulas}
 current=None
 for t in tutorials:
     if t["category"] != current:
         current=t["category"]; story += [PageBreak(),section(current)]
-    story += [subsection(t["name"]),Paragraph("<b>Objective.</b> "+safe(t["objective"]),styles["AtlasBody"]),body(t["first_principles"]),body(t["mental_model"]),Paragraph("<b>Quantitative reasoning.</b> "+safe(t["quantitative_reasoning"]),styles["AtlasBody"])]
+    story += [subsection(t["name"]),Paragraph("<b>Objective.</b> "+safe(t["objective"]),styles["AtlasBody"]),Paragraph("<b>1. Map and abstraction.</b>",styles["AtlasQuestion"])]
+    story += [body(x) for x in t["big_picture"]]
+    story += [Paragraph("<b>Prerequisites.</b> "+safe(" · ".join(t["prerequisites"])),styles["AtlasSmall"]),Paragraph("<b>2. Under the hood.</b>",styles["AtlasQuestion"])]
+    for i,x in enumerate(t["mechanism_steps"],1):
+        story.append(Paragraph(f"{i}. "+safe(x),styles["AtlasSmall"]))
+    story += [Paragraph("<b>3. Predictive intuition.</b>",styles["AtlasQuestion"]),body(t["intuition"]["analogy"]),Paragraph("<b>Prediction.</b> "+safe(t["intuition"]["prediction"]),styles["AtlasSmall"]),Paragraph("<b>Limit.</b> "+safe(t["intuition"]["limit"]),styles["AtlasSmall"]),Paragraph("<b>4. Quantitative model.</b>",styles["AtlasQuestion"])]
+    story += [body(x) for x in t["quantitative_model"]]
     for fid in t["formula_ids"]:
         f=formula_map[fid]; story += [Paragraph("<b>"+safe(f["title"])+".</b>",styles["AtlasSmall"]),Paragraph(safe(f["latex"]),styles["AtlasFormula"])]
-    story += [Paragraph("<b>Decision.</b> "+safe(t["decision_reasoning"]),styles["AtlasBody"]),Paragraph("<b>Failure reasoning.</b> "+safe(t["failure_reasoning"]),styles["AtlasBody"]),Paragraph("<b>Worked production method.</b>",styles["AtlasQuestion"])]
-    for i,x in enumerate(t["worked_reasoning"],1): story.append(Paragraph(f"{i}. "+safe(x),styles["AtlasSmall"]))
-    story += [Paragraph("<b>Evaluate.</b> "+safe(" · ".join(t["evaluation"])),styles["AtlasSmall"]),Paragraph("<b>Operate.</b> "+safe(" · ".join(t["operations"])),styles["AtlasSmall"]),Paragraph("<b>Answer blueprint.</b> "+safe(" ".join(t["answer_blueprint"].values())),styles["AtlasSmall"]),Paragraph("<b>Question coverage.</b> "+safe(t["question_coverage"]),styles["AtlasAnswer"])]
+    story += [Paragraph("<b>5. Worked case.</b> "+safe(t["worked_example"]["scenario"]),styles["AtlasQuestion"])]
+    for i,x in enumerate(t["worked_example"]["trace"],1):
+        story.append(Paragraph(f"{i}. "+safe(x),styles["AtlasSmall"]))
+    story += [Paragraph("<b>Executable probe.</b> "+safe(t["lab"]["prompt"]),styles["AtlasBody"]),Preformatted(t["lab"]["code"],styles["AtlasCode"]),Paragraph("<b>6. Failure, diagnosis, and recovery.</b>",styles["AtlasQuestion"])]
+    for i,x in enumerate(t["failure_analysis"],1):
+        story.append(Paragraph(f"{i}. "+safe(x),styles["AtlasSmall"]))
+    story += [Paragraph("<b>Evaluate.</b> "+safe(" · ".join(t["evaluation"])),styles["AtlasSmall"]),Paragraph("<b>Operate.</b> "+safe(" · ".join(t["operations"])),styles["AtlasSmall"])]
 
 story += [PageBreak(),section("Core 50 interview questions")]
 for q in core:
