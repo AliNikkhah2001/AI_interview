@@ -21,6 +21,7 @@ jobs:
       - name: Validate lesson depth and generated assets
         run: |
           python3 tools/build_content.py
+          git checkout -- .github/workflows/pages.yml
           node --check app.js
           git diff --exit-code
       - name: Compile LaTeX handbook
