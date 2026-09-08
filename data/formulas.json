@@ -715,5 +715,35 @@
       }
     ],
     "example": "At T approaching zero, selection approaches argmax. Determinism also depends on kernels, batching, floating-point order, and provider behavior."
+  },
+  {
+    "id": "gil-overlap",
+    "title": "Threaded overlap and the serial floor",
+    "topic_ids": [
+      "python-threading-and-the-gil"
+    ],
+    "latex": "T_{seq}=N(C+W),\\qquad T_{threads}\\gtrsim NC+W,\\qquad S_N\\leq\\frac{1}{(1-p)+p/N}",
+    "variables": [
+      "N: concurrent tasks",
+      "C: GIL-held Python time per task",
+      "W: wait or GIL-released time",
+      "p: fraction that can overlap",
+      "S_N: speedup with N workers"
+    ],
+    "derivation": [
+      {
+        "text": "Sequential execution pays both compute and wait for every task.",
+        "latex": "T_{seq}=\\sum_{i=1}^{N}(C_i+W_i)=N(C+W)"
+      },
+      {
+        "text": "In the optimistic threaded case, waits overlap but GIL-held Python portions serialize.",
+        "latex": "T_{threads}\\gtrsim\\sum_{i=1}^{N}C_i+\\max_i W_i=NC+W"
+      },
+      {
+        "text": "Amdahl's law exposes the serial floor: even infinitely many workers cannot accelerate the non-overlappable fraction.",
+        "latex": "\\lim_{N\\to\\infty}S_N\\leq\\frac{1}{1-p}"
+      }
+    ],
+    "example": "For 20 tasks with C=5 ms and W=95 ms, sequential time is about 2.0 s while the optimistic threaded bound is 195 ms. With C=100 ms and W=0, both bounds are 2.0 s before thread overhead."
   }
 ]

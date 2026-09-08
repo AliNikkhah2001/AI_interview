@@ -1591,28 +1591,83 @@ These equations are not decorative. Each derivation states the engineering inter
 \mathblock{\log\frac{p_i(T)}{p_j(T)}=\frac{z_i-z_j}{T}}
 \end{enumerate}\end{derivation}
 \textbf{Worked interpretation.} At T approaching zero, selection approaches argmax. Determinism also depends on kernels, batching, floating-point order, and provider behavior.
+\subsection{Threaded overlap and the serial floor}
+\mathblock{\boxed{T_{seq}=N(C+W),\qquad T_{threads}\gtrsim NC+W,\qquad S_N\leq\frac{1}{(1-p)+p/N}}}
+\textbf{Variables.}\begin{itemize}
+\item N: concurrent tasks
+\item C: GIL-held Python time per task
+\item W: wait or GIL-released time
+\item p: fraction that can overlap
+\item S\_N: speedup with N workers
+\end{itemize}
+\textbf{Derivation.}\begin{derivation}\begin{enumerate}
+\item Sequential execution pays both compute and wait for every task.
+\mathblock{T_{seq}=\sum_{i=1}^{N}(C_i+W_i)=N(C+W)}
+\item In the optimistic threaded case, waits overlap but GIL-held Python portions serialize.
+\mathblock{T_{threads}\gtrsim\sum_{i=1}^{N}C_i+\max_i W_i=NC+W}
+\item Amdahl's law exposes the serial floor: even infinitely many workers cannot accelerate the non-overlappable fraction.
+\mathblock{\lim_{N\to\infty}S_N\leq\frac{1}{1-p}}
+\end{enumerate}\end{derivation}
+\textbf{Worked interpretation.} For 20 tasks with C=5 ms and W=95 ms, sequential time is about 2.0 s while the optimistic threaded bound is 195 ms. With C=100 ms and W=0, both bounds are 2.0 s before thread overhead.
 \clearpage\section{Retrieval and Search Theory}
 \subsection{BM25}
 \textbf{Learning objective.} Explain BM25 from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-A probabilistic lexical ranker that rewards term frequency while saturating repeated terms and normalizing document length. Model retrieval as a ranking function over a corpus, then separate candidate generation from final ranking.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For BM25, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\subsubsection*{1. The map: abstraction and prerequisites}
+Retrieval is lossy compression of a corpus into a ranking. A query expresses incomplete evidence; a scoring function decides which distinctions survive. Candidate generation protects recall, while later ranking spends more computation to improve order.
+Within that model, BM25 has one central job: A probabilistic lexical ranker that rewards term frequency while saturating repeated terms and normalizing document length. Its boundary contains a query, a collection, a scoring rule, and a ranked list; the rest of this chapter traces how that claim produces the stated benefit and failure.
+\textbf{Vocabulary you need.}\begin{itemize}
+\item Locate these primitives in the course model: a query, a collection, a scoring rule, and a ranked list.
+\item Trace rule: follow one query through representation, scoring, ranking, and evaluation.
+\item Keep mechanism (what transforms), policy (what is allowed), and measurement (what was observed) separate.
+\end{itemize}
+\subsubsection*{2. Under the hood: causal mechanism}\begin{enumerate}
+\item Represent the query and documents in a space where some evidence is comparable.
+\item Generate a bounded candidate set; anything omitted here cannot be repaired by a reranker.
+\item Score and order candidates, then compare the ordered list with relevance judgments matched to the product task.
+\item BM25 specializes that chain as follows: A probabilistic lexical ranker that rewards term frequency while saturating repeated terms and normalizing document length.
+\item The resulting tradeoff is causal, not a slogan: It is fast, interpretable, and exact for rare tokens but cannot directly match paraphrases.
+\end{enumerate}
+\subsubsection*{3. Intuition that makes predictions}
+\textbf{Mental picture.} Think of BM25 as a lens inserted into the course's causal chain. It preserves some information or control and discards or delays something else; that asymmetry is why it can help rather than being universally better.
+\textbf{Prediction.} On the workload named in the tradeoff, predict this behavior before benchmarking: It is fast, interpretable, and exact for rare tokens but cannot directly match paraphrases.
+\textbf{Where it breaks.} The mental model fails if it ignores this concrete counterexample: Treating it as obsolete removes a strong baseline and hurts identifier-heavy queries.
+\subsubsection*{4. Quantitative model}
+Separate effectiveness from efficiency. Measure Recall@k = retrieved relevant / all relevant, a rank-sensitive metric such as MRR or nDCG, and query cost. A method is better only on a stated workload and budget; one scalar score cannot preserve all three dimensions.
+For BM25, turn the prose tradeoff into two axes: the promised gain and the stated cost. It is fast, interpretable, and exact for rare tokens but cannot directly match paraphrases. Hold the dataset, traffic mix, versions, and hardware fixed while sweeping the mechanism's controlling parameter.
+Check units and limiting cases before trusting the plot: zero work, one item, the largest supported input, no failures, and the violated assumption named in this chapter. Report distributions and important cohorts, not only one average.
 \paragraph{BM25 relevance score}
 \mathblock{\operatorname{BM25}(q,d)=\sum_{t\in q}\operatorname{IDF}(t)\frac{f(t,d)(k_1+1)}{f(t,d)+k_1\left(1-b+b\frac{|d|}{\overline{|d|}}\right)}}
-\subsubsection*{Decision and failure reasoning}
-Choose BM25 when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It is fast, interpretable, and exact for rare tokens but cannot directly match paraphrases. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Treating it as obsolete removes a strong baseline and hurts identifier-heavy queries. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
+\subsubsection*{5. Worked example and lab}
+\textbf{Scenario.} For 10,000 judged queries, compare exact lexical retrieval, the candidate method, and any reranker. Slice identifiers, paraphrases, long queries, and rare languages; inspect actual false negatives before tuning.
 \begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for BM25.
-\item Baseline: implement or measure the least complex alternative before adding BM25.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: It is fast, interpretable, and exact for rare tokens but cannot directly match paraphrases.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Treating it as obsolete removes a strong baseline and hurts identifier-heavy queries.
+\item Hypothesis for BM25: A probabilistic lexical ranker that rewards term frequency while saturating repeated terms and normalizing document length.
+\item Counterfactual baseline: remove BM25 while holding inputs and evaluation constant; then change one relevance assumption and predict which documents move.
+\item Decision boundary: accept the mechanism only where this tradeoff is favorable for the stated workload—It is fast, interpretable, and exact for rare tokens but cannot directly match paraphrases.
+\item Falsification test: deliberately create this failure and capture the first stage where it is observable—Treating it as obsolete removes a strong baseline and hurts identifier-heavy queries.
 \end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
+\textbf{Run this.} Run this course-level mechanism probe before changing it for BM25. Change one relevance assumption and predict which documents move. Explain which output would falsify this chapter's claim: A probabilistic lexical ranker that rewards term frequency while saturating repeated terms and normalizing document length.
+\begin{Verbatim}[fontsize=\scriptsize]
+# Topic under test: BM25
+# Claimed mechanism: A probabilistic lexical ranker that rewards term frequency while saturating repeated terms and normalizing document length.
+# Failure to reproduce: Treating it as obsolete removes a strong baseline and hurts identifier-heavy queries.
+
+# Change the ranking and judgments, then explain every metric movement.
+ranked_relevant = [1, 0, 1, 0, 0]
+total_relevant = 4
+hits = sum(ranked_relevant)
+recall = hits / total_relevant
+precision = hits / len(ranked_relevant)
+rr = next((1 / rank for rank, hit in enumerate(ranked_relevant, 1) if hit), 0)
+print({"recall@5": recall, "precision@5": precision, "reciprocal_rank": rr})
+\end{Verbatim}
+\subsubsection*{6. Failure, diagnosis, and operation}
+\begin{itemize}
+\item Failure to explain: Treating it as obsolete removes a strong baseline and hurts identifier-heavy queries.
+\item Earliest signal: instrument the boundary where the violated assumption first becomes observable, not only the final user-visible error.
+\item Containment: bound queues, work, retries, privileges, or affected tenants at the ownership boundary.
+\item Recovery: preserve a simpler baseline, version state, and define a tested rollback or degraded mode before release.
+\end{itemize}
+\textbf{Measure.}\begin{itemize}
 \item Recall@k on judged evidence
 \item nDCG or MRR matched to the task
 \item latency and cost by query slice
@@ -1624,36 +1679,64 @@ The key production trap is: Treating it as obsolete removes a strong baseline an
 \item Inspect misses before changing the model
 \item Keep rollback-compatible index snapshots
 \end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: A probabilistic lexical ranker that rewards term frequency while saturating repeated terms and normalizing document length.
-\item[Tradeoff] Then state both sides without hedging: It is fast, interpretable, and exact for rare tokens but cannot directly match paraphrases.
-\item[Failure] Name a concrete failure and its detection signal: Treating it as obsolete removes a strong baseline and hurts identifier-heavy queries.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
 \subsection{TF-IDF}
 \textbf{Learning objective.} Explain TF-IDF from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-A sparse weighting scheme that combines within-document frequency with inverse collection frequency. Model retrieval as a ranking function over a corpus, then separate candidate generation from final ranking.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For TF-IDF, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\subsubsection*{1. The map: abstraction and prerequisites}
+Retrieval is lossy compression of a corpus into a ranking. A query expresses incomplete evidence; a scoring function decides which distinctions survive. Candidate generation protects recall, while later ranking spends more computation to improve order.
+Within that model, TF-IDF has one central job: A sparse weighting scheme that combines within-document frequency with inverse collection frequency. Its boundary contains a query, a collection, a scoring rule, and a ranked list; the rest of this chapter traces how that claim produces the stated benefit and failure.
+\textbf{Vocabulary you need.}\begin{itemize}
+\item Locate these primitives in the course model: a query, a collection, a scoring rule, and a ranked list.
+\item Trace rule: follow one query through representation, scoring, ranking, and evaluation.
+\item Keep mechanism (what transforms), policy (what is allowed), and measurement (what was observed) separate.
+\end{itemize}
+\subsubsection*{2. Under the hood: causal mechanism}\begin{enumerate}
+\item Represent the query and documents in a space where some evidence is comparable.
+\item Generate a bounded candidate set; anything omitted here cannot be repaired by a reranker.
+\item Score and order candidates, then compare the ordered list with relevance judgments matched to the product task.
+\item TF-IDF specializes that chain as follows: A sparse weighting scheme that combines within-document frequency with inverse collection frequency.
+\item The resulting tradeoff is causal, not a slogan: It is transparent and cheap but lacks BM25's term-frequency saturation and tuned length normalization.
+\end{enumerate}
+\subsubsection*{3. Intuition that makes predictions}
+\textbf{Mental picture.} Think of TF-IDF as a lens inserted into the course's causal chain. It preserves some information or control and discards or delays something else; that asymmetry is why it can help rather than being universally better.
+\textbf{Prediction.} On the workload named in the tradeoff, predict this behavior before benchmarking: It is transparent and cheap but lacks BM25's term-frequency saturation and tuned length normalization.
+\textbf{Where it breaks.} The mental model fails if it ignores this concrete counterexample: Comparing raw cosine scores across changing corpora without rebuilding IDF causes drift.
+\subsubsection*{4. Quantitative model}
+Separate effectiveness from efficiency. Measure Recall@k = retrieved relevant / all relevant, a rank-sensitive metric such as MRR or nDCG, and query cost. A method is better only on a stated workload and budget; one scalar score cannot preserve all three dimensions.
+For TF-IDF, turn the prose tradeoff into two axes: the promised gain and the stated cost. It is transparent and cheap but lacks BM25's term-frequency saturation and tuned length normalization. Hold the dataset, traffic mix, versions, and hardware fixed while sweeping the mechanism's controlling parameter.
+Check units and limiting cases before trusting the plot: zero work, one item, the largest supported input, no failures, and the violated assumption named in this chapter. Report distributions and important cohorts, not only one average.
 \paragraph{TF-IDF weighting}
 \mathblock{w_{t,d}=\operatorname{tf}(t,d)\operatorname{idf}(t),\qquad \operatorname{idf}(t)=\log\frac{N+1}{\operatorname{df}(t)+1}}
-\subsubsection*{Decision and failure reasoning}
-Choose TF-IDF when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It is transparent and cheap but lacks BM25's term-frequency saturation and tuned length normalization. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Comparing raw cosine scores across changing corpora without rebuilding IDF causes drift. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
+\subsubsection*{5. Worked example and lab}
+\textbf{Scenario.} For 10,000 judged queries, compare exact lexical retrieval, the candidate method, and any reranker. Slice identifiers, paraphrases, long queries, and rare languages; inspect actual false negatives before tuning.
 \begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for TF-IDF.
-\item Baseline: implement or measure the least complex alternative before adding TF-IDF.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: It is transparent and cheap but lacks BM25's term-frequency saturation and tuned length normalization.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Comparing raw cosine scores across changing corpora without rebuilding IDF causes drift.
+\item Hypothesis for TF-IDF: A sparse weighting scheme that combines within-document frequency with inverse collection frequency.
+\item Counterfactual baseline: remove TF-IDF while holding inputs and evaluation constant; then change one relevance assumption and predict which documents move.
+\item Decision boundary: accept the mechanism only where this tradeoff is favorable for the stated workload—It is transparent and cheap but lacks BM25's term-frequency saturation and tuned length normalization.
+\item Falsification test: deliberately create this failure and capture the first stage where it is observable—Comparing raw cosine scores across changing corpora without rebuilding IDF causes drift.
 \end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
+\textbf{Run this.} Run this course-level mechanism probe before changing it for TF-IDF. Change one relevance assumption and predict which documents move. Explain which output would falsify this chapter's claim: A sparse weighting scheme that combines within-document frequency with inverse collection frequency.
+\begin{Verbatim}[fontsize=\scriptsize]
+# Topic under test: TF-IDF
+# Claimed mechanism: A sparse weighting scheme that combines within-document frequency with inverse collection frequency.
+# Failure to reproduce: Comparing raw cosine scores across changing corpora without rebuilding IDF causes drift.
+
+# Change the ranking and judgments, then explain every metric movement.
+ranked_relevant = [1, 0, 1, 0, 0]
+total_relevant = 4
+hits = sum(ranked_relevant)
+recall = hits / total_relevant
+precision = hits / len(ranked_relevant)
+rr = next((1 / rank for rank, hit in enumerate(ranked_relevant, 1) if hit), 0)
+print({"recall@5": recall, "precision@5": precision, "reciprocal_rank": rr})
+\end{Verbatim}
+\subsubsection*{6. Failure, diagnosis, and operation}
+\begin{itemize}
+\item Failure to explain: Comparing raw cosine scores across changing corpora without rebuilding IDF causes drift.
+\item Earliest signal: instrument the boundary where the violated assumption first becomes observable, not only the final user-visible error.
+\item Containment: bound queues, work, retries, privileges, or affected tenants at the ownership boundary.
+\item Recovery: preserve a simpler baseline, version state, and define a tested rollback or degraded mode before release.
+\end{itemize}
+\textbf{Measure.}\begin{itemize}
 \item Recall@k on judged evidence
 \item nDCG or MRR matched to the task
 \item latency and cost by query slice
@@ -1665,38 +1748,66 @@ The key production trap is: Comparing raw cosine scores across changing corpora 
 \item Inspect misses before changing the model
 \item Keep rollback-compatible index snapshots
 \end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: A sparse weighting scheme that combines within-document frequency with inverse collection frequency.
-\item[Tradeoff] Then state both sides without hedging: It is transparent and cheap but lacks BM25's term-frequency saturation and tuned length normalization.
-\item[Failure] Name a concrete failure and its detection signal: Comparing raw cosine scores across changing corpora without rebuilding IDF causes drift.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
 \subsection{Dense retrieval}
 \textbf{Learning objective.} Explain Dense retrieval from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-A bi-encoder maps queries and passages into a shared embedding space for nearest-neighbor search. Model retrieval as a ranking function over a corpus, then separate candidate generation from final ranking.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Dense retrieval, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\subsubsection*{1. The map: abstraction and prerequisites}
+Retrieval is lossy compression of a corpus into a ranking. A query expresses incomplete evidence; a scoring function decides which distinctions survive. Candidate generation protects recall, while later ranking spends more computation to improve order.
+Within that model, Dense retrieval has one central job: A bi-encoder maps queries and passages into a shared embedding space for nearest-neighbor search. Its boundary contains a query, a collection, a scoring rule, and a ranked list; the rest of this chapter traces how that claim produces the stated benefit and failure.
+\textbf{Vocabulary you need.}\begin{itemize}
+\item Locate these primitives in the course model: a query, a collection, a scoring rule, and a ranked list.
+\item Trace rule: follow one query through representation, scoring, ranking, and evaluation.
+\item Keep mechanism (what transforms), policy (what is allowed), and measurement (what was observed) separate.
+\end{itemize}
+\subsubsection*{2. Under the hood: causal mechanism}\begin{enumerate}
+\item Represent the query and documents in a space where some evidence is comparable.
+\item Generate a bounded candidate set; anything omitted here cannot be repaired by a reranker.
+\item Score and order candidates, then compare the ordered list with relevance judgments matched to the product task.
+\item Dense retrieval specializes that chain as follows: A bi-encoder maps queries and passages into a shared embedding space for nearest-neighbor search.
+\item The resulting tradeoff is causal, not a slogan: Semantic recall improves, while exact names, numbers, and out-of-domain language may regress.
+\end{enumerate}
+\subsubsection*{3. Intuition that makes predictions}
+\textbf{Mental picture.} Think of Dense retrieval as a lens inserted into the course's causal chain. It preserves some information or control and discards or delays something else; that asymmetry is why it can help rather than being universally better.
+\textbf{Prediction.} On the workload named in the tradeoff, predict this behavior before benchmarking: Semantic recall improves, while exact names, numbers, and out-of-domain language may regress.
+\textbf{Where it breaks.} The mental model fails if it ignores this concrete counterexample: Evaluating only on in-domain examples hides lexical misses and embedding drift.
+\subsubsection*{4. Quantitative model}
+Separate effectiveness from efficiency. Measure Recall@k = retrieved relevant / all relevant, a rank-sensitive metric such as MRR or nDCG, and query cost. A method is better only on a stated workload and budget; one scalar score cannot preserve all three dimensions.
+For Dense retrieval, turn the prose tradeoff into two axes: the promised gain and the stated cost. Semantic recall improves, while exact names, numbers, and out-of-domain language may regress. Hold the dataset, traffic mix, versions, and hardware fixed while sweeping the mechanism's controlling parameter.
+Check units and limiting cases before trusting the plot: zero work, one item, the largest supported input, no failures, and the violated assumption named in this chapter. Report distributions and important cohorts, not only one average.
 \paragraph{Cosine, dot product, and Euclidean distance}
 \mathblock{\cos(\mathbf q,\mathbf x)=\frac{\mathbf q^\top\mathbf x}{\|\mathbf q\|_2\|\mathbf x\|_2},\qquad \|\mathbf q-\mathbf x\|_2^2=2-2\mathbf q^\top\mathbf x\ \text{when }\|\mathbf q\|=\|\mathbf x\|=1}
 \paragraph{Contrastive retrieval loss}
 \mathblock{\mathcal L_i=-\log\frac{\exp(s(q_i,d_i^+)/\tau)}{\sum_{j=1}^{B}\exp(s(q_i,d_j)/\tau)}}
-\subsubsection*{Decision and failure reasoning}
-Choose Dense retrieval when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Semantic recall improves, while exact names, numbers, and out-of-domain language may regress. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Evaluating only on in-domain examples hides lexical misses and embedding drift. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
+\subsubsection*{5. Worked example and lab}
+\textbf{Scenario.} For 10,000 judged queries, compare exact lexical retrieval, the candidate method, and any reranker. Slice identifiers, paraphrases, long queries, and rare languages; inspect actual false negatives before tuning.
 \begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Dense retrieval.
-\item Baseline: implement or measure the least complex alternative before adding Dense retrieval.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: Semantic recall improves, while exact names, numbers, and out-of-domain language may regress.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Evaluating only on in-domain examples hides lexical misses and embedding drift.
+\item Hypothesis for Dense retrieval: A bi-encoder maps queries and passages into a shared embedding space for nearest-neighbor search.
+\item Counterfactual baseline: remove Dense retrieval while holding inputs and evaluation constant; then change one relevance assumption and predict which documents move.
+\item Decision boundary: accept the mechanism only where this tradeoff is favorable for the stated workload—Semantic recall improves, while exact names, numbers, and out-of-domain language may regress.
+\item Falsification test: deliberately create this failure and capture the first stage where it is observable—Evaluating only on in-domain examples hides lexical misses and embedding drift.
 \end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
+\textbf{Run this.} Run this course-level mechanism probe before changing it for Dense retrieval. Change one relevance assumption and predict which documents move. Explain which output would falsify this chapter's claim: A bi-encoder maps queries and passages into a shared embedding space for nearest-neighbor search.
+\begin{Verbatim}[fontsize=\scriptsize]
+# Topic under test: Dense retrieval
+# Claimed mechanism: A bi-encoder maps queries and passages into a shared embedding space for nearest-neighbor search.
+# Failure to reproduce: Evaluating only on in-domain examples hides lexical misses and embedding drift.
+
+# Change the ranking and judgments, then explain every metric movement.
+ranked_relevant = [1, 0, 1, 0, 0]
+total_relevant = 4
+hits = sum(ranked_relevant)
+recall = hits / total_relevant
+precision = hits / len(ranked_relevant)
+rr = next((1 / rank for rank, hit in enumerate(ranked_relevant, 1) if hit), 0)
+print({"recall@5": recall, "precision@5": precision, "reciprocal_rank": rr})
+\end{Verbatim}
+\subsubsection*{6. Failure, diagnosis, and operation}
+\begin{itemize}
+\item Failure to explain: Evaluating only on in-domain examples hides lexical misses and embedding drift.
+\item Earliest signal: instrument the boundary where the violated assumption first becomes observable, not only the final user-visible error.
+\item Containment: bound queues, work, retries, privileges, or affected tenants at the ownership boundary.
+\item Recovery: preserve a simpler baseline, version state, and define a tested rollback or degraded mode before release.
+\end{itemize}
+\textbf{Measure.}\begin{itemize}
 \item Recall@k on judged evidence
 \item nDCG or MRR matched to the task
 \item latency and cost by query slice
@@ -1708,34 +1819,62 @@ The key production trap is: Evaluating only on in-domain examples hides lexical 
 \item Inspect misses before changing the model
 \item Keep rollback-compatible index snapshots
 \end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: A bi-encoder maps queries and passages into a shared embedding space for nearest-neighbor search.
-\item[Tradeoff] Then state both sides without hedging: Semantic recall improves, while exact names, numbers, and out-of-domain language may regress.
-\item[Failure] Name a concrete failure and its detection signal: Evaluating only on in-domain examples hides lexical misses and embedding drift.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
 \subsection{Sparse neural retrieval}
 \textbf{Learning objective.} Explain Sparse neural retrieval from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-Learned sparse models retain token-aligned inverted-index retrieval while expanding or reweighting terms. Model retrieval as a ranking function over a corpus, then separate candidate generation from final ranking.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Sparse neural retrieval, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
-\subsubsection*{Decision and failure reasoning}
-Choose Sparse neural retrieval when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: They bridge lexical and semantic matching but increase index size and model cost. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Unbounded expansion creates latency and storage blowups. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
-\begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Sparse neural retrieval.
-\item Baseline: implement or measure the least complex alternative before adding Sparse neural retrieval.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: They bridge lexical and semantic matching but increase index size and model cost.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Unbounded expansion creates latency and storage blowups.
+\subsubsection*{1. The map: abstraction and prerequisites}
+Retrieval is lossy compression of a corpus into a ranking. A query expresses incomplete evidence; a scoring function decides which distinctions survive. Candidate generation protects recall, while later ranking spends more computation to improve order.
+Within that model, Sparse neural retrieval has one central job: Learned sparse models retain token-aligned inverted-index retrieval while expanding or reweighting terms. Its boundary contains a query, a collection, a scoring rule, and a ranked list; the rest of this chapter traces how that claim produces the stated benefit and failure.
+\textbf{Vocabulary you need.}\begin{itemize}
+\item Locate these primitives in the course model: a query, a collection, a scoring rule, and a ranked list.
+\item Trace rule: follow one query through representation, scoring, ranking, and evaluation.
+\item Keep mechanism (what transforms), policy (what is allowed), and measurement (what was observed) separate.
+\end{itemize}
+\subsubsection*{2. Under the hood: causal mechanism}\begin{enumerate}
+\item Represent the query and documents in a space where some evidence is comparable.
+\item Generate a bounded candidate set; anything omitted here cannot be repaired by a reranker.
+\item Score and order candidates, then compare the ordered list with relevance judgments matched to the product task.
+\item Sparse neural retrieval specializes that chain as follows: Learned sparse models retain token-aligned inverted-index retrieval while expanding or reweighting terms.
+\item The resulting tradeoff is causal, not a slogan: They bridge lexical and semantic matching but increase index size and model cost.
 \end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
+\subsubsection*{3. Intuition that makes predictions}
+\textbf{Mental picture.} Think of Sparse neural retrieval as a lens inserted into the course's causal chain. It preserves some information or control and discards or delays something else; that asymmetry is why it can help rather than being universally better.
+\textbf{Prediction.} On the workload named in the tradeoff, predict this behavior before benchmarking: They bridge lexical and semantic matching but increase index size and model cost.
+\textbf{Where it breaks.} The mental model fails if it ignores this concrete counterexample: Unbounded expansion creates latency and storage blowups.
+\subsubsection*{4. Quantitative model}
+Separate effectiveness from efficiency. Measure Recall@k = retrieved relevant / all relevant, a rank-sensitive metric such as MRR or nDCG, and query cost. A method is better only on a stated workload and budget; one scalar score cannot preserve all three dimensions.
+For Sparse neural retrieval, turn the prose tradeoff into two axes: the promised gain and the stated cost. They bridge lexical and semantic matching but increase index size and model cost. Hold the dataset, traffic mix, versions, and hardware fixed while sweeping the mechanism's controlling parameter.
+Check units and limiting cases before trusting the plot: zero work, one item, the largest supported input, no failures, and the violated assumption named in this chapter. Report distributions and important cohorts, not only one average.
+\subsubsection*{5. Worked example and lab}
+\textbf{Scenario.} For 10,000 judged queries, compare exact lexical retrieval, the candidate method, and any reranker. Slice identifiers, paraphrases, long queries, and rare languages; inspect actual false negatives before tuning.
+\begin{enumerate}
+\item Hypothesis for Sparse neural retrieval: Learned sparse models retain token-aligned inverted-index retrieval while expanding or reweighting terms.
+\item Counterfactual baseline: remove Sparse neural retrieval while holding inputs and evaluation constant; then change one relevance assumption and predict which documents move.
+\item Decision boundary: accept the mechanism only where this tradeoff is favorable for the stated workload—They bridge lexical and semantic matching but increase index size and model cost.
+\item Falsification test: deliberately create this failure and capture the first stage where it is observable—Unbounded expansion creates latency and storage blowups.
+\end{enumerate}
+\textbf{Run this.} Run this course-level mechanism probe before changing it for Sparse neural retrieval. Change one relevance assumption and predict which documents move. Explain which output would falsify this chapter's claim: Learned sparse models retain token-aligned inverted-index retrieval while expanding or reweighting terms.
+\begin{Verbatim}[fontsize=\scriptsize]
+# Topic under test: Sparse neural retrieval
+# Claimed mechanism: Learned sparse models retain token-aligned inverted-index retrieval while expanding or reweighting terms.
+# Failure to reproduce: Unbounded expansion creates latency and storage blowups.
+
+# Change the ranking and judgments, then explain every metric movement.
+ranked_relevant = [1, 0, 1, 0, 0]
+total_relevant = 4
+hits = sum(ranked_relevant)
+recall = hits / total_relevant
+precision = hits / len(ranked_relevant)
+rr = next((1 / rank for rank, hit in enumerate(ranked_relevant, 1) if hit), 0)
+print({"recall@5": recall, "precision@5": precision, "reciprocal_rank": rr})
+\end{Verbatim}
+\subsubsection*{6. Failure, diagnosis, and operation}
+\begin{itemize}
+\item Failure to explain: Unbounded expansion creates latency and storage blowups.
+\item Earliest signal: instrument the boundary where the violated assumption first becomes observable, not only the final user-visible error.
+\item Containment: bound queues, work, retries, privileges, or affected tenants at the ownership boundary.
+\item Recovery: preserve a simpler baseline, version state, and define a tested rollback or degraded mode before release.
+\end{itemize}
+\textbf{Measure.}\begin{itemize}
 \item Recall@k on judged evidence
 \item nDCG or MRR matched to the task
 \item latency and cost by query slice
@@ -1747,34 +1886,62 @@ The key production trap is: Unbounded expansion creates latency and storage blow
 \item Inspect misses before changing the model
 \item Keep rollback-compatible index snapshots
 \end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: Learned sparse models retain token-aligned inverted-index retrieval while expanding or reweighting terms.
-\item[Tradeoff] Then state both sides without hedging: They bridge lexical and semantic matching but increase index size and model cost.
-\item[Failure] Name a concrete failure and its detection signal: Unbounded expansion creates latency and storage blowups.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
 \subsection{Late interaction}
 \textbf{Learning objective.} Explain Late interaction from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-ColBERT-style systems preserve token-level embeddings and aggregate fine-grained similarities at query time. Model retrieval as a ranking function over a corpus, then separate candidate generation from final ranking.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Late interaction, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
-\subsubsection*{Decision and failure reasoning}
-Choose Late interaction when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Accuracy often beats single-vector retrieval, with a larger index and heavier scoring path. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Treating a late-interaction index like one-vector-per-document underestimates capacity needs. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
-\begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Late interaction.
-\item Baseline: implement or measure the least complex alternative before adding Late interaction.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: Accuracy often beats single-vector retrieval, with a larger index and heavier scoring path.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Treating a late-interaction index like one-vector-per-document underestimates capacity needs.
+\subsubsection*{1. The map: abstraction and prerequisites}
+Retrieval is lossy compression of a corpus into a ranking. A query expresses incomplete evidence; a scoring function decides which distinctions survive. Candidate generation protects recall, while later ranking spends more computation to improve order.
+Within that model, Late interaction has one central job: ColBERT-style systems preserve token-level embeddings and aggregate fine-grained similarities at query time. Its boundary contains a query, a collection, a scoring rule, and a ranked list; the rest of this chapter traces how that claim produces the stated benefit and failure.
+\textbf{Vocabulary you need.}\begin{itemize}
+\item Locate these primitives in the course model: a query, a collection, a scoring rule, and a ranked list.
+\item Trace rule: follow one query through representation, scoring, ranking, and evaluation.
+\item Keep mechanism (what transforms), policy (what is allowed), and measurement (what was observed) separate.
+\end{itemize}
+\subsubsection*{2. Under the hood: causal mechanism}\begin{enumerate}
+\item Represent the query and documents in a space where some evidence is comparable.
+\item Generate a bounded candidate set; anything omitted here cannot be repaired by a reranker.
+\item Score and order candidates, then compare the ordered list with relevance judgments matched to the product task.
+\item Late interaction specializes that chain as follows: ColBERT-style systems preserve token-level embeddings and aggregate fine-grained similarities at query time.
+\item The resulting tradeoff is causal, not a slogan: Accuracy often beats single-vector retrieval, with a larger index and heavier scoring path.
 \end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
+\subsubsection*{3. Intuition that makes predictions}
+\textbf{Mental picture.} Think of Late interaction as a lens inserted into the course's causal chain. It preserves some information or control and discards or delays something else; that asymmetry is why it can help rather than being universally better.
+\textbf{Prediction.} On the workload named in the tradeoff, predict this behavior before benchmarking: Accuracy often beats single-vector retrieval, with a larger index and heavier scoring path.
+\textbf{Where it breaks.} The mental model fails if it ignores this concrete counterexample: Treating a late-interaction index like one-vector-per-document underestimates capacity needs.
+\subsubsection*{4. Quantitative model}
+Separate effectiveness from efficiency. Measure Recall@k = retrieved relevant / all relevant, a rank-sensitive metric such as MRR or nDCG, and query cost. A method is better only on a stated workload and budget; one scalar score cannot preserve all three dimensions.
+For Late interaction, turn the prose tradeoff into two axes: the promised gain and the stated cost. Accuracy often beats single-vector retrieval, with a larger index and heavier scoring path. Hold the dataset, traffic mix, versions, and hardware fixed while sweeping the mechanism's controlling parameter.
+Check units and limiting cases before trusting the plot: zero work, one item, the largest supported input, no failures, and the violated assumption named in this chapter. Report distributions and important cohorts, not only one average.
+\subsubsection*{5. Worked example and lab}
+\textbf{Scenario.} For 10,000 judged queries, compare exact lexical retrieval, the candidate method, and any reranker. Slice identifiers, paraphrases, long queries, and rare languages; inspect actual false negatives before tuning.
+\begin{enumerate}
+\item Hypothesis for Late interaction: ColBERT-style systems preserve token-level embeddings and aggregate fine-grained similarities at query time.
+\item Counterfactual baseline: remove Late interaction while holding inputs and evaluation constant; then change one relevance assumption and predict which documents move.
+\item Decision boundary: accept the mechanism only where this tradeoff is favorable for the stated workload—Accuracy often beats single-vector retrieval, with a larger index and heavier scoring path.
+\item Falsification test: deliberately create this failure and capture the first stage where it is observable—Treating a late-interaction index like one-vector-per-document underestimates capacity needs.
+\end{enumerate}
+\textbf{Run this.} Run this course-level mechanism probe before changing it for Late interaction. Change one relevance assumption and predict which documents move. Explain which output would falsify this chapter's claim: ColBERT-style systems preserve token-level embeddings and aggregate fine-grained similarities at query time.
+\begin{Verbatim}[fontsize=\scriptsize]
+# Topic under test: Late interaction
+# Claimed mechanism: ColBERT-style systems preserve token-level embeddings and aggregate fine-grained similarities at query time.
+# Failure to reproduce: Treating a late-interaction index like one-vector-per-document underestimates capacity needs.
+
+# Change the ranking and judgments, then explain every metric movement.
+ranked_relevant = [1, 0, 1, 0, 0]
+total_relevant = 4
+hits = sum(ranked_relevant)
+recall = hits / total_relevant
+precision = hits / len(ranked_relevant)
+rr = next((1 / rank for rank, hit in enumerate(ranked_relevant, 1) if hit), 0)
+print({"recall@5": recall, "precision@5": precision, "reciprocal_rank": rr})
+\end{Verbatim}
+\subsubsection*{6. Failure, diagnosis, and operation}
+\begin{itemize}
+\item Failure to explain: Treating a late-interaction index like one-vector-per-document underestimates capacity needs.
+\item Earliest signal: instrument the boundary where the violated assumption first becomes observable, not only the final user-visible error.
+\item Containment: bound queues, work, retries, privileges, or affected tenants at the ownership boundary.
+\item Recovery: preserve a simpler baseline, version state, and define a tested rollback or degraded mode before release.
+\end{itemize}
+\textbf{Measure.}\begin{itemize}
 \item Recall@k on judged evidence
 \item nDCG or MRR matched to the task
 \item latency and cost by query slice
@@ -1786,36 +1953,64 @@ The key production trap is: Treating a late-interaction index like one-vector-pe
 \item Inspect misses before changing the model
 \item Keep rollback-compatible index snapshots
 \end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: ColBERT-style systems preserve token-level embeddings and aggregate fine-grained similarities at query time.
-\item[Tradeoff] Then state both sides without hedging: Accuracy often beats single-vector retrieval, with a larger index and heavier scoring path.
-\item[Failure] Name a concrete failure and its detection signal: Treating a late-interaction index like one-vector-per-document underestimates capacity needs.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
 \subsection{Cross-encoder reranking}
 \textbf{Learning objective.} Explain Cross-encoder reranking from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-A model jointly encodes query and candidate text to assign a relevance score. Model retrieval as a ranking function over a corpus, then separate candidate generation from final ranking.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Cross-encoder reranking, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\subsubsection*{1. The map: abstraction and prerequisites}
+Retrieval is lossy compression of a corpus into a ranking. A query expresses incomplete evidence; a scoring function decides which distinctions survive. Candidate generation protects recall, while later ranking spends more computation to improve order.
+Within that model, Cross-encoder reranking has one central job: A model jointly encodes query and candidate text to assign a relevance score. Its boundary contains a query, a collection, a scoring rule, and a ranked list; the rest of this chapter traces how that claim produces the stated benefit and failure.
+\textbf{Vocabulary you need.}\begin{itemize}
+\item Locate these primitives in the course model: a query, a collection, a scoring rule, and a ranked list.
+\item Trace rule: follow one query through representation, scoring, ranking, and evaluation.
+\item Keep mechanism (what transforms), policy (what is allowed), and measurement (what was observed) separate.
+\end{itemize}
+\subsubsection*{2. Under the hood: causal mechanism}\begin{enumerate}
+\item Represent the query and documents in a space where some evidence is comparable.
+\item Generate a bounded candidate set; anything omitted here cannot be repaired by a reranker.
+\item Score and order candidates, then compare the ordered list with relevance judgments matched to the product task.
+\item Cross-encoder reranking specializes that chain as follows: A model jointly encodes query and candidate text to assign a relevance score.
+\item The resulting tradeoff is causal, not a slogan: It gives strong precision on a small candidate set but is too expensive for full-corpus retrieval.
+\end{enumerate}
+\subsubsection*{3. Intuition that makes predictions}
+\textbf{Mental picture.} Think of Cross-encoder reranking as a lens inserted into the course's causal chain. It preserves some information or control and discards or delays something else; that asymmetry is why it can help rather than being universally better.
+\textbf{Prediction.} On the workload named in the tradeoff, predict this behavior before benchmarking: It gives strong precision on a small candidate set but is too expensive for full-corpus retrieval.
+\textbf{Where it breaks.} The mental model fails if it ignores this concrete counterexample: Reranking too many long passages dominates p95 latency.
+\subsubsection*{4. Quantitative model}
+Separate effectiveness from efficiency. Measure Recall@k = retrieved relevant / all relevant, a rank-sensitive metric such as MRR or nDCG, and query cost. A method is better only on a stated workload and budget; one scalar score cannot preserve all three dimensions.
+For Cross-encoder reranking, turn the prose tradeoff into two axes: the promised gain and the stated cost. It gives strong precision on a small candidate set but is too expensive for full-corpus retrieval. Hold the dataset, traffic mix, versions, and hardware fixed while sweeping the mechanism's controlling parameter.
+Check units and limiting cases before trusting the plot: zero work, one item, the largest supported input, no failures, and the violated assumption named in this chapter. Report distributions and important cohorts, not only one average.
 \paragraph{Contrastive retrieval loss}
 \mathblock{\mathcal L_i=-\log\frac{\exp(s(q_i,d_i^+)/\tau)}{\sum_{j=1}^{B}\exp(s(q_i,d_j)/\tau)}}
-\subsubsection*{Decision and failure reasoning}
-Choose Cross-encoder reranking when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It gives strong precision on a small candidate set but is too expensive for full-corpus retrieval. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Reranking too many long passages dominates p95 latency. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
+\subsubsection*{5. Worked example and lab}
+\textbf{Scenario.} For 10,000 judged queries, compare exact lexical retrieval, the candidate method, and any reranker. Slice identifiers, paraphrases, long queries, and rare languages; inspect actual false negatives before tuning.
 \begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Cross-encoder reranking.
-\item Baseline: implement or measure the least complex alternative before adding Cross-encoder reranking.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: It gives strong precision on a small candidate set but is too expensive for full-corpus retrieval.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Reranking too many long passages dominates p95 latency.
+\item Hypothesis for Cross-encoder reranking: A model jointly encodes query and candidate text to assign a relevance score.
+\item Counterfactual baseline: remove Cross-encoder reranking while holding inputs and evaluation constant; then change one relevance assumption and predict which documents move.
+\item Decision boundary: accept the mechanism only where this tradeoff is favorable for the stated workload—It gives strong precision on a small candidate set but is too expensive for full-corpus retrieval.
+\item Falsification test: deliberately create this failure and capture the first stage where it is observable—Reranking too many long passages dominates p95 latency.
 \end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
+\textbf{Run this.} Run this course-level mechanism probe before changing it for Cross-encoder reranking. Change one relevance assumption and predict which documents move. Explain which output would falsify this chapter's claim: A model jointly encodes query and candidate text to assign a relevance score.
+\begin{Verbatim}[fontsize=\scriptsize]
+# Topic under test: Cross-encoder reranking
+# Claimed mechanism: A model jointly encodes query and candidate text to assign a relevance score.
+# Failure to reproduce: Reranking too many long passages dominates p95 latency.
+
+# Change the ranking and judgments, then explain every metric movement.
+ranked_relevant = [1, 0, 1, 0, 0]
+total_relevant = 4
+hits = sum(ranked_relevant)
+recall = hits / total_relevant
+precision = hits / len(ranked_relevant)
+rr = next((1 / rank for rank, hit in enumerate(ranked_relevant, 1) if hit), 0)
+print({"recall@5": recall, "precision@5": precision, "reciprocal_rank": rr})
+\end{Verbatim}
+\subsubsection*{6. Failure, diagnosis, and operation}
+\begin{itemize}
+\item Failure to explain: Reranking too many long passages dominates p95 latency.
+\item Earliest signal: instrument the boundary where the violated assumption first becomes observable, not only the final user-visible error.
+\item Containment: bound queues, work, retries, privileges, or affected tenants at the ownership boundary.
+\item Recovery: preserve a simpler baseline, version state, and define a tested rollback or degraded mode before release.
+\end{itemize}
+\textbf{Measure.}\begin{itemize}
 \item Recall@k on judged evidence
 \item nDCG or MRR matched to the task
 \item latency and cost by query slice
@@ -1827,36 +2022,64 @@ The key production trap is: Reranking too many long passages dominates p95 laten
 \item Inspect misses before changing the model
 \item Keep rollback-compatible index snapshots
 \end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: A model jointly encodes query and candidate text to assign a relevance score.
-\item[Tradeoff] Then state both sides without hedging: It gives strong precision on a small candidate set but is too expensive for full-corpus retrieval.
-\item[Failure] Name a concrete failure and its detection signal: Reranking too many long passages dominates p95 latency.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
 \subsection{Hybrid retrieval}
 \textbf{Learning objective.} Explain Hybrid retrieval from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-Dense and lexical signals are retrieved together and fused, often with weighted scores or reciprocal-rank fusion. Model retrieval as a ranking function over a corpus, then separate candidate generation from final ranking.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Hybrid retrieval, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\subsubsection*{1. The map: abstraction and prerequisites}
+Retrieval is lossy compression of a corpus into a ranking. A query expresses incomplete evidence; a scoring function decides which distinctions survive. Candidate generation protects recall, while later ranking spends more computation to improve order.
+Within that model, Hybrid retrieval has one central job: Dense and lexical signals are retrieved together and fused, often with weighted scores or reciprocal-rank fusion. Its boundary contains a query, a collection, a scoring rule, and a ranked list; the rest of this chapter traces how that claim produces the stated benefit and failure.
+\textbf{Vocabulary you need.}\begin{itemize}
+\item Locate these primitives in the course model: a query, a collection, a scoring rule, and a ranked list.
+\item Trace rule: follow one query through representation, scoring, ranking, and evaluation.
+\item Keep mechanism (what transforms), policy (what is allowed), and measurement (what was observed) separate.
+\end{itemize}
+\subsubsection*{2. Under the hood: causal mechanism}\begin{enumerate}
+\item Represent the query and documents in a space where some evidence is comparable.
+\item Generate a bounded candidate set; anything omitted here cannot be repaired by a reranker.
+\item Score and order candidates, then compare the ordered list with relevance judgments matched to the product task.
+\item Hybrid retrieval specializes that chain as follows: Dense and lexical signals are retrieved together and fused, often with weighted scores or reciprocal-rank fusion.
+\item The resulting tradeoff is causal, not a slogan: It improves robustness across semantic and exact-match queries but requires score calibration and duplicate handling.
+\end{enumerate}
+\subsubsection*{3. Intuition that makes predictions}
+\textbf{Mental picture.} Think of Hybrid retrieval as a lens inserted into the course's causal chain. It preserves some information or control and discards or delays something else; that asymmetry is why it can help rather than being universally better.
+\textbf{Prediction.} On the workload named in the tradeoff, predict this behavior before benchmarking: It improves robustness across semantic and exact-match queries but requires score calibration and duplicate handling.
+\textbf{Where it breaks.} The mental model fails if it ignores this concrete counterexample: Adding incomparable raw scores without normalization makes one retriever dominate.
+\subsubsection*{4. Quantitative model}
+Separate effectiveness from efficiency. Measure Recall@k = retrieved relevant / all relevant, a rank-sensitive metric such as MRR or nDCG, and query cost. A method is better only on a stated workload and budget; one scalar score cannot preserve all three dimensions.
+For Hybrid retrieval, turn the prose tradeoff into two axes: the promised gain and the stated cost. It improves robustness across semantic and exact-match queries but requires score calibration and duplicate handling. Hold the dataset, traffic mix, versions, and hardware fixed while sweeping the mechanism's controlling parameter.
+Check units and limiting cases before trusting the plot: zero work, one item, the largest supported input, no failures, and the violated assumption named in this chapter. Report distributions and important cohorts, not only one average.
 \paragraph{Reciprocal rank fusion}
 \mathblock{\operatorname{RRF}(d)=\sum_{r\in\mathcal R}\frac{1}{k+\operatorname{rank}_r(d)}}
-\subsubsection*{Decision and failure reasoning}
-Choose Hybrid retrieval when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It improves robustness across semantic and exact-match queries but requires score calibration and duplicate handling. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Adding incomparable raw scores without normalization makes one retriever dominate. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
+\subsubsection*{5. Worked example and lab}
+\textbf{Scenario.} For 10,000 judged queries, compare exact lexical retrieval, the candidate method, and any reranker. Slice identifiers, paraphrases, long queries, and rare languages; inspect actual false negatives before tuning.
 \begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Hybrid retrieval.
-\item Baseline: implement or measure the least complex alternative before adding Hybrid retrieval.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: It improves robustness across semantic and exact-match queries but requires score calibration and duplicate handling.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Adding incomparable raw scores without normalization makes one retriever dominate.
+\item Hypothesis for Hybrid retrieval: Dense and lexical signals are retrieved together and fused, often with weighted scores or reciprocal-rank fusion.
+\item Counterfactual baseline: remove Hybrid retrieval while holding inputs and evaluation constant; then change one relevance assumption and predict which documents move.
+\item Decision boundary: accept the mechanism only where this tradeoff is favorable for the stated workload—It improves robustness across semantic and exact-match queries but requires score calibration and duplicate handling.
+\item Falsification test: deliberately create this failure and capture the first stage where it is observable—Adding incomparable raw scores without normalization makes one retriever dominate.
 \end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
+\textbf{Run this.} Run this course-level mechanism probe before changing it for Hybrid retrieval. Change one relevance assumption and predict which documents move. Explain which output would falsify this chapter's claim: Dense and lexical signals are retrieved together and fused, often with weighted scores or reciprocal-rank fusion.
+\begin{Verbatim}[fontsize=\scriptsize]
+# Topic under test: Hybrid retrieval
+# Claimed mechanism: Dense and lexical signals are retrieved together and fused, often with weighted scores or reciprocal-rank fusion.
+# Failure to reproduce: Adding incomparable raw scores without normalization makes one retriever dominate.
+
+# Change the ranking and judgments, then explain every metric movement.
+ranked_relevant = [1, 0, 1, 0, 0]
+total_relevant = 4
+hits = sum(ranked_relevant)
+recall = hits / total_relevant
+precision = hits / len(ranked_relevant)
+rr = next((1 / rank for rank, hit in enumerate(ranked_relevant, 1) if hit), 0)
+print({"recall@5": recall, "precision@5": precision, "reciprocal_rank": rr})
+\end{Verbatim}
+\subsubsection*{6. Failure, diagnosis, and operation}
+\begin{itemize}
+\item Failure to explain: Adding incomparable raw scores without normalization makes one retriever dominate.
+\item Earliest signal: instrument the boundary where the violated assumption first becomes observable, not only the final user-visible error.
+\item Containment: bound queues, work, retries, privileges, or affected tenants at the ownership boundary.
+\item Recovery: preserve a simpler baseline, version state, and define a tested rollback or degraded mode before release.
+\end{itemize}
+\textbf{Measure.}\begin{itemize}
 \item Recall@k on judged evidence
 \item nDCG or MRR matched to the task
 \item latency and cost by query slice
@@ -1868,36 +2091,64 @@ The key production trap is: Adding incomparable raw scores without normalization
 \item Inspect misses before changing the model
 \item Keep rollback-compatible index snapshots
 \end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: Dense and lexical signals are retrieved together and fused, often with weighted scores or reciprocal-rank fusion.
-\item[Tradeoff] Then state both sides without hedging: It improves robustness across semantic and exact-match queries but requires score calibration and duplicate handling.
-\item[Failure] Name a concrete failure and its detection signal: Adding incomparable raw scores without normalization makes one retriever dominate.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
 \subsection{Reciprocal rank fusion}
 \textbf{Learning objective.} Explain Reciprocal rank fusion from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-RRF combines ranked lists using reciprocal rank positions rather than raw score scales. Model retrieval as a ranking function over a corpus, then separate candidate generation from final ranking.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Reciprocal rank fusion, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\subsubsection*{1. The map: abstraction and prerequisites}
+Retrieval is lossy compression of a corpus into a ranking. A query expresses incomplete evidence; a scoring function decides which distinctions survive. Candidate generation protects recall, while later ranking spends more computation to improve order.
+Within that model, Reciprocal rank fusion has one central job: RRF combines ranked lists using reciprocal rank positions rather than raw score scales. Its boundary contains a query, a collection, a scoring rule, and a ranked list; the rest of this chapter traces how that claim produces the stated benefit and failure.
+\textbf{Vocabulary you need.}\begin{itemize}
+\item Locate these primitives in the course model: a query, a collection, a scoring rule, and a ranked list.
+\item Trace rule: follow one query through representation, scoring, ranking, and evaluation.
+\item Keep mechanism (what transforms), policy (what is allowed), and measurement (what was observed) separate.
+\end{itemize}
+\subsubsection*{2. Under the hood: causal mechanism}\begin{enumerate}
+\item Represent the query and documents in a space where some evidence is comparable.
+\item Generate a bounded candidate set; anything omitted here cannot be repaired by a reranker.
+\item Score and order candidates, then compare the ordered list with relevance judgments matched to the product task.
+\item Reciprocal rank fusion specializes that chain as follows: RRF combines ranked lists using reciprocal rank positions rather than raw score scales.
+\item The resulting tradeoff is causal, not a slogan: It is robust without score calibration but ignores the magnitude and confidence of scores.
+\end{enumerate}
+\subsubsection*{3. Intuition that makes predictions}
+\textbf{Mental picture.} Think of Reciprocal rank fusion as a lens inserted into the course's causal chain. It preserves some information or control and discards or delays something else; that asymmetry is why it can help rather than being universally better.
+\textbf{Prediction.} On the workload named in the tradeoff, predict this behavior before benchmarking: It is robust without score calibration but ignores the magnitude and confidence of scores.
+\textbf{Where it breaks.} The mental model fails if it ignores this concrete counterexample: Using an overly small rank constant can overreward noisy top results.
+\subsubsection*{4. Quantitative model}
+Separate effectiveness from efficiency. Measure Recall@k = retrieved relevant / all relevant, a rank-sensitive metric such as MRR or nDCG, and query cost. A method is better only on a stated workload and budget; one scalar score cannot preserve all three dimensions.
+For Reciprocal rank fusion, turn the prose tradeoff into two axes: the promised gain and the stated cost. It is robust without score calibration but ignores the magnitude and confidence of scores. Hold the dataset, traffic mix, versions, and hardware fixed while sweeping the mechanism's controlling parameter.
+Check units and limiting cases before trusting the plot: zero work, one item, the largest supported input, no failures, and the violated assumption named in this chapter. Report distributions and important cohorts, not only one average.
 \paragraph{Reciprocal rank fusion}
 \mathblock{\operatorname{RRF}(d)=\sum_{r\in\mathcal R}\frac{1}{k+\operatorname{rank}_r(d)}}
-\subsubsection*{Decision and failure reasoning}
-Choose Reciprocal rank fusion when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It is robust without score calibration but ignores the magnitude and confidence of scores. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Using an overly small rank constant can overreward noisy top results. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
+\subsubsection*{5. Worked example and lab}
+\textbf{Scenario.} For 10,000 judged queries, compare exact lexical retrieval, the candidate method, and any reranker. Slice identifiers, paraphrases, long queries, and rare languages; inspect actual false negatives before tuning.
 \begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Reciprocal rank fusion.
-\item Baseline: implement or measure the least complex alternative before adding Reciprocal rank fusion.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: It is robust without score calibration but ignores the magnitude and confidence of scores.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Using an overly small rank constant can overreward noisy top results.
+\item Hypothesis for Reciprocal rank fusion: RRF combines ranked lists using reciprocal rank positions rather than raw score scales.
+\item Counterfactual baseline: remove Reciprocal rank fusion while holding inputs and evaluation constant; then change one relevance assumption and predict which documents move.
+\item Decision boundary: accept the mechanism only where this tradeoff is favorable for the stated workload—It is robust without score calibration but ignores the magnitude and confidence of scores.
+\item Falsification test: deliberately create this failure and capture the first stage where it is observable—Using an overly small rank constant can overreward noisy top results.
 \end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
+\textbf{Run this.} Run this course-level mechanism probe before changing it for Reciprocal rank fusion. Change one relevance assumption and predict which documents move. Explain which output would falsify this chapter's claim: RRF combines ranked lists using reciprocal rank positions rather than raw score scales.
+\begin{Verbatim}[fontsize=\scriptsize]
+# Topic under test: Reciprocal rank fusion
+# Claimed mechanism: RRF combines ranked lists using reciprocal rank positions rather than raw score scales.
+# Failure to reproduce: Using an overly small rank constant can overreward noisy top results.
+
+# Change the ranking and judgments, then explain every metric movement.
+ranked_relevant = [1, 0, 1, 0, 0]
+total_relevant = 4
+hits = sum(ranked_relevant)
+recall = hits / total_relevant
+precision = hits / len(ranked_relevant)
+rr = next((1 / rank for rank, hit in enumerate(ranked_relevant, 1) if hit), 0)
+print({"recall@5": recall, "precision@5": precision, "reciprocal_rank": rr})
+\end{Verbatim}
+\subsubsection*{6. Failure, diagnosis, and operation}
+\begin{itemize}
+\item Failure to explain: Using an overly small rank constant can overreward noisy top results.
+\item Earliest signal: instrument the boundary where the violated assumption first becomes observable, not only the final user-visible error.
+\item Containment: bound queues, work, retries, privileges, or affected tenants at the ownership boundary.
+\item Recovery: preserve a simpler baseline, version state, and define a tested rollback or degraded mode before release.
+\end{itemize}
+\textbf{Measure.}\begin{itemize}
 \item Recall@k on judged evidence
 \item nDCG or MRR matched to the task
 \item latency and cost by query slice
@@ -1909,38 +2160,66 @@ The key production trap is: Using an overly small rank constant can overreward n
 \item Inspect misses before changing the model
 \item Keep rollback-compatible index snapshots
 \end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: RRF combines ranked lists using reciprocal rank positions rather than raw score scales.
-\item[Tradeoff] Then state both sides without hedging: It is robust without score calibration but ignores the magnitude and confidence of scores.
-\item[Failure] Name a concrete failure and its detection signal: Using an overly small rank constant can overreward noisy top results.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
 \subsection{ANN recall}
 \textbf{Learning objective.} Explain ANN recall from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-Approximate nearest-neighbor recall measures how many true nearest items are recovered by an index configuration. Model retrieval as a ranking function over a corpus, then separate candidate generation from final ranking.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For ANN recall, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
+\subsubsection*{1. The map: abstraction and prerequisites}
+Retrieval is lossy compression of a corpus into a ranking. A query expresses incomplete evidence; a scoring function decides which distinctions survive. Candidate generation protects recall, while later ranking spends more computation to improve order.
+Within that model, ANN recall has one central job: Approximate nearest-neighbor recall measures how many true nearest items are recovered by an index configuration. Its boundary contains a query, a collection, a scoring rule, and a ranked list; the rest of this chapter traces how that claim produces the stated benefit and failure.
+\textbf{Vocabulary you need.}\begin{itemize}
+\item Locate these primitives in the course model: a query, a collection, a scoring rule, and a ranked list.
+\item Trace rule: follow one query through representation, scoring, ranking, and evaluation.
+\item Keep mechanism (what transforms), policy (what is allowed), and measurement (what was observed) separate.
+\end{itemize}
+\subsubsection*{2. Under the hood: causal mechanism}\begin{enumerate}
+\item Represent the query and documents in a space where some evidence is comparable.
+\item Generate a bounded candidate set; anything omitted here cannot be repaired by a reranker.
+\item Score and order candidates, then compare the ordered list with relevance judgments matched to the product task.
+\item ANN recall specializes that chain as follows: Approximate nearest-neighbor recall measures how many true nearest items are recovered by an index configuration.
+\item The resulting tradeoff is causal, not a slogan: Higher recall usually costs memory, build time, or query latency.
+\end{enumerate}
+\subsubsection*{3. Intuition that makes predictions}
+\textbf{Mental picture.} Think of ANN recall as a lens inserted into the course's causal chain. It preserves some information or control and discards or delays something else; that asymmetry is why it can help rather than being universally better.
+\textbf{Prediction.} On the workload named in the tradeoff, predict this behavior before benchmarking: Higher recall usually costs memory, build time, or query latency.
+\textbf{Where it breaks.} The mental model fails if it ignores this concrete counterexample: Reporting application answer quality without measuring index recall hides retrieval infrastructure defects.
+\subsubsection*{4. Quantitative model}
+Separate effectiveness from efficiency. Measure Recall@k = retrieved relevant / all relevant, a rank-sensitive metric such as MRR or nDCG, and query cost. A method is better only on a stated workload and budget; one scalar score cannot preserve all three dimensions.
+For ANN recall, turn the prose tradeoff into two axes: the promised gain and the stated cost. Higher recall usually costs memory, build time, or query latency. Hold the dataset, traffic mix, versions, and hardware fixed while sweeping the mechanism's controlling parameter.
+Check units and limiting cases before trusting the plot: zero work, one item, the largest supported input, no failures, and the violated assumption named in this chapter. Report distributions and important cohorts, not only one average.
 \paragraph{Recall, precision, MRR, MAP, and nDCG}
 \mathblock{P@k=\frac{1}{k}\sum_{i=1}^{k}rel_i,\quad R@k=\frac{\sum_{i=1}^{k}rel_i}{|R_q|},\quad \operatorname{MRR}=\frac1{|Q|}\sum_q\frac1{\operatorname{rank}_q}}
 \paragraph{HNSW latency-memory model}
 \mathblock{M_{\text{graph}}\approx N\,M\,b_{\text{edge}},\qquad T_{\text{query}}\propto ef_{\text{search}}\log N}
-\subsubsection*{Decision and failure reasoning}
-Choose ANN recall when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Higher recall usually costs memory, build time, or query latency. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Reporting application answer quality without measuring index recall hides retrieval infrastructure defects. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
+\subsubsection*{5. Worked example and lab}
+\textbf{Scenario.} For 10,000 judged queries, compare exact lexical retrieval, the candidate method, and any reranker. Slice identifiers, paraphrases, long queries, and rare languages; inspect actual false negatives before tuning.
 \begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for ANN recall.
-\item Baseline: implement or measure the least complex alternative before adding ANN recall.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: Higher recall usually costs memory, build time, or query latency.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Reporting application answer quality without measuring index recall hides retrieval infrastructure defects.
+\item Hypothesis for ANN recall: Approximate nearest-neighbor recall measures how many true nearest items are recovered by an index configuration.
+\item Counterfactual baseline: remove ANN recall while holding inputs and evaluation constant; then change one relevance assumption and predict which documents move.
+\item Decision boundary: accept the mechanism only where this tradeoff is favorable for the stated workload—Higher recall usually costs memory, build time, or query latency.
+\item Falsification test: deliberately create this failure and capture the first stage where it is observable—Reporting application answer quality without measuring index recall hides retrieval infrastructure defects.
 \end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
+\textbf{Run this.} Run this course-level mechanism probe before changing it for ANN recall. Change one relevance assumption and predict which documents move. Explain which output would falsify this chapter's claim: Approximate nearest-neighbor recall measures how many true nearest items are recovered by an index configuration.
+\begin{Verbatim}[fontsize=\scriptsize]
+# Topic under test: ANN recall
+# Claimed mechanism: Approximate nearest-neighbor recall measures how many true nearest items are recovered by an index configuration.
+# Failure to reproduce: Reporting application answer quality without measuring index recall hides retrieval infrastructure defects.
+
+# Change the ranking and judgments, then explain every metric movement.
+ranked_relevant = [1, 0, 1, 0, 0]
+total_relevant = 4
+hits = sum(ranked_relevant)
+recall = hits / total_relevant
+precision = hits / len(ranked_relevant)
+rr = next((1 / rank for rank, hit in enumerate(ranked_relevant, 1) if hit), 0)
+print({"recall@5": recall, "precision@5": precision, "reciprocal_rank": rr})
+\end{Verbatim}
+\subsubsection*{6. Failure, diagnosis, and operation}
+\begin{itemize}
+\item Failure to explain: Reporting application answer quality without measuring index recall hides retrieval infrastructure defects.
+\item Earliest signal: instrument the boundary where the violated assumption first becomes observable, not only the final user-visible error.
+\item Containment: bound queues, work, retries, privileges, or affected tenants at the ownership boundary.
+\item Recovery: preserve a simpler baseline, version state, and define a tested rollback or degraded mode before release.
+\end{itemize}
+\textbf{Measure.}\begin{itemize}
 \item Recall@k on judged evidence
 \item nDCG or MRR matched to the task
 \item latency and cost by query slice
@@ -1952,212 +2231,3 @@ The key production trap is: Reporting application answer quality without measuri
 \item Inspect misses before changing the model
 \item Keep rollback-compatible index snapshots
 \end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: Approximate nearest-neighbor recall measures how many true nearest items are recovered by an index configuration.
-\item[Tradeoff] Then state both sides without hedging: Higher recall usually costs memory, build time, or query latency.
-\item[Failure] Name a concrete failure and its detection signal: Reporting application answer quality without measuring index recall hides retrieval infrastructure defects.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
-\subsection{Retrieval metrics}
-\textbf{Learning objective.} Explain Retrieval metrics from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-Recall@k, precision@k, MRR, MAP, and nDCG measure different ranking behaviors. Model retrieval as a ranking function over a corpus, then separate candidate generation from final ranking.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Retrieval metrics, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
-\paragraph{Recall, precision, MRR, MAP, and nDCG}
-\mathblock{P@k=\frac{1}{k}\sum_{i=1}^{k}rel_i,\quad R@k=\frac{\sum_{i=1}^{k}rel_i}{|R_q|},\quad \operatorname{MRR}=\frac1{|Q|}\sum_q\frac1{\operatorname{rank}_q}}
-\subsubsection*{Decision and failure reasoning}
-Choose Retrieval metrics when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: A metric must match the product objective and judgment granularity. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Optimizing MRR for a task that consumes many passages can worsen context coverage. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
-\begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Retrieval metrics.
-\item Baseline: implement or measure the least complex alternative before adding Retrieval metrics.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: A metric must match the product objective and judgment granularity.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Optimizing MRR for a task that consumes many passages can worsen context coverage.
-\end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
-\item Recall@k on judged evidence
-\item nDCG or MRR matched to the task
-\item latency and cost by query slice
-\item robustness on identifiers, paraphrases, and out-of-domain queries
-\end{itemize}
-\textbf{Operate.}\begin{itemize}
-\item Version corpus, tokenizer, embedding, and index
-\item Run lexical, dense, and hybrid baselines
-\item Inspect misses before changing the model
-\item Keep rollback-compatible index snapshots
-\end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: Recall@k, precision@k, MRR, MAP, and nDCG measure different ranking behaviors.
-\item[Tradeoff] Then state both sides without hedging: A metric must match the product objective and judgment granularity.
-\item[Failure] Name a concrete failure and its detection signal: Optimizing MRR for a task that consumes many passages can worsen context coverage.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
-\subsection{Embedding geometry}
-\textbf{Learning objective.} Explain Embedding geometry from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality. Model retrieval as a ranking function over a corpus, then separate candidate generation from final ranking.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Embedding geometry, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost.
-\paragraph{Cosine, dot product, and Euclidean distance}
-\mathblock{\cos(\mathbf q,\mathbf x)=\frac{\mathbf q^\top\mathbf x}{\|\mathbf q\|_2\|\mathbf x\|_2},\qquad \|\mathbf q-\mathbf x\|_2^2=2-2\mathbf q^\top\mathbf x\ \text{when }\|\mathbf q\|=\|\mathbf x\|=1}
-\subsubsection*{Decision and failure reasoning}
-Choose Embedding geometry when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Mixing an index metric with a differently trained embedding objective silently harms ranking. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
-\begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Embedding geometry.
-\item Baseline: implement or measure the least complex alternative before adding Embedding geometry.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Mixing an index metric with a differently trained embedding objective silently harms ranking.
-\end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
-\item Recall@k on judged evidence
-\item nDCG or MRR matched to the task
-\item latency and cost by query slice
-\item robustness on identifiers, paraphrases, and out-of-domain queries
-\end{itemize}
-\textbf{Operate.}\begin{itemize}
-\item Version corpus, tokenizer, embedding, and index
-\item Run lexical, dense, and hybrid baselines
-\item Inspect misses before changing the model
-\item Keep rollback-compatible index snapshots
-\end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: Similarity functions, normalization, anisotropy, dimensionality, and training objectives shape neighborhood quality.
-\item[Tradeoff] Then state both sides without hedging: Cosine, dot product, and Euclidean distance can be equivalent only under specific normalization assumptions.
-\item[Failure] Name a concrete failure and its detection signal: Mixing an index metric with a differently trained embedding objective silently harms ranking.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
-\subsection{Query expansion}
-\textbf{Learning objective.} Explain Query expansion from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval. Model retrieval as a ranking function over a corpus, then separate candidate generation from final ranking.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Query expansion, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
-\subsubsection*{Decision and failure reasoning}
-Choose Query expansion when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Recall can improve at the expense of latency and topic drift. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Letting an LLM expand unconstrained queries can inject unsupported intent. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
-\begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Query expansion.
-\item Baseline: implement or measure the least complex alternative before adding Query expansion.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: Recall can improve at the expense of latency and topic drift.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Letting an LLM expand unconstrained queries can inject unsupported intent.
-\end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
-\item Recall@k on judged evidence
-\item nDCG or MRR matched to the task
-\item latency and cost by query slice
-\item robustness on identifiers, paraphrases, and out-of-domain queries
-\end{itemize}
-\textbf{Operate.}\begin{itemize}
-\item Version corpus, tokenizer, embedding, and index
-\item Run lexical, dense, and hybrid baselines
-\item Inspect misses before changing the model
-\item Keep rollback-compatible index snapshots
-\end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: Expansion adds synonyms, generated subqueries, or pseudo-relevance terms before retrieval.
-\item[Tradeoff] Then state both sides without hedging: Recall can improve at the expense of latency and topic drift.
-\item[Failure] Name a concrete failure and its detection signal: Letting an LLM expand unconstrained queries can inject unsupported intent.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
-\clearpage\section{Vector Databases and Search Engines}
-\subsection{pgvector}
-\textbf{Learning objective.} Explain pgvector from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search. Treat the database as a stateful retrieval system whose index, filters, updates, tenancy, and backup behavior are one design.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For pgvector, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
-\subsubsection*{Decision and failure reasoning}
-Choose pgvector when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
-\begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for pgvector.
-\item Baseline: implement or measure the least complex alternative before adding pgvector.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.
-\end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
-\item Filtered ANN recall against exact search
-\item p50/p95/p99 latency
-\item index build and update lag
-\item memory, storage, and total cost
-\end{itemize}
-\textbf{Operate.}\begin{itemize}
-\item Benchmark representative vector and metadata distributions
-\item Test selective filters and deletes
-\item Version embeddings and migration state
-\item Exercise backup, restore, and reindex procedures
-\end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: A PostgreSQL extension that stores vectors beside relational data and supports exact, HNSW, and IVFFlat search.
-\item[Tradeoff] Then state both sides without hedging: It simplifies transactions and joins, while specialized stores may scale independent vector workloads more easily.
-\item[Failure] Name a concrete failure and its detection signal: Adding an ANN index without tuning filtering and planner behavior can reduce recall or miss the index.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}
-\subsection{Pinecone}
-\textbf{Learning objective.} Explain Pinecone from first principles, choose it for a stated workload, measure it, and recover when it fails.
-\subsubsection*{First principles and mental model}
-A managed vector service with metadata filtering, namespaces, and dense-sparse hybrid retrieval. Treat the database as a stateful retrieval system whose index, filters, updates, tenancy, and backup behavior are one design.
-Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For Pinecone, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.
-\subsubsection*{Mathematics and quantitative reasoning}
-No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget.
-\subsubsection*{Decision and failure reasoning}
-Choose Pinecone when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: Operations are outsourced, trading infrastructure control and portability for managed scale. Compare against the simplest viable baseline and make the decision reversible where possible.
-The key production trap is: Poor namespace and metadata design creates noisy tenants and expensive fan-out queries. Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.
-\subsubsection*{Worked production method}
-\begin{enumerate}
-\item Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for Pinecone.
-\item Baseline: implement or measure the least complex alternative before adding Pinecone.
-\item Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.
-\item Decision: accept the design only if the observed gain justifies this cost: Operations are outsourced, trading infrastructure control and portability for managed scale.
-\item Production gate: instrument the critical path and block or roll back release when this failure appears: Poor namespace and metadata design creates noisy tenants and expensive fan-out queries.
-\end{enumerate}
-\textbf{Evaluate.}\begin{itemize}
-\item Filtered ANN recall against exact search
-\item p50/p95/p99 latency
-\item index build and update lag
-\item memory, storage, and total cost
-\end{itemize}
-\textbf{Operate.}\begin{itemize}
-\item Benchmark representative vector and metadata distributions
-\item Test selective filters and deletes
-\item Version embeddings and migration state
-\item Exercise backup, restore, and reindex procedures
-\end{itemize}
-\subsubsection*{Interview answer blueprint}
-\begin{description}
-\item[Definition] Open with one sentence: A managed vector service with metadata filtering, namespaces, and dense-sparse hybrid retrieval.
-\item[Tradeoff] Then state both sides without hedging: Operations are outsourced, trading infrastructure control and portability for managed scale.
-\item[Failure] Name a concrete failure and its detection signal: Poor namespace and metadata design creates noisy tenants and expensive fan-out queries.
-\item[Production] Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.
-\item[Long Answer] Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.
-\end{description}
-\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.}}

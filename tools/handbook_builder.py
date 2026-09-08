@@ -187,7 +187,7 @@ def build_handbook(root: Path, topics, questions, core, designs, refs, tutorials
         r"\begin{titlepage}\pagecolor{navy}\color{white}\vspace*{1.1in}{\Huge\bfseries AI Engineering\\Interview Atlas\par}\vspace{.35in}{\Large Mathematical tutorials, technology field guide, systems, and 2,000+ questions\par}\vspace{.35in}{\large " + str(len(formulas)) + r" derivations \textbullet\ " + str(len(visuals)) + r" visual models \textbullet\ " + str(len(technologies)) + r" technology profiles \textbullet\ " + str(len(tutorials)) + r" deep lessons\par}\vfill{\large Research snapshot: 6 September 2026\par}\vspace{.15in}{\normalsize Primary papers, official documentation, specifications, and standards\par}\vspace{.7in}{\color{cyan}\rule{\textwidth}{3pt}}\end{titlepage}\nopagecolor\color{black}",
         r"\tableofcontents\newpage",
         r"\section{How to use this handbook}",
-        "This handbook contains " + str(len(topics)) + " complete topic tutorials, " + str(len(technologies)) + " workload-oriented technology profiles, " + str(len(questions)) + " generated practice questions, 50 core interview questions, " + str(len(designs)) + " progressive system-design challenges, " + str(len(visuals)) + " visual intuition models, and " + str(len(formulas)) + " mathematical modules. The browser resumes the last unfinished chapter, records five reading checkpoints, unlocks a five-question exam, and advances after a score of at least 80 percent.",
+        "This handbook contains " + str(len(topics)) + " complete topic tutorials, " + str(len(technologies)) + " workload-oriented technology profiles, " + str(len(questions)) + " generated practice questions, 50 core interview questions, " + str(len(designs)) + " progressive system-design challenges, " + str(len(visuals)) + " visual intuition models, and " + str(len(formulas)) + " mathematical modules. The browser resumes the last unfinished chapter, records six teaching checkpoints, unlocks a five-question exam, and advances after a score of at least 80 percent.",
         r"\subsection{The interview answer loop}",
         r"Answer in seven moves: \textbf{mechanism $\rightarrow$ assumptions $\rightarrow$ quantitative model $\rightarrow$ alternative $\rightarrow$ experiment $\rightarrow$ operation $\rightarrow$ recovery}. For a short answer, compress the same structure rather than replacing it with product slogans.",
         r"\subsection{How to study a derivation}",
@@ -213,8 +213,8 @@ def build_handbook(root: Path, topics, questions, core, designs, refs, tutorials
         lines.append(rf"\draw[arr](p{i})--(p{i+1});")
     lines += [r"\end{tikzpicture}\end{center}",
               r"\subsection{The guided learning loop}",
-              r"\begin{center}\begin{tikzpicture}[visual/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=30mm,minimum height=11mm,font=\small},arr/.style={-{Stealth},thick,draw=blue},node distance=8mm]\node[visual](resume){Resume last\\unfinished};\node[visual,right=of resume](teach){Read five\\lesson parts};\node[visual,right=of teach](exam){Pass topic exam\\at 80\%};\node[visual,below=of exam](mark){Mark chapter\\and phase};\node[visual,left=of mark](next){Open next\\chapter};\draw[arr](resume)--(teach);\draw[arr](teach)--(exam);\draw[arr](exam)--(mark);\draw[arr](mark)--(next);\draw[arr](next.west) to[bend left=26] (resume.south);\end{tikzpicture}\end{center}",
-              r"The website stores the last opened chapter, reading checkpoints, exam attempts, best scores, chapter mastery, and automatically completed lesson-bearing phases in browser storage. A chapter is learned only after all five parts have been reached and its exam has been passed."]
+              r"\begin{center}\begin{tikzpicture}[visual/.style={draw=cyan,fill=paper,rounded corners,align=center,text width=30mm,minimum height=11mm,font=\small},arr/.style={-{Stealth},thick,draw=blue},node distance=8mm]\node[visual](resume){Resume last\\unfinished};\node[visual,right=of resume](teach){Read six\\lesson parts};\node[visual,right=of teach](exam){Pass topic exam\\at 80\%};\node[visual,below=of exam](mark){Mark chapter\\and phase};\node[visual,left=of mark](next){Open next\\chapter};\draw[arr](resume)--(teach);\draw[arr](teach)--(exam);\draw[arr](exam)--(mark);\draw[arr](mark)--(next);\draw[arr](next.west) to[bend left=26] (resume.south);\end{tikzpicture}\end{center}",
+              r"The website stores the last opened chapter, reading checkpoints, exam attempts, best scores, chapter mastery, and automatically completed lesson-bearing phases in browser storage. A chapter is learned only after all six teaching parts have been reached and its exam has been passed."]
     for phase in roadmap:
         prereq = ", ".join(phase["prerequisites"]) or "none"
         lines += [
@@ -316,7 +316,7 @@ def build_handbook(root: Path, topics, questions, core, designs, refs, tutorials
             lines += [r"\item " + latex_escape(step["text"]), r"\mathblock{" + step["latex"] + r"}"]
         lines += [r"\end{enumerate}\end{derivation}", r"\textbf{Worked interpretation.} " + latex_escape(formula["example"])]
 
-    # Deep tutorials: exact source for answering every generated question.
+    # Mechanism-first tutorials.  The same structured source drives the site.
     current = None
     for tutorial in tutorials:
         if tutorial["category"] != current:
@@ -325,27 +325,32 @@ def build_handbook(root: Path, topics, questions, core, designs, refs, tutorials
         lines += [
             r"\subsection{" + latex_escape(tutorial["name"]) + "}",
             r"\textbf{Learning objective.} " + latex_escape(tutorial["objective"]),
-            r"\subsubsection*{First principles and mental model}",
-            latex_escape(tutorial["first_principles"]),
-            latex_escape(tutorial["mental_model"]),
-            r"\subsubsection*{Mathematics and quantitative reasoning}",
-            latex_escape(tutorial["quantitative_reasoning"]),
+            r"\subsubsection*{1. The map: abstraction and prerequisites}",
+            *[latex_escape(paragraph) for paragraph in tutorial["big_picture"]],
+            r"\textbf{Vocabulary you need.}\begin{itemize}",
+            *[r"\item " + latex_escape(item) for item in tutorial["prerequisites"]], r"\end{itemize}",
+            r"\subsubsection*{2. Under the hood: causal mechanism}\begin{enumerate}",
+            *[r"\item " + latex_escape(item) for item in tutorial["mechanism_steps"]], r"\end{enumerate}",
+            r"\subsubsection*{3. Intuition that makes predictions}",
+            r"\textbf{Mental picture.} " + latex_escape(tutorial["intuition"]["analogy"]),
+            r"\textbf{Prediction.} " + latex_escape(tutorial["intuition"]["prediction"]),
+            r"\textbf{Where it breaks.} " + latex_escape(tutorial["intuition"]["limit"]),
+            r"\subsubsection*{4. Quantitative model}",
+            *[latex_escape(paragraph) for paragraph in tutorial["quantitative_model"]],
         ]
         for formula_id in tutorial["formula_ids"]:
             formula = formula_by_id[formula_id]
             lines += [r"\paragraph{" + latex_escape(formula["title"]) + "}", r"\mathblock{" + formula["latex"] + r"}"]
         lines += [
-            r"\subsubsection*{Decision and failure reasoning}",
-            latex_escape(tutorial["decision_reasoning"]),
-            latex_escape(tutorial["failure_reasoning"]),
-            r"\subsubsection*{Worked production method}", r"\begin{enumerate}",
-            *[r"\item " + latex_escape(x) for x in tutorial["worked_reasoning"]], r"\end{enumerate}",
-            r"\textbf{Evaluate.}\begin{itemize}", *[r"\item " + latex_escape(x) for x in tutorial["evaluation"]], r"\end{itemize}",
+            r"\subsubsection*{5. Worked example and lab}",
+            r"\textbf{Scenario.} " + latex_escape(tutorial["worked_example"]["scenario"]), r"\begin{enumerate}",
+            *[r"\item " + latex_escape(x) for x in tutorial["worked_example"]["trace"]], r"\end{enumerate}",
+            r"\textbf{Run this.} " + latex_escape(tutorial["lab"]["prompt"]),
+            r"\begin{Verbatim}[fontsize=\scriptsize]", tutorial["lab"]["code"], r"\end{Verbatim}",
+            r"\subsubsection*{6. Failure, diagnosis, and operation}", r"\begin{itemize}",
+            *[r"\item " + latex_escape(x) for x in tutorial["failure_analysis"]], r"\end{itemize}",
+            r"\textbf{Measure.}\begin{itemize}", *[r"\item " + latex_escape(x) for x in tutorial["evaluation"]], r"\end{itemize}",
             r"\textbf{Operate.}\begin{itemize}", *[r"\item " + latex_escape(x) for x in tutorial["operations"]], r"\end{itemize}",
-            r"\subsubsection*{Interview answer blueprint}", r"\begin{description}",
-            *[r"\item[" + latex_escape(k.replace("_", " ").title()) + "] " + latex_escape(v) for k, v in tutorial["answer_blueprint"].items()],
-            r"\end{description}",
-            r"\colorbox{paper}{\parbox{0.96\linewidth}{\textbf{Question coverage.} " + latex_escape(tutorial["question_coverage"]) + r"}}",
         ]
 
     lines += [r"\clearpage\section{Core 50 interview questions}"]

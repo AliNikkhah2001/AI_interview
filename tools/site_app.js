@@ -1,4 +1,4 @@
-const READ_PARTS = ["principles", "math", "decision", "production", "blueprint"];
+const READ_PARTS = ["map", "mechanism", "intuition", "math", "worked", "failure"];
 const PASS_SCORE = 80;
 const safeStored = (key, fallback) => {
   try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
@@ -12,7 +12,7 @@ const state = {
   seen: new Set(safeStored("atlas-seen", [])),
   mastered: new Set(safeStored("atlas-mastered", [])),
   phases: new Set(safeStored("atlas-roadmap-progress", [])),
-  reading: safeStored("atlas-reading-v2", {}),
+  reading: safeStored("atlas-reading-v3", {}),
   examScores: safeStored("atlas-exam-scores-v2", {}),
   examAttempts: safeStored("atlas-exam-attempts-v2", {}),
   lastTopic: localStorage.getItem("atlas-last-topic-v2") || null,
@@ -140,7 +140,7 @@ function renderLearn() {
       <p class="eyebrow">${complete ? "CONTINUE WHERE YOU STOPPED" : "START THE GUIDED PATH"}</p>
       <h3>${esc(next.name)}</h3>
       <p>${esc(next.objective)}</p>
-      <div class="resume-meta"><span>${esc(phase?.title || next.category)}</span><span>${complete + 1} of ${state.courseOrder.length}</span><span>${read}/5 parts read</span><span>${state.examScores[next.topic_id] ? `best exam ${state.examScores[next.topic_id]}%` : "exam not passed"}</span></div>
+      <div class="resume-meta"><span>${esc(phase?.title || next.category)}</span><span>${complete + 1} of ${state.courseOrder.length}</span><span>${read}/${READ_PARTS.length} parts read</span><span>${state.examScores[next.topic_id] ? `best exam ${state.examScores[next.topic_id]}%` : "exam not passed"}</span></div>
       <button id="resumeLearning">${read ? "Resume lesson" : "Start lesson"} →</button>
     </article>
     <article class="course-overview"><p class="eyebrow">COURSE PROGRESS</p><div class="course-number">${percent}%</div><h3>${complete.toLocaleString()} chapters passed</h3><div class="roadmap-bar"><i style="width:${percent}%"></i></div><dl><dt>Reading checkpoints</dt><dd>${Object.values(state.reading).reduce((sum, parts) => sum + new Set(parts).size, 0).toLocaleString()}</dd><dt>Passed exams</dt><dd>${state.mastered.size.toLocaleString()}</dd><dt>Next phase</dt><dd>${esc(phase ? String(phase.order).padStart(2, "0") : "Done")}</dd></dl></article>` : `<article class="resume-card"><h3>Course complete</h3><p>Maintain recall with mixed questions and system-design rehearsals.</p><button id="resumeLearning">Review the last chapter →</button></article>`;
@@ -220,7 +220,7 @@ function renderRoadmap() {
 function filteredTutorials() {
   const category = $("#tutorialCategory").value;
   const query = $("#globalSearch").value.trim().toLowerCase();
-  return state.courseOrder.filter(tutorial => (!category || tutorial.category === category) && (!query || (tutorial.name + " " + tutorial.first_principles + " " + tutorial.decision_reasoning + " " + tutorial.failure_reasoning).toLowerCase().includes(query)));
+  return state.courseOrder.filter(tutorial => (!category || tutorial.category === category) && (!query || (tutorial.name + " " + JSON.stringify(tutorial)).toLowerCase().includes(query)));
 }
 function renderTutorialControls() {
   const tutorials = filteredTutorials();
@@ -257,19 +257,22 @@ function renderTutorial() {
   if (!tutorial) { $("#tutorialLesson").innerHTML = "<p class=\"empty\">Choose a lesson.</p>"; return; }
   if (state.readingObserver) state.readingObserver.disconnect();
   const formulas = tutorial.formula_ids.map(id => state.formulas.find(formula => formula.id === id)).filter(Boolean);
-  const formulaHtml = formulas.length ? formulas.map(formula => `<section class="formula-card"><h5>${esc(formula.title)}</h5><div class="formula-display">\\[${formula.latex}\\]</div><p><strong>Variables.</strong> ${formula.variables.map(esc).join(" · ")}</p>${formula.derivation.map((step, index) => `<div class="derivation-step"><b>${index + 1}</b><div><p>${esc(step.text)}</p><div>\\[${step.latex}\\]</div></div></div>`).join("")}<p><strong>Worked interpretation.</strong> ${esc(formula.example)}</p></section>`).join("") : "<p class=\"coverage-note\">This topic is evaluated with an explicit workload and SLO model rather than a single canonical equation. Quantify arrival rate, volume, service time, quality, cost, and error budget.</p>";
+  const formulaHtml = formulas.map(formula => `<section class="formula-card"><h5>${esc(formula.title)}</h5><div class="formula-display">\\[${formula.latex}\\]</div><p><strong>Variables.</strong> ${formula.variables.map(esc).join(" · ")}</p>${formula.derivation.map((step, index) => `<div class="derivation-step"><b>${index + 1}</b><div><p>${esc(step.text)}</p><div>\\[${step.latex}\\]</div></div></div>`).join("")}<p><strong>Worked interpretation.</strong> ${esc(formula.example)}</p></section>`).join("");
   const visual = state.visuals.find(item => item.topic_ids.includes(tutorial.topic_id)) || state.visuals.find(item => item.category === tutorial.category);
   const read = readSet(tutorial.topic_id);
   const percent = Math.round(read.size / READ_PARTS.length * 100);
   const number = state.courseOrder.findIndex(item => item.topic_id === tutorial.topic_id) + 1;
   const phase = phaseForTutorial(tutorial);
-  $("#tutorialLesson").innerHTML = `<header class="lesson-hero"><div><span class="cat">${esc(tutorial.category)}</span><h3>${esc(tutorial.name)}</h3><p>${esc(tutorial.objective)}</p></div><div class="lesson-status"><strong>${state.mastered.has(tutorial.topic_id) ? "Chapter passed ✓" : `${read.size}/5 parts read`}</strong><small>Chapter ${number} of ${state.courseOrder.length} · Phase ${String(phase?.order ?? "-").padStart(2, "0")}</small><div class="reading-meter"><i style="width:${state.mastered.has(tutorial.topic_id) ? 100 : percent}%"></i></div></div></header>
+  const paragraphs = items => items.map(item => `<p>${esc(item)}</p>`).join("");
+  const ordered = items => `<ol class="mechanism-list">${items.map(item => `<li>${esc(item)}</li>`).join("")}</ol>`;
+  $("#tutorialLesson").innerHTML = `<header class="lesson-hero"><div><span class="cat">${esc(tutorial.category)}</span><h3>${esc(tutorial.name)}</h3><p>${esc(tutorial.objective)}</p></div><div class="lesson-status"><strong>${state.mastered.has(tutorial.topic_id) ? "Chapter passed ✓" : `${read.size}/${READ_PARTS.length} parts read`}</strong><small>Chapter ${number} of ${state.courseOrder.length} · Phase ${String(phase?.order ?? "-").padStart(2, "0")}</small><div class="reading-meter"><i style="width:${state.mastered.has(tutorial.topic_id) ? 100 : percent}%"></i></div></div></header>
     ${visual ? renderVisual(visual) : ""}
-    ${lessonSection("principles", "First principles", `<p>${esc(tutorial.first_principles)}</p><p>${esc(tutorial.mental_model)}</p>`)}
-    ${lessonSection("math", "Mathematics and quantitative reasoning", `<p>${esc(tutorial.quantitative_reasoning)}</p>${formulaHtml}`)}
-    ${lessonSection("decision", "Decision and failure reasoning", `<p>${esc(tutorial.decision_reasoning)}</p><p>${esc(tutorial.failure_reasoning)}</p>`)}
-    ${lessonSection("production", "Worked production method", `<ol>${tutorial.worked_reasoning.map(item => `<li>${esc(item)}</li>`).join("")}</ol><div class="answer-grid"><div><strong>Evaluate</strong><ul>${tutorial.evaluation.map(item => `<li>${esc(item)}</li>`).join("")}</ul></div><div><strong>Operate</strong><ul>${tutorial.operations.map(item => `<li>${esc(item)}</li>`).join("")}</ul></div></div>`)}
-    ${lessonSection("blueprint", "Interview answer blueprint", `<div class="answer-grid">${Object.entries(tutorial.answer_blueprint).map(([key, value]) => `<div><strong>${esc(key.replace("_", " "))}</strong><span>${esc(value)}</span></div>`).join("")}</div><p class="coverage-note">${esc(tutorial.question_coverage)}</p>`)}
+    ${lessonSection("map", "1 · The map: abstraction and prerequisites", `${paragraphs(tutorial.big_picture)}<div class="concept-box"><strong>Vocabulary you need</strong><ul>${tutorial.prerequisites.map(item => `<li>${esc(item)}</li>`).join("")}</ul></div>`)}
+    ${lessonSection("mechanism", "2 · Under the hood: causal mechanism", `${ordered(tutorial.mechanism_steps)}<p class="checkpoint-question"><strong>Stop and predict.</strong> After each step, ask what changes if that step is slower, missing, duplicated, or concurrent.</p>`)}
+    ${lessonSection("intuition", "3 · Intuition that makes predictions", `<div class="intuition-grid"><div><strong>Mental picture</strong><p>${esc(tutorial.intuition.analogy)}</p></div><div><strong>Prediction</strong><p>${esc(tutorial.intuition.prediction)}</p></div><div><strong>Where it breaks</strong><p>${esc(tutorial.intuition.limit)}</p></div></div>`)}
+    ${lessonSection("math", "4 · Quantitative model", `${paragraphs(tutorial.quantitative_model)}${formulaHtml}`)}
+    ${lessonSection("worked", "5 · Worked example and lab", `<div class="worked-case"><strong>Scenario</strong><p>${esc(tutorial.worked_example.scenario)}</p>${ordered(tutorial.worked_example.trace)}</div><div class="lab-card"><strong>Run this, do not just read it</strong><p>${esc(tutorial.lab.prompt)}</p><pre><code>${esc(tutorial.lab.code)}</code></pre></div>`)}
+    ${lessonSection("failure", "6 · Failure, diagnosis, and operation", `${ordered(tutorial.failure_analysis)}<div class="answer-grid"><div><strong>Measure</strong><ul>${tutorial.evaluation.map(item => `<li>${esc(item)}</li>`).join("")}</ul></div><div><strong>Operate</strong><ul>${tutorial.operations.map(item => `<li>${esc(item)}</li>`).join("")}</ul></div></div>`)}
     <section id="chapterExam" class="chapter-exam"></section>`;
   observeReading(tutorial);
   renderExam(tutorial);
@@ -287,7 +290,7 @@ function markSectionRead(topicId, part) {
   if (parts.has(part)) return;
   parts.add(part);
   state.reading[topicId] = [...parts];
-  localStorage.setItem("atlas-reading-v2", JSON.stringify(state.reading));
+  localStorage.setItem("atlas-reading-v3", JSON.stringify(state.reading));
   const sentinel = $(`[data-read-sentinel="${part}"]`);
   if (sentinel) { sentinel.classList.add("read"); sentinel.textContent = "Part learned"; }
   const tutorial = state.tutorials.find(item => item.topic_id === topicId);
@@ -299,7 +302,7 @@ function updateLessonStatus(tutorial) {
   if (!tutorial || tutorial.topic_id !== state.activeTutorial) return;
   const count = readSet(tutorial.topic_id).size;
   const status = $(".lesson-status strong"), meter = $(".lesson-status i");
-  if (status) status.textContent = state.mastered.has(tutorial.topic_id) ? "Chapter passed ✓" : `${count}/5 parts read`;
+  if (status) status.textContent = state.mastered.has(tutorial.topic_id) ? "Chapter passed ✓" : `${count}/${READ_PARTS.length} parts read`;
   if (meter) meter.style.width = `${state.mastered.has(tutorial.topic_id) ? 100 : count / READ_PARTS.length * 100}%`;
 }
 function topicExamPool(topicId) {
@@ -329,7 +332,7 @@ function renderExam(tutorial) {
     return;
   }
   if (!exam) {
-    container.innerHTML = `<div class="exam-head"><div><p class="eyebrow">CHAPTER EXAM</p><h4>${ready ? "Ready for active recall" : "Finish the five reading parts to unlock"}</h4><p>Five four-option questions · pass at ${PASS_SCORE}% · explanations appear after submission.</p></div><button id="startExam" ${ready ? "" : "disabled"}>${best ? `Retry · best ${best}%` : "Start exam"}</button></div>`;
+    container.innerHTML = `<div class="exam-head"><div><p class="eyebrow">CHAPTER EXAM</p><h4>${ready ? "Ready for active recall" : "Finish the six teaching parts to unlock"}</h4><p>Five four-option questions · pass at ${PASS_SCORE}% · explanations appear after submission.</p></div><button id="startExam" ${ready ? "" : "disabled"}>${best ? `Retry · best ${best}%` : "Start exam"}</button></div>`;
     $("#startExam").onclick = () => startChapterExam(tutorial);
     return;
   }

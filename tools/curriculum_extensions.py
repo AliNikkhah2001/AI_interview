@@ -344,6 +344,17 @@ FORMULAS = [
         "derivation": [{"text": "Temperature divides logit gaps. Lower T magnifies relative gaps; higher T flattens them. Top-p then retains the smallest sorted set with cumulative mass at least p and renormalizes.", "latex": r"\log\frac{p_i(T)}{p_j(T)}=\frac{z_i-z_j}{T}"}],
         "example": "At T approaching zero, selection approaches argmax. Determinism also depends on kernels, batching, floating-point order, and provider behavior.",
     },
+    {
+        "id": "gil-overlap", "title": "Threaded overlap and the serial floor", "topic_ids": ["python-threading-and-the-gil"],
+        "latex": r"T_{seq}=N(C+W),\qquad T_{threads}\gtrsim NC+W,\qquad S_N\leq\frac{1}{(1-p)+p/N}",
+        "variables": ["N: concurrent tasks", "C: GIL-held Python time per task", "W: wait or GIL-released time", "p: fraction that can overlap", "S_N: speedup with N workers"],
+        "derivation": [
+            {"text": "Sequential execution pays both compute and wait for every task.", "latex": r"T_{seq}=\sum_{i=1}^{N}(C_i+W_i)=N(C+W)"},
+            {"text": "In the optimistic threaded case, waits overlap but GIL-held Python portions serialize.", "latex": r"T_{threads}\gtrsim\sum_{i=1}^{N}C_i+\max_i W_i=NC+W"},
+            {"text": "Amdahl's law exposes the serial floor: even infinitely many workers cannot accelerate the non-overlappable fraction.", "latex": r"\lim_{N\to\infty}S_N\leq\frac{1}{1-p}"},
+        ],
+        "example": "For 20 tasks with C=5 ms and W=95 ms, sequential time is about 2.0 s while the optimistic threaded bound is 195 ms. With C=100 ms and W=0, both bounds are 2.0 s before thread overhead.",
+    },
 ]
 
 
@@ -539,13 +550,388 @@ CATEGORY_TEACHING = {
 }
 
 
-def build_tutorials(topics):
-    """Generate a complete teaching note for every catalog topic.
+COURSE_FOUNDATIONS = {
+    "Retrieval and Search Theory": ("a query, a collection, a scoring rule, and a ranked list", "follow one query through representation, scoring, ranking, and evaluation", "Change one relevance assumption and predict which documents move."),
+    "Vector Databases and Search Engines": ("vectors, metadata, an index, a candidate search, and exact reranking", "follow a write into the index and a filtered query back out", "Hold the data fixed while varying search breadth, filters, and index parameters."),
+    "RAG Architecture and Evaluation": ("source documents, transformations, retrieved evidence, answer claims, and evaluators", "trace one source span from ingestion to a cited claim", "Corrupt one stage at a time and identify which metric notices first."),
+    "Knowledge Graphs and GraphRAG": ("entities, typed relations, provenance, graph traversal, and answer synthesis", "trace how a source assertion becomes a node or edge and later supports an answer", "Compare a relation-shaped question with and without the graph."),
+    "Agents, MCP, and Control": ("state, observations, a policy, typed actions, effects, and termination", "follow one loop iteration from observation through an authorized effect", "Replay the same task with a tool failure or hostile observation."),
+    "Orchestration Frameworks": ("durable state, transitions, activities, retries, and compensation", "follow a long-running job across a crash and resume boundary", "Inject a crash before and after a side effect and compare outcomes."),
+    "Observability and Monitoring": ("events, context propagation, aggregation, hypotheses, and operational action", "follow one request across signals and ask what can actually be inferred", "Create two failures with the same average metric and separate them by trace or cohort."),
+    "Serving, Deployment, and LLMOps": ("requests, queues, schedulers, model memory, compute kernels, and release control", "separate queue, prefill, decode, and network time for one request", "Sweep concurrency and sequence length until the bottleneck changes."),
+    "Data and ML Lifecycle": ("immutable artifacts, lineage edges, mutable references, validation, and promotion", "reconstruct one result from source data through production artifact", "Change one upstream version and prove which downstream artifacts become stale."),
+    "Transformer Theory and Training": ("tensor representations, parameterized transformations, probability objectives, and gradient paths", "write every tensor shape and follow one token forward and one gradient backward", "Use a tiny tensor or vocabulary and calculate one complete step by hand."),
+    "Inference Optimization": ("arithmetic, memory capacity, memory traffic, scheduling, and approximation error", "identify which physical resource is saved and which work remains", "Measure latency, throughput, memory, and quality while changing one control."),
+    "Backend, APIs, and Microservices": ("contracts, ownership, requests, state transitions, backpressure, and partial failure", "follow one request and its cancellation across every boundary", "Overload or fail one dependency and observe containment."),
+    "Python Engineering": ("objects, names, protocols, frames, effects, and runtime resource boundaries", "trace a small program at the object and execution-model level", "Make the hidden behavior visible with a minimal executable probe."),
+    "Security, Safety, and Governance": ("assets, actors, trust boundaries, policy decisions, evidence, and allowed effects", "follow untrusted input until it is rejected or becomes an authorized effect", "Attempt one abuse case and verify both prevention and audit evidence."),
+    "Distributed Systems and Reliability": ("state replicas, messages, clocks, failure assumptions, queues, and recovery", "draw state ownership and follow one operation through delay, duplication, and failure", "Inject a partition, timeout, duplicate, or overload and check the invariant."),
+}
 
-    The question bank creates ten prompts per topic: seven MCQs, two
-    flashcards, and one long answer.  These lessons explicitly cover each fact
-    those prompts test, plus the production reasoning expected in interviews.
+
+# These are course-level laws, not prose decoration.  Every topic lesson starts
+# from the appropriate model and then specializes it with its own mechanism,
+# tradeoff, pitfall, formula, and experiment.  Keeping this knowledge explicit
+# also prevents a serving lesson from receiving queueing boilerplate when its
+# real bottleneck is memory bandwidth, or a security lesson from being reduced
+# to latency and throughput.
+CATEGORY_DEEP_MODELS = {
+    "Retrieval and Search Theory": {
+        "why": "Retrieval is lossy compression of a corpus into a ranking. A query expresses incomplete evidence; a scoring function decides which distinctions survive. Candidate generation protects recall, while later ranking spends more computation to improve order.",
+        "chain": ["Represent the query and documents in a space where some evidence is comparable.", "Generate a bounded candidate set; anything omitted here cannot be repaired by a reranker.", "Score and order candidates, then compare the ordered list with relevance judgments matched to the product task."],
+        "math": "Separate effectiveness from efficiency. Measure Recall@k = retrieved relevant / all relevant, a rank-sensitive metric such as MRR or nDCG, and query cost. A method is better only on a stated workload and budget; one scalar score cannot preserve all three dimensions.",
+        "case": "For 10,000 judged queries, compare exact lexical retrieval, the candidate method, and any reranker. Slice identifiers, paraphrases, long queries, and rare languages; inspect actual false negatives before tuning.",
+    },
+    "Vector Databases and Search Engines": {
+        "why": "A vector store is a stateful search system, not an array with a nearest-neighbor function. Writes create index state; filters change the eligible search space; sharding changes candidate competition; deletes and embedding migrations change what a query can observe.",
+        "chain": ["Persist the vector, identity, metadata, model version, and tenant boundary.", "Route a query to shards or partitions and traverse an exact or approximate index under filters.", "Merge candidates, optionally rerank exactly, and return results with enough version evidence to reproduce them."],
+        "math": "Benchmark ANN recall against brute-force top-k on the same filtered subset. Track bytes per vector plus graph or code overhead, write-to-query visibility lag, and p50/p95/p99 latency. Selectivity must be a test axis because a 0.1% filter creates a different search problem from an unfiltered query.",
+        "case": "Load one million representative vectors with realistic tenant and metadata skew. Replay reads, updates, deletes, and highly selective filters; compare exact neighbors with returned neighbors and rehearse snapshot restore plus embedding reindex.",
+    },
+    "RAG Architecture and Evaluation": {
+        "why": "RAG is an evidence supply chain. Source truth is transformed into chunks, chunks into candidates, candidates into packed context, and context into claims. A fluent final answer hides which transformation lost or invented information.",
+        "chain": ["Ingest source spans with stable identity, version, structure, and provenance.", "Retrieve and rank evidence for the question, preserving scores and every transformation.", "Pack evidence, generate atomic claims, and test claim support separately from usefulness and factual correctness."],
+        "math": "Use a metric vector: source freshness, evidence Recall@k, context precision, claim-level faithfulness, answer relevance, latency, and cost. If evidence recall is zero, generation cannot recover provenance; if recall is high but faithfulness is low, the defect is downstream.",
+        "case": "Build 100 questions with cited gold spans. Corrupt exactly one stage—parser, chunk map, retriever, packer, or prompt—and verify that stage-local metrics identify it before the final aggregate score moves.",
+    },
+    "Knowledge Graphs and GraphRAG": {
+        "why": "A graph makes relationships addressable. Its advantage appears when the answer depends on identity, a typed edge, a path, time, or a community; otherwise a graph can be an expensive restatement of text.",
+        "chain": ["Resolve source mentions into stable entities without collapsing homonyms.", "Create typed, directed facts with provenance and, when needed, validity time.", "Traverse a bounded subgraph and translate its facts back into evidence a generator or user can verify."],
+        "math": "Measure entity and edge precision/recall before downstream QA. For traversal, track branching factor b and depth d: naive expansion can approach O(b^d), so degree caps, type constraints, and path budgets are correctness as well as cost controls.",
+        "case": "Use questions that truly require two relations and as-of time. Compare text retrieval with graph traversal, inspect every wrong join or missing edge, and report whether answer lift survives extraction and maintenance cost.",
+    },
+    "Agents, MCP, and Control": {
+        "why": "An agent is a policy choosing the next action from partial state. The model proposes; the host owns authority, validation, effects, durable state, and termination. Reliability comes from making that boundary explicit.",
+        "chain": ["Construct the observation from scoped state and untrusted external content.", "Ask the policy for a typed action, then validate schema, permission, resource, intent, and budget outside the model.", "Execute at most the authorized effect, record the result durably, and either continue under a hard bound or terminate."],
+        "math": "Expected task cost is the sum over steps of model, tool, and waiting cost; success over a fragile k-step chain can fall roughly as p^k when each step succeeds independently with probability p. Track success, intervention, invalid calls, duplicate effects, steps, tokens, latency, and policy violations.",
+        "case": "Replay the same task with a tool timeout, duplicated response, hostile tool text, and crash after the side effect. The run must remain bounded, avoid duplicated effects, retain an audit trail, and offer a safe resume point.",
+    },
+    "Orchestration Frameworks": {
+        "why": "Orchestration turns work into explicit state transitions. Framework syntax is secondary: determine which state is durable, which nodes are nondeterministic, where side effects occur, and what replay means.",
+        "chain": ["Persist an input and current state under a versioned schema.", "Choose an allowed transition and run pure computation or an idempotent activity.", "Checkpoint the outcome so a crash can resume without inventing state or repeating an external effect."],
+        "math": "Model completion probability, retry amplification, time in each state, and duplicate-effect rate. If a step fails with probability q and is attempted r times, expected attempts are the truncated geometric sum Σ(1-q)^i; retries reduce failure only when effects and overload are controlled.",
+        "case": "Crash a workflow immediately before and after every external call. Verify the state after replay, the number of real-world effects, schema migration behavior, and compensation when the original effect cannot be undone.",
+    },
+    "Observability and Monitoring": {
+        "why": "Telemetry is evidence about a running system, not the system itself. Traces preserve causal paths, metrics aggregate behavior, logs record events, and evaluations estimate semantic quality; each loses different information.",
+        "chain": ["Create a correlation context at the request boundary and propagate it across model, retrieval, tool, queue, and storage calls.", "Record bounded attributes and events with explicit versions, privacy rules, and sampling decisions.", "Aggregate into SLOs and cohorts, then link an alert back to traces and a concrete operational action."],
+        "math": "Define an indicator before its SLO. Availability, TTFT, completion latency, and semantic success need separate numerators and denominators. Use error-budget burn over short and long windows; averages hide tails and mixtures of healthy and broken cohorts.",
+        "case": "Create two incidents with the same mean latency—uniform slowdown and a 5% extreme tail. Confirm percentiles and traces separate them, then test whether sampling retains the rare failing cohort without leaking content.",
+    },
+    "Serving, Deployment, and LLMOps": {
+        "why": "LLM serving schedules variable-length token work against finite accelerator memory and bandwidth. Queueing, prefill, decode, KV-cache allocation, routing, and release control interact; model weights alone do not determine capacity.",
+        "chain": ["Admit and route a request using model, adapter, priority, and memory requirements.", "Batch prefill compute, allocate KV state, then repeatedly schedule memory-bound decode steps.", "Stream output under cancellation and policy controls while recording usage; release cache state and feed saturation into autoscaling."],
+        "math": "Separate queue time, time to first token, and time per output token. Estimate active memory as weights + KV cache + activations + runtime overhead. Little's Law L = λW gives an initial concurrency check, but load tests must use the real prompt/output-length distribution.",
+        "case": "Sweep concurrency with short, median, and long prompts. Plot TTFT, decode rate, throughput, cache occupancy, OOMs, and quality-qualified cost; then canary a new runtime independently on each hardware type.",
+    },
+    "Data and ML Lifecycle": {
+        "why": "An ML result is reproducible only when its code, data, parameters, environment, model, prompt, and evaluation artifacts form a recoverable lineage graph. A mutable filename is a pointer, not evidence.",
+        "chain": ["Identify immutable inputs by content or version and record event plus availability time.", "Execute a transformation with captured code, parameters, schema, and environment.", "Validate the produced artifact, attach lineage and metrics, then promote a reference without destroying the prior version."],
+        "math": "Track lineage completeness, reproduction success, freshness lag, and data-quality failures by slice. Point-in-time joins require feature availability_time ≤ label_time; using the newest value leaks future information even when schemas and row counts look correct.",
+        "case": "Reproduce a historical evaluation in a clean environment, then mutate one upstream dataset version. The system should identify stale descendants, block an invalid promotion, and restore the last accepted artifact.",
+    },
+    "Transformer Theory and Training": {
+        "why": "A transformer converts token identities into vectors, repeatedly mixes information across positions and features, and trains those transformations by differentiating a probability objective. Names such as attention or LoRA are shorthand for tensor operations and gradient paths.",
+        "chain": ["Write input and parameter tensor shapes before multiplying anything.", "Follow one token through representation mixing, residual addition, normalization, and output logits.", "Compute the loss against a target, then trace which parameters receive gradients and which state consumes memory."],
+        "math": "Check shape, units, and limiting cases. Parameter memory, activation memory, optimizer state, and communication are distinct. A probability loss measures the training objective, not truth, safety, or downstream usefulness.",
+        "case": "Use a two-token, two-dimensional example and calculate one full forward transformation by hand. Change one scale, mask, rank, or target and predict the output and gradient direction before using a library.",
+    },
+    "Inference Optimization": {
+        "why": "Every inference optimization changes one of four physical quantities: arithmetic, memory capacity, memory traffic, or scheduling waste. Speed claims are meaningless until the original bottleneck and preserved output semantics are named.",
+        "chain": ["Measure the reference path and separate prefill, decode, queueing, and transfer time.", "Apply the optimization and identify exactly which bytes, operations, synchronization, or idle slots disappear.", "Compare output quality and numerical behavior, then find the workload point where overhead exceeds the saved work."],
+        "math": "Use a roofline intuition: time is bounded by max(operations/compute_rate, bytes/memory_bandwidth) plus scheduling and communication. Report latency and throughput together; batching can improve total tokens/s while worsening a user's TTFT.",
+        "case": "Sweep sequence length, batch, concurrency, and hardware. Record kernel time, memory, bandwidth, TTFT, token rate, and task quality, including the small-workload region where setup overhead dominates.",
+    },
+    "Backend, APIs, and Microservices": {
+        "why": "A backend is a set of contracts around state and partial failure. HTTP or framework syntax does not decide ownership, backpressure, cancellation, idempotency, or compatibility; those semantics determine whether the service remains correct under load.",
+        "chain": ["Parse and validate a versioned request at the trust boundary.", "Admit bounded work, propagate deadline and cancellation, and call dependencies through explicit failure policies.", "Commit any state transition exactly as promised by the contract, then return a truthful status or stream termination."],
+        "math": "Model arrival rate, service-time distribution, concurrency, and queue capacity. Little's Law L = λW connects concurrency and latency in stable operation; when utilization approaches one, tails grow sharply. Budget retries because they add load precisely when capacity is failing.",
+        "case": "Load a representative endpoint through saturation, then slow one dependency. Verify queue bounds, timeouts, cancellation lag, idempotent retry behavior, error semantics, and recovery after the dependency returns.",
+    },
+    "Python Engineering": {
+        "why": "Python source is executed through protocols over objects: name lookup finds objects, bytecode or native code invokes operations, frames retain execution state, and resource lifetime follows references plus explicit cleanup. Correct intuition comes from tracing those layers.",
+        "chain": ["Identify the concrete objects, their owners, and the protocol Python will dispatch.", "Trace evaluation through frames and calls, noting where execution can suspend, raise, allocate, share, serialize, or enter native code.", "Observe the behavior with disassembly, timing, identities, reference counts, or a minimal test instead of inferring it from surface syntax."],
+        "math": "Use wall time versus CPU time to distinguish waiting from computation. Model memory as live object graph plus allocator, native, and external buffers; model concurrency overhead as scheduling, serialization, synchronization, and retained task state.",
+        "case": "Write the smallest program that exposes the claimed protocol, predict its output and lifecycle, then vary one ownership, failure, or concurrency assumption and measure the difference.",
+    },
+    "Security, Safety, and Governance": {
+        "why": "Security is control over effects despite hostile or mistaken inputs. Start with assets, actors, trust boundaries, and authority. Model text—including retrieved text and model output—is untrusted data until deterministic policy grants a specific effect.",
+        "chain": ["Authenticate the actor and classify the input, data, resource, and requested effect.", "Authorize the exact action under least privilege at the execution boundary, not inside a prompt.", "Constrain and observe execution, validate the result, and preserve tamper-resistant evidence for detection, revocation, and recovery."],
+        "math": "Measure false allow and false block rates by threat class, attack success, exposed privilege, and detection/containment time. Expected risk is not one universal number: severity, likelihood, exposure, and control uncertainty must remain visible for high-impact paths.",
+        "case": "Attempt an application-specific abuse across prompt, retrieval, tool, model, and logging boundaries. Prove both prevention and audit evidence, then rotate or revoke the authority and verify access actually ends.",
+    },
+    "Distributed Systems and Reliability": {
+        "why": "A distributed system coordinates state using messages that can be delayed, duplicated, reordered, or lost while machines pause or fail. Correctness depends on the failure model and invariant, not on the happy-path diagram.",
+        "chain": ["Name the authoritative state, replicas, operation identity, and invariant.", "Follow one operation across messages and clocks under delay, retry, duplication, and concurrent updates.", "Decide what the caller may observe, how overload is bounded, and how state is reconciled or recovered after failure."],
+        "math": "Use percentiles and error budgets rather than averages. Queue stability requires offered work below sustainable service capacity; retries multiply offered load. For replicated operations, availability and consistency claims must name quorum, timeout, partition, and conflict assumptions.",
+        "case": "Inject a timeout, duplicate, process crash, partition, and burst while checking the invariant. Record queue depth, tail latency, retry amplification, lost or duplicate effects, and time to safe recovery.",
+    },
+}
+
+
+GIL_DEEP_DIVE = {
+    "big_picture": [
+        "Python threading and the GIL is not primarily about making code run in parallel. It is about allowing several independent call stacks to make progress while they share one process. The decisive question is what each stack does while it is not running: wait for I/O, execute Python bytecode, or run native code outside Python's lock.",
+        "In the ordinary GIL-enabled CPython build, objects live in one shared heap and reference counts may be touched by many threads. A process-wide Global Interpreter Lock lets only one thread at a time execute Python bytecode with that interpreter. The lock protects interpreter internals; it does not make a multi-step operation on your application state logically atomic.",
+    ],
+    "prerequisites": [
+        "Process: an isolated address space with its own interpreter and heap.",
+        "Thread: an independently scheduled instruction stream with its own stack but the process's shared heap.",
+        "Bytecode: instructions executed by CPython's evaluation loop; it is not the same thing as a machine instruction.",
+        "Blocking: a thread cannot make progress until an external event such as a socket or disk operation completes.",
+    ],
+    "mechanism_steps": [
+        "A thread acquires the GIL before executing Python bytecode. Other Python threads in the same interpreter may exist and be runnable, but they cannot execute bytecode simultaneously.",
+        "CPython periodically gives another runnable thread a chance to acquire the lock. This time-slicing creates concurrency, but for pure Python CPU work the threads mostly take turns on one core rather than add their cores together.",
+        "Before many blocking system calls, CPython releases the GIL. While thread A waits for network data, thread B can acquire the GIL and execute. This is why a thread pool can greatly improve I/O throughput even though the GIL exists.",
+        "Native extensions may explicitly release the GIL around long computations that do not touch Python objects. NumPy or compression work can therefore run in parallel, but this is an extension-specific property that must be measured rather than assumed.",
+        "When a worker returns to Python it must reacquire the GIL. Too many runnable threads add context switches, lock competition, memory for stacks, and tail-latency variance. A bounded pool is a resource-control device, not merely a speed switch.",
+    ],
+    "intuition": {
+        "analogy": "Imagine one workshop containing a single workbench for manipulating Python objects. Many workers may have their own task lists, and a worker waiting for a delivery leaves the bench so another can use it. Adding workers helps when deliveries dominate. It does not create more workbenches for object manipulation.",
+        "prediction": "If each task spends 95 ms waiting on a socket and 5 ms executing Python, several threads can overlap most of the 95 ms waits. If each task spends the full 100 ms in a Python loop, the same threads contend for the one bytecode workbench and can be slower than one thread.",
+        "limit": "The workbench analogy explains execution exclusion, not data safety. A worker can leave shared application data in an invalid logical state across several individually safe operations, so locks, queues, immutability, or ownership rules are still required.",
+    },
+    "quantitative_model": [
+        "Let one task spend C seconds executing GIL-held Python and W seconds waiting while the GIL is released. With N threads, an optimistic lower bound for a batch of N tasks is N*C + W: the Python portions serialize while the waits overlap. Sequential time is N*(C+W). Real time is higher because scheduling and the external service are not free.",
+        "For N=20 tasks with C=5 ms and W=95 ms, sequential time is about 2.0 s; the optimistic threaded time is 20*5 ms + 95 ms = 195 ms, roughly 10.3x faster. For C=100 ms and W=0, the lower bound remains 2.0 s before overhead, so threads offer no CPU speedup.",
+        "Apply Amdahl's law to the fraction p that can actually overlap: speedup <= 1 / ((1-p) + p/N). The serial fraction includes GIL-held Python, locks, queue coordination, and any serialized dependency. Increasing N cannot remove that floor.",
+    ],
+    "worked_example": {
+        "scenario": "A service must fetch 100 independent URLs. Median remote wait is 80 ms and response parsing takes 4 ms of Python CPU. The SLO is p95 below 1 second and the upstream permits 20 concurrent requests.",
+        "trace": [
+            "Baseline one worker: about 100*(80+4) ms = 8.4 s before connection effects.",
+            "Choose at most 20 workers because blocking HTTP fits threads and the upstream concurrency limit is the real boundary.",
+            "Optimistic batch time: five waves * (80 ms wait + 20*4 ms serialized parsing) = about 0.8 s. This is only a model; benchmark the actual client and parser.",
+            "Record queue time, request latency, active workers, CPU utilization, upstream 429s, and p95/p99. If CPU reaches a core and parsing dominates, move parsing to processes/native code or reduce it; do not keep increasing threads.",
+        ],
+    },
+    "lab": {
+        "prompt": "Run both functions with 1, 4, and 16 workers. The sleep workload should approach overlap; the Python loop should not scale proportionally. Replace sleep with the real blocking client before making a production choice.",
+        "code": """from concurrent.futures import ThreadPoolExecutor\nfrom time import perf_counter, sleep\n\ndef waiting(_: int) -> int:\n    sleep(0.05)          # releases the GIL while the OS waits\n    return 1\n\ndef python_cpu(_: int) -> int:\n    return sum(i * i for i in range(600_000))\n\ndef measure(fn, workers: int, tasks: int = 32) -> float:\n    start = perf_counter()\n    with ThreadPoolExecutor(max_workers=workers) as pool:\n        list(pool.map(fn, range(tasks)))\n    return perf_counter() - start\n\nfor fn in (waiting, python_cpu):\n    for workers in (1, 4, 16):\n        print(fn.__name__, workers, measure(fn, workers))""",
+    },
+    "failure_analysis": [
+        "Race despite the GIL: `if key not in cache: cache[key] = build()` spans several bytecodes and may duplicate work. Protect the invariant or give one owner the mutation through a queue.",
+        "Unbounded fan-out: thousands of threads consume memory and overload the dependency. Use a bounded executor, admission control, deadlines, and cancellation.",
+        "Shutdown hang: a worker is blocked without a timeout, while the executor waits for it. Put timeouts on I/O, stop accepting work, cancel pending futures, and bound shutdown time.",
+        "False benchmark: timing a toy `sleep` proves the executor can overlap sleep, not that the real library releases the GIL or that the dependency tolerates concurrency. Profile the representative code path and compare wall time with CPU time.",
+    ],
+}
+
+
+COURSE_LABS = {
+    "Retrieval and Search Theory": '''# Change the ranking and judgments, then explain every metric movement.
+ranked_relevant = [1, 0, 1, 0, 0]
+total_relevant = 4
+hits = sum(ranked_relevant)
+recall = hits / total_relevant
+precision = hits / len(ranked_relevant)
+rr = next((1 / rank for rank, hit in enumerate(ranked_relevant, 1) if hit), 0)
+print({"recall@5": recall, "precision@5": precision, "reciprocal_rank": rr})''',
+    "Vector Databases and Search Engines": '''# Compare an approximate/filtered result with the exact eligible top-k.
+exact_ids = {"d1", "d4", "d7", "d9"}
+returned_ids = {"d1", "d4", "d8"}
+ann_recall = len(exact_ids & returned_ids) / len(exact_ids)
+underfill = len(returned_ids) < len(exact_ids)
+print({"ann_recall": ann_recall, "underfilled": underfill})''',
+    "RAG Architecture and Evaluation": '''# Stage-local scores prevent a fluent answer from hiding an upstream loss.
+cases = [
+    {"retrieved_gold": 1, "context_kept": 1, "claims_supported": 3, "claims": 3},
+    {"retrieved_gold": 0, "context_kept": 0, "claims_supported": 0, "claims": 2},
+]
+for case in cases:
+    faithfulness = case["claims_supported"] / max(1, case["claims"])
+    print(case["retrieved_gold"], case["context_kept"], faithfulness)''',
+    "Knowledge Graphs and GraphRAG": '''# See why unconstrained expansion grows exponentially.
+def expansion(branching_factor, depth):
+    return sum(branching_factor ** level for level in range(depth + 1))
+for degree in (2, 10, 100):
+    print(degree, expansion(degree, 3))
+# Add edge-type, time, and provenance predicates before increasing depth.''',
+    "Agents, MCP, and Control": '''# A host-enforced budget terminates even when the policy never chooses stop.
+observations = ["start", "tool timeout", "hostile tool text", "success"]
+budget = 3
+for step, observation in enumerate(observations):
+    if step >= budget:
+        print("terminated_by_host", step); break
+    proposed_action = {"tool": "read", "resource": observation}
+    allowed = proposed_action["tool"] == "read"
+    print(step, observation, "execute" if allowed else "deny")''',
+    "Orchestration Frameworks": '''# Replay around a side effect; the operation key prevents duplication.
+completed, effects = set(), []
+def activity(operation_id):
+    if operation_id not in completed:
+        effects.append(operation_id); completed.add(operation_id)
+    return "ok"
+activity("order-42")
+activity("order-42")  # simulated retry after lost acknowledgement
+assert effects == ["order-42"]
+print(effects)''',
+    "Observability and Monitoring": '''# Equal averages can conceal radically different tails.
+from statistics import mean, quantiles
+uniform = [100] * 100
+rare_tail = [50] * 95 + [1050] * 5
+for label, values in (("uniform", uniform), ("rare_tail", rare_tail)):
+    p99 = quantiles(values, n=100, method="inclusive")[98]
+    print(label, {"mean": mean(values), "p99": p99})''',
+    "Serving, Deployment, and LLMOps": '''# Separate concurrency and KV capacity from a single latency average.
+arrival_per_s, service_s = 12, 0.8
+little_law_concurrency = arrival_per_s * service_s
+layers, kv_heads, head_dim, bytes_per_value = 32, 8, 128, 2
+tokens, sequences = 4096, 24
+kv_bytes = 2 * layers * kv_heads * head_dim * bytes_per_value * tokens * sequences
+print({"mean_concurrency": little_law_concurrency, "kv_GiB": kv_bytes / 2**30})''',
+    "Data and ML Lifecycle": '''# Point-in-time correctness: only data available by the label time may join.
+label_time = 100
+features = [
+    {"value": 0.2, "event_time": 80, "available_time": 90},
+    {"value": 0.9, "event_time": 95, "available_time": 110},
+]
+eligible = [f for f in features if f["available_time"] <= label_time]
+chosen = max(eligible, key=lambda f: f["event_time"])
+print(chosen)''',
+    "Transformer Theory and Training": '''# Calculate a tiny softmax distribution and cross-entropy by hand-sized code.
+from math import exp, log
+logits = [2.0, 1.0, 0.0]
+mass = sum(exp(x) for x in logits)
+probabilities = [exp(x) / mass for x in logits]
+target = 1
+loss = -log(probabilities[target])
+print({"probabilities": probabilities, "target_loss": loss})''',
+    "Inference Optimization": '''# Roofline lower bound: the slower physical resource wins.
+def lower_bound(operations, bytes_moved, ops_per_s, bytes_per_s):
+    return max(operations / ops_per_s, bytes_moved / bytes_per_s)
+baseline = lower_bound(2e12, 900e9, 100e12, 1.5e12)
+compressed = lower_bound(2e12, 450e9, 100e12, 1.5e12)
+print({"baseline_s": baseline, "compressed_s": compressed})''',
+    "Backend, APIs, and Microservices": '''# Request count is not workload: charge the scarce resource.
+requests = [
+    {"tenant": "a", "tokens": 100},
+    {"tenant": "a", "tokens": 9000},
+    {"tenant": "b", "tokens": 600},
+]
+usage = {}
+for request in requests:
+    usage[request["tenant"]] = usage.get(request["tenant"], 0) + request["tokens"]
+print(usage)''',
+    "Python Engineering": '''# Inspect surface syntax at the runtime boundary instead of guessing.
+import dis, time
+def operation(items):
+    return sum(item * item for item in items)
+dis.dis(operation)
+start_wall, start_cpu = time.perf_counter(), time.process_time()
+operation(range(1_000_000))
+print({"wall_s": time.perf_counter()-start_wall,
+       "cpu_s": time.process_time()-start_cpu})''',
+    "Security, Safety, and Governance": '''# Authorization belongs to the host and is checked per exact effect.
+policy = {("analyst", "read", "report-7"), ("owner", "delete", "report-7")}
+attempts = [
+    ("analyst", "read", "report-7"),
+    ("analyst", "delete", "report-7"),
+]
+for attempt in attempts:
+    print(attempt, "allow" if attempt in policy else "deny")''',
+    "Distributed Systems and Reliability": '''# Layered retries multiply offered work during failure.
+def attempts_per_user_call(layers, retries_per_layer):
+    return (retries_per_layer + 1) ** layers
+for layers in (1, 2, 3):
+    print(layers, attempts_per_user_call(layers, 2))
+assert attempts_per_user_call(3, 2) == 27''',
+}
+
+
+def _generic_deep_lesson(topic, playbook):
+    """Specialize a real course model with the topic's own causal claim.
+
+    Product/framework chapters share the laws of their course, but not a fake
+    universal mechanism.  Exact mathematical topics additionally receive their
+    formula modules; unusually subtle runtime topics use authored overrides.
     """
+    primitives, trace, experiment = COURSE_FOUNDATIONS[topic["category"]]
+    core = CATEGORY_DEEP_MODELS[topic["category"]]
+    name = topic["name"]
+    return {
+        "big_picture": [
+            core["why"],
+            f"Within that model, {name} has one central job: {topic['summary']} Its boundary contains {primitives}; the rest of this chapter traces how that claim produces the stated benefit and failure.",
+        ],
+        "prerequisites": [
+            f"Locate these primitives in the course model: {primitives}.",
+            f"Trace rule: {trace}.",
+            "Keep mechanism (what transforms), policy (what is allowed), and measurement (what was observed) separate.",
+        ],
+        "mechanism_steps": [
+            *core["chain"],
+            f"{name} specializes that chain as follows: {topic['summary']}",
+            f"The resulting tradeoff is causal, not a slogan: {topic['tradeoff']}",
+        ],
+        "intuition": {
+            "analogy": f"Think of {name} as a lens inserted into the course's causal chain. It preserves some information or control and discards or delays something else; that asymmetry is why it can help rather than being universally better.",
+            "prediction": f"On the workload named in the tradeoff, predict this behavior before benchmarking: {topic['tradeoff']}",
+            "limit": f"The mental model fails if it ignores this concrete counterexample: {topic['pitfall']}",
+        },
+        "quantitative_model": [
+            core["math"],
+            f"For {name}, turn the prose tradeoff into two axes: the promised gain and the stated cost. {topic['tradeoff']} Hold the dataset, traffic mix, versions, and hardware fixed while sweeping the mechanism's controlling parameter.",
+            "Check units and limiting cases before trusting the plot: zero work, one item, the largest supported input, no failures, and the violated assumption named in this chapter. Report distributions and important cohorts, not only one average.",
+        ],
+        "worked_example": {
+            "scenario": core["case"],
+            "trace": [
+                f"Hypothesis for {name}: {topic['summary']}",
+                f"Counterfactual baseline: remove {name} while holding inputs and evaluation constant; then {experiment.lower()}",
+                f"Decision boundary: accept the mechanism only where this tradeoff is favorable for the stated workload—{topic['tradeoff']}",
+                f"Falsification test: deliberately create this failure and capture the first stage where it is observable—{topic['pitfall']}",
+            ],
+        },
+        "lab": {
+            "prompt": f"Run this course-level mechanism probe before changing it for {name}. {experiment} Explain which output would falsify this chapter's claim: {topic['summary']}",
+            "code": f'''# Topic under test: {name}\n# Claimed mechanism: {topic['summary']}\n# Failure to reproduce: {topic['pitfall']}\n\n{COURSE_LABS[topic["category"]]}''',
+        },
+        "failure_analysis": [
+            f"Failure to explain: {topic['pitfall']}",
+            "Earliest signal: instrument the boundary where the violated assumption first becomes observable, not only the final user-visible error.",
+            "Containment: bound queues, work, retries, privileges, or affected tenants at the ownership boundary.",
+            "Recovery: preserve a simpler baseline, version state, and define a tested rollback or degraded mode before release.",
+        ],
+    }
+
+
+def validate_tutorials(tutorials):
+    """Fail the build when a lesson regresses to renamed outline text."""
+    banned = (
+        "never stop at a feature list",
+        "no single canonical equation defines this topic",
+        "this lesson contains the definition",
+        "start with the input and output contract",
+        "# pseudocode",
+        "draw the boundary around",
+        "use the mechanism to explain",
+        "replace these samples",
+        "executable measurement worksheet",
+    )
+    required = ("big_picture", "prerequisites", "mechanism_steps", "intuition", "quantitative_model", "worked_example", "lab", "failure_analysis")
+    for tutorial in tutorials:
+        missing = [field for field in required if not tutorial.get(field)]
+        if missing:
+            raise ValueError(f"{tutorial['topic_id']}: missing teaching fields {missing}")
+        prose = " ".join(str(tutorial[field]) for field in required).lower()
+        if any(phrase in prose for phrase in banned):
+            raise ValueError(f"{tutorial['topic_id']}: contains deprecated filler prose")
+        if len(prose.split()) < 260:
+            raise ValueError(f"{tutorial['topic_id']}: lesson is too thin ({len(prose.split())} words)")
+        if tutorial["name"].lower() not in prose:
+            raise ValueError(f"{tutorial['topic_id']}: lesson is not topic-specific")
+        if not tutorial["lab"]["code"].strip() or "replace each function" in tutorial["lab"]["code"].lower():
+            raise ValueError(f"{tutorial['topic_id']}: lab is not executable")
+        try:
+            compile(tutorial["lab"]["code"], f"<lesson:{tutorial['topic_id']}>", "exec")
+        except SyntaxError as error:
+            raise ValueError(f"{tutorial['topic_id']}: lab does not compile: {error}") from error
+
+
+def build_tutorials(topics):
+    """Build mechanism-first lessons and reject outline-shaped filler."""
     formula_index = {}
     for formula in FORMULAS:
         for topic_id in formula["topic_ids"]:
@@ -555,39 +941,20 @@ def build_tutorials(topics):
     for topic in topics:
         playbook = CATEGORY_TEACHING[topic["category"]]
         refs = formula_index.get(topic["id"], [])
-        quantitative = (
-            "Work the linked derivation symbol by symbol, state its assumptions, then explain which parameter moves quality, latency, memory, or cost."
-            if refs else
-            "No single canonical equation defines this topic. Quantify it with a workload model: arrival rate, item or token volume, service-time distribution, resource limit, quality metric, and error budget."
-        )
-        tutorials.append({
+        lesson = _generic_deep_lesson(topic, playbook)
+        if topic["id"] == "python-threading-and-the-gil":
+            lesson.update(GIL_DEEP_DIVE)
+        tutorial = {
             "topic_id": topic["id"],
             "name": topic["name"],
             "category": topic["category"],
             "objective": f"Explain {topic['name']} from first principles, choose it for a stated workload, measure it, and recover when it fails.",
-            "first_principles": f"{topic['summary']} {playbook['lens']}",
-            "mental_model": f"Start with the input and output contract. Identify the state or representation being changed, the algorithm that changes it, and the resource that becomes limiting. For {topic['name']}, never stop at a feature list: connect the mechanism to an observable behavior in a real workload.",
-            "quantitative_reasoning": quantitative,
             "formula_ids": refs,
-            "decision_reasoning": f"Choose {topic['name']} when its mechanism matches the workload and its benefits survive a representative benchmark. The central tradeoff is: {topic['tradeoff']} Compare against the simplest viable baseline and make the decision reversible where possible.",
-            "failure_reasoning": f"The key production trap is: {topic['pitfall']} Trace that failure backward to the violated assumption, define the earliest observable signal, isolate the blast radius, and name a rollback or degraded mode.",
             "evaluation": playbook["metrics"],
             "operations": playbook["operation"],
-            "worked_reasoning": [
-                f"Requirement: state the workload, quality target, latency percentile, scale, update rate, and risk boundary that matter for {topic['name']}.",
-                f"Baseline: implement or measure the least complex alternative before adding {topic['name']}.",
-                f"Experiment: vary the mechanism's controlling parameters and evaluate the listed metrics by important cohort, not only as one average.",
-                f"Decision: accept the design only if the observed gain justifies this cost: {topic['tradeoff']}",
-                f"Production gate: instrument the critical path and block or roll back release when this failure appears: {topic['pitfall']}",
-            ],
-            "answer_blueprint": {
-                "definition": f"Open with one sentence: {topic['summary']}",
-                "tradeoff": f"Then state both sides without hedging: {topic['tradeoff']}",
-                "failure": f"Name a concrete failure and its detection signal: {topic['pitfall']}",
-                "production": "Finish with workload-specific metrics, a trace or dashboard, an SLO or quality threshold, failure isolation, and a rollback condition.",
-                "long_answer": "Use the sequence mechanism -> assumptions -> quantitative model -> alternatives -> experiment -> operations -> failure recovery. This directly answers the topic's long-answer prompt.",
-            },
-            "question_coverage": "This lesson contains the definition, tradeoff, failure association, scenario diagnosis, design explanation, and production rubric tested by all seven MCQs, both flashcards, and the long-answer question for this topic.",
             "references": topic["references"],
-        })
+            **lesson,
+        }
+        tutorials.append(tutorial)
+    validate_tutorials(tutorials)
     return tutorials
