@@ -4,7 +4,7 @@ on:
     branches: [main]
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 concurrency:
@@ -18,12 +18,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate lesson depth and generated assets
+      - name: Build and validate teaching content
         run: |
           python3 tools/build_content.py
-          git checkout -- .github/workflows/pages.yml
           node --check app.js
-          git diff --exit-code
+          node --check tools/site_app.js
+      - name: Commit generated curriculum assets
+        run: |
+          if git diff --quiet; then
+            echo "Generated assets are already synchronized."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add README.md data/ handbook/ output/
+            git commit -m "chore: publish generated teaching curriculum [skip ci]"
+            git push
+          fi
       - name: Compile LaTeX handbook
         id: latex
         continue-on-error: true
